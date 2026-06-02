@@ -10,80 +10,41 @@
     body { font-family: 'M PLUS Rounded 1c', sans-serif; }
     .bg-cafe-home { background-image: url('images/back.png'); background-size: cover; background-position: center; }
     
-    .char-container { position: relative; width: 100%; height: 90vh; }
-    .char-item { position: absolute; display: flex; align-items: center; cursor: pointer; z-index: 10; }
-    
-    /* キャラ：2倍 (200px) */
-    .char-img { width: 200px; height: 200px; object-fit: contain; }
-    
-    /* 吹き出し：2.5倍 (350px * 200px) */
-    .speech-box { 
-      width: 350px; height: 200px; 
-      display: flex; align-items: center; justify-content: center;
-      text-align: center; padding: 30px; font-size: 22px; font-weight: bold;
-      background-size: contain; background-repeat: no-repeat; background-position: center;
+    /* ログイン状態表示 */
+    .login-status { position: fixed; top: 10px; right: 10px; z-index: 100; background: rgba(255,255,255,0.8); padding: 5px 10px; border-radius: 8px; font-size: 12px; }
+
+    /* 中央配置用コンテナ */
+    .char-wrapper { 
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(2);
+      display: flex; flex-direction: column; gap: 20px; align-items: center; z-index: 10;
     }
   </style>
 </head>
 <body class="bg-cafe-home h-[100dvh] overflow-hidden">
 
-  <div class="char-container">
-    <div class="char-item top-5 right-4" data-name="waka">
-      <div class="speech-box bg-[url('images/wakacom.png')]" contenteditable="true"></div>
-      <img src="images/waka.png" class="char-img">
-    </div>
-
-    <div class="char-item top-40 right-20" data-name="yuzu">
-      <img src="images/yuzu.png" class="char-img">
-      <div class="speech-box bg-[url('images/yuzucom.png')]" contenteditable="true"></div>
-    </div>
-
-    <div class="char-item top-72 right-4" data-name="lily">
-      <div class="speech-box bg-[url('images/lilycom.png')]" contenteditable="true"></div>
-      <img src="images/lily.png" class="char-img">
-    </div>
-
-    <div class="char-item top-[28rem] right-20" data-name="toru">
-      <img src="images/toru.png" class="char-img">
-      <div class="speech-box bg-[url('images/torucom.png')]" contenteditable="true"></div>
-    </div>
+  <div class="login-status">
+    <span id="user-name">ゲスト</span>でログイン中
+    <button onclick="logout()" class="ml-2 text-red-500 underline">ログアウト</button>
   </div>
+
+  <div class="char-wrapper">
+    <div class="flex items-center gap-4" data-name="waka">
+      <div class="w-[140px] h-[80px] bg-[url('images/wakacom.png')] bg-contain bg-no-repeat" contenteditable="true"></div>
+      <img src="images/waka.png" class="w-[100px] h-[100px]">
+    </div>
+    </div>
 
   <div class="fixed bottom-0 w-full z-50">
     <cafe-nav></cafe-nav>
   </div>
   
   <script src="components/navbar.js" defer></script>
-
   <script>
-    const shiftMessages = {
-      "日勤": "お昼間はお仕事だよ",
-      "休み": "お休みだー！！遊ぶぞ！！",
-      "夜勤": "朝も昼もお仕事・・・",
-      "明け": "明け！！やっとゲームできる！！",
-      "当直": "当直だよ"
-    };
-
-    function updateBubbles() {
-      const today = new Date();
-      const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-      const schedules = JSON.parse(localStorage.getItem('cafe_schedules')) || [];
-
-      document.querySelectorAll('.char-item').forEach(item => {
-        const name = item.getAttribute('data-name');
-        const bubble = item.querySelector('.speech-box');
-        const todaySched = schedules.find(s => s.date === dateStr && s.characterName === name);
-        
-        if (todaySched) {
-          let msg = shiftMessages[todaySched.text] || todaySched.text;
-          if (todaySched.detail && todaySched.detail.trim() !== "") msg += "☆";
-          bubble.textContent = msg;
-        } else {
-          bubble.textContent = "今日は何の日？";
-        }
-      });
+    function logout() {
+      alert("ログアウトしました");
+      // ログアウト処理をここに記述
     }
-    updateBubbles();
+    // ユーザー名の取得処理などは別途実装
   </script>
 </body>
 </html>
