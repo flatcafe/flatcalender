@@ -8,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script src="auth.js"></script>
+  <script src="components/navbar.js" defer></script>
 </head>
 <body class="bg-amber-50 h-[100dvh] flex flex-col font-sans text-gray-800 overflow-hidden">
   
@@ -41,31 +42,7 @@
     </div>
   </main>
 
-  <nav class="bg-white border-t border-gray-200 flex justify-between items-center px-4 py-2 z-20 font-nunito shrink-0 pb-safe">
-    <button class="flex flex-col items-center w-14">
-      <img src="images/today.png" alt="Today" class="w-12 h-12 object-contain">
-      <span class="text-[12px] font-bold text-gray-600">Today</span>
-    </button>
-    
-    <button class="flex flex-col items-center w-14">
-      <img src="images/calender.png" alt="Calender" class="w-12 h-12 object-contain">
-      <span class="text-[12px] font-bold text-gray-600">Calender</span>
-    </button>
-    
-    <button class="flex flex-col items-center w-16">
-      <img src="images/logo.png" alt="Logo" class="w-16 h-16 object-contain">
-    </button>
-
-    <button class="flex flex-col items-center w-14">
-      <img src="images/memo.png" alt="Memo" class="w-12 h-12 object-contain">
-      <span class="text-[12px] font-bold text-gray-600">Memo</span>
-    </button>
-
-    <button id="logoutBtn" class="flex flex-col items-center w-14">
-      <img src="images/setting.png" alt="Setting" class="w-12 h-12 object-contain">
-      <span class="text-[12px] font-bold text-gray-600">Setting</span>
-    </button>
-  </nav>
+  <cafe-nav></cafe-nav>
 
   <script src="app.js"></script>
 </body>
