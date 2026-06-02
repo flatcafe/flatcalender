@@ -1,6 +1,6 @@
-// calendar.js
 import { auth, db } from './firebase-config.js';
-import { collection, onSnapshot, addDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   try {
@@ -29,22 +29,26 @@ document.addEventListener("DOMContentLoaded", () => {
     let charName = "";
     let charColor = "#DFC6B0"; 
     
-    // ユーザー情報の読み込み（ログイン時の情報を保持）
-    try {
-      const userData = JSON.parse(localStorage.getItem('cafe_user'));
-      if (userData) {
-        userName = userData.name || "ゲスト";
-        charName = userData.characterName || "";
-        charColor = userData.characterColor || "#DFC6B0";
+    // Firebase Authでログイン状態を監視し、Firestoreからユーザー情報を取得
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const docRef = doc(db, "users", user.uid);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            const userData = docSnap.data();
+            userName = userData.name || "ゲスト";
+            charName = userData.characterName || "";
+            charColor = userData.characterColor || "#DFC6B0";
+          }
+        } catch (e) {
+          console.error("ユーザー情報の取得エラー:", e);
+        }
+        
+        // データの取得が完了してからカレンダーの初期描画を行う
+        updatePopupPosition();
+        renderCalendar();
       }
-    } catch (e) { console.error(e); }
-
-    // スケジュールデータ（Firebaseからリアルタイムで取得）
-    let schedules = [];
-    const schedulesRef = collection(db, "schedules");
-    onSnapshot(schedulesRef, (snapshot) => {
-      schedules = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      renderCalendar(); // データが更新されるたびに再描画
     });
 
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -149,6 +153,13 @@ document.addEventListener("DOMContentLoaded", () => {
       return gradient + stops.join(", ") + ")";
     }
 
+    function getSchedules() {
+      try {
+        let data = JSON.parse(localStorage.getItem('cafe_schedules'));
+        return Array.isArray(data) ? data : [];
+      } catch (e) { return []; }
+    }
+
     function renderCalendar() {
       calendarDays.innerHTML = "";
       
@@ -163,6 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const totalCells = rows * 7;
 
       calendarDays.style.gridTemplateRows = `repeat(${rows}, minmax(3rem, 1fr))`;
+      let schedules = getSchedules();
 
       for (let i = 0; i < totalCells; i++) {
         const cell = document.createElement("div");
@@ -186,7 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
             renderCalendar();
           });
 
-          // 祝日の判定
+          // 祝日の判定（holidaysData から検索）
           let numClass = "text-xs z-10 relative font-bold";
           if (i % 7 === 5) {
             numClass += " text-blue-700"; // 土曜
@@ -201,7 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (isToday) {
             const circle = document.createElement("div");
             circle.className = "absolute inset-0 rounded-full opacity-50 z-0";
-            circle.style.backgroundColor = charColor;
+            circle.style.backgroundColor = charColor; // Firebaseから取得したカラーが適用される
             wrapper.appendChild(circle);
           }
           const span = document.createElement("span");
@@ -289,25 +301,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     document.querySelectorAll('.stamp-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
+      btn.addEventListener('click', () => {
         if (!selectedDateStr) {
           alert("入力したい枠を選択してください！");
           return;
         }
         const type = btn.getAttribute('data-type');
         const text = btn.getAttribute('data-text');
+        const schedules = getSchedules();
         
-        // Firestoreへの追加処理
-        await addDoc(schedulesRef, {
+        schedules.push({
+          id: Date.now().toString(),
           date: selectedDateStr,
           type: type,
           text: text,
-          author: userName,
-          characterName: charName,
-          authorColor: charColor,
-          createdAt: serverTimestamp()
+          author: userName, // Firebaseから取得した名前
+          characterName: charName, // Firebaseから取得したキャラ名
+          authorColor: charColor // Firebaseから取得したカラー
         });
-
+        localStorage.setItem('cafe_schedules', JSON.stringify(schedules));
         advanceSelectedDate();
         renderCalendar();
       });
@@ -334,7 +346,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (schedule.detail) html += `<p><strong>【詳細】</strong><br><span class="whitespace-pre-wrap">${schedule.detail}</span></p>`;
       
       if(!schedule.title && !schedule.partner && !schedule.time && (!schedule.members || schedule.members.length === 0) && !schedule.detail){
-          html += `<p class="text-gray-600 text-center py-2">詳細情報はありません</p>`;
+         html += `<p class="text-gray-600 text-center py-2">詳細情報はありません</p>`;
       }
 
       detailContentArea.innerHTML = html;
@@ -361,10 +373,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if(cancelBtn) cancelBtn.addEventListener('click', () => actionModal.classList.add('hidden'));
     
     if(deleteBtn) {
-      deleteBtn.addEventListener('click', async () => {
+      deleteBtn.addEventListener('click', () => {
         if(!confirm("本当に削除しますか？")) return;
-        // Firestoreからの削除処理
-        await deleteDoc(doc(db, "schedules", activeScheduleId));
+        let schedules = getSchedules();
+        schedules = schedules.filter(s => s.id !== activeScheduleId);
+        localStorage.setItem('cafe_schedules', JSON.stringify(schedules));
         actionModal.classList.add('hidden');
         renderCalendar();
       });
@@ -379,8 +392,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if(prevBtn) prevBtn.addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
     if(nextBtn) nextBtn.addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
 
-    updatePopupPosition();
-    renderCalendar();
   } catch (error) {
     alert("カレンダーの描画中にエラーが発生しました！\n" + error.message);
     console.error("カレンダーエラー:", error);
