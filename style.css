@@ -10,11 +10,17 @@
   background-repeat: no-repeat;
 }
 
-/* アニメーション用クラス */
+/* キャラクターのフェードインアニメーション */
 .fade-in { animation: fadeIn 1s ease-out forwards; }
+
+/* ぴょこぴょこの調整：高さ(-8px)に */
 .idle-bounce { animation: bounceIdle 2s infinite ease-in-out; }
-.jump { animation: jumpUp 0.5s ease-out forwards; }
-.dimmed { filter: brightness(30%); transition: filter 0.3s; }
+
+/* 選択時のジャンプ調整：ゆっくり(0.8s)、高さ半分(-30px) */
+.jump { animation: jumpUp 0.8s ease-out forwards; }
+
+/* 明度下げの反応速度を即時に(0.1s) */
+.dimmed { filter: brightness(30%); transition: filter 0.1s; }
 
 /* キーフレーム */
 @keyframes fadeIn {
@@ -24,20 +30,34 @@
 
 @keyframes bounceIdle {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
+  50% { transform: translateY(-8px); }
 }
 
 @keyframes jumpUp {
   0% { transform: translateY(0); }
-  50% { transform: translateY(-60px); }
+  50% { transform: translateY(-30px); }
   100% { transform: translateY(0); }
 }
 
-/* 吹き出しの装飾（既存） */
+/* 吹き出しの装飾 */
 .speech-bubble {
   position: relative;
   border-radius: 12px;
   color: #5a4a42;
   max-width: 140px; 
   word-wrap: break-word;
+}
+
+/* 吹き出しのしっぽ */
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px 6px 0;
+  border-style: solid;
+  border-color: #DFC6B0 transparent transparent transparent;
+  display: block;
+  width: 0;
 }
