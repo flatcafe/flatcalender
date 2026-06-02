@@ -6,14 +6,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const nextBtn = document.getElementById("next-month");
     
     const stampPopup = document.getElementById("stamp-popup");
+    const popupToggleBtn = document.getElementById("popup-toggle-btn");
+
+    const detailModal = document.getElementById("schedule-detail-modal");
+    const detailContentArea = document.getElementById("detail-content-area");
+    const detailCloseBtn = document.getElementById("detail-close-btn");
+
     const actionModal = document.getElementById("schedule-action-modal");
-    const modalContentArea = document.getElementById("modal-content-area");
     
     if (!calendarDays) return;
 
     let currentDate = new Date();
     const today = new Date();
     let selectedDateStr = null;
+    let isPopupTop = false; // ポップアップが上部にあるかどうかのフラグ
 
     let userName = "ゲスト";
     let charName = "";
@@ -26,37 +32,60 @@ document.addEventListener("DOMContentLoaded", () => {
         charName = userData.characterName || "";
         charColor = userData.characterColor || "#DFC6B0";
       }
-    } catch (e) { console.error("ユーザーデータの読み込みエラー", e); }
+    } catch (e) { console.error(e); }
 
     const holidays = ["01-01", "05-03", "05-04", "05-05", "11-03", "11-23"];
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const sortOrder = { "lily": 1, "yuzu": 2, "waka": 3, "toru": 4 };
 
     // ==========================================
-    // ロゴボタンでポップアップの開閉
+    // ポップアップの表示位置（上・下）を更新する関数
     // ==========================================
-    document.addEventListener("click", (e) => {
-      // ロゴボタンがクリックされたか判定
-      const navLogo = e.target.closest ? e.target.closest("#nav-logo") : null;
+    function updatePopupPosition() {
+      const navBar = document.querySelector("cafe-nav nav");
+      const navHeight = navBar ? navBar.offsetHeight : 0;
       
+      const isHiddenTop = stampPopup.classList.contains("-translate-y-full");
+      const isHiddenBottom = stampPopup.classList.contains("translate-y-full");
+      
+      stampPopup.className = "fixed left-0 right-0 z-40 bg-[#E0D7C2] shadow-[0_0_20px_rgba(0,0,0,0.15)] p-4 transition-transform duration-300";
+      
+      if (isPopupTop) {
+        stampPopup.classList.add("top-0", "rounded-b-3xl", "pb-6");
+        stampPopup.style.bottom = "auto";
+        if (isHiddenTop || isHiddenBottom) stampPopup.classList.add("-translate-y-full");
+        if (popupToggleBtn) popupToggleBtn.textContent = "▼ 下へ移動";
+      } else {
+        stampPopup.classList.add("rounded-t-3xl", "pt-4", "pb-8");
+        stampPopup.style.bottom = `${navHeight}px`;
+        if (isHiddenTop || isHiddenBottom) stampPopup.classList.add("translate-y-full");
+        if (popupToggleBtn) popupToggleBtn.textContent = "▲ 上へ移動";
+      }
+    }
+
+    // 上下切り替えボタンのクリック
+    if (popupToggleBtn) {
+      popupToggleBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        isPopupTop = !isPopupTop;
+        updatePopupPosition();
+      });
+    }
+
+    // ロゴボタンでポップアップの開閉
+    document.addEventListener("click", (e) => {
+      const navLogo = e.target.closest ? e.target.closest("#nav-logo") : null;
       if (navLogo && stampPopup) {
         e.preventDefault();
-        
-        // ポップアップが隠れているか確認
         const isHidden = stampPopup.classList.contains("translate-y-full") || stampPopup.classList.contains("-translate-y-full");
         
         if (isHidden) {
-          // 開く処理
-          const navBar = document.querySelector("cafe-nav nav");
-          const navHeight = navBar ? navBar.offsetHeight : 0;
-          
-          if (!stampPopup.classList.contains("top-0")) {
-            stampPopup.style.bottom = `${navHeight}px`;
-          }
-          stampPopup.classList.remove("translate-y-full", "-translate-y-full");
+          updatePopupPosition();
+          setTimeout(() => {
+            stampPopup.classList.remove("translate-y-full", "-translate-y-full");
+          }, 10);
         } else {
-          // 閉じる処理
-          if (stampPopup.classList.contains("top-0")) {
+          if (isPopupTop) {
             stampPopup.classList.add("-translate-y-full"); 
           } else {
             stampPopup.classList.add("translate-y-full"); 
@@ -72,10 +101,8 @@ document.addEventListener("DOMContentLoaded", () => {
     function getGradient(members) {
       const colorMap = { "waka": "#abc888", "yuzu": "#fef263", "lily": "#a12722", "toru": "#968ABD" };
       const ordered = ["waka", "yuzu", "lily", "toru"].filter(m => members.includes(m));
-      
       if (ordered.length === 0) return "#AFC8E1"; 
       if (ordered.length === 1) return colorMap[ordered[0]];
-      
       let gradient = "linear-gradient(90deg, ";
       const step = 100 / ordered.length;
       const stops = [];
@@ -86,15 +113,11 @@ document.addEventListener("DOMContentLoaded", () => {
       return gradient + stops.join(", ") + ")";
     }
 
-    // 予定データを安全に取得（壊れていたら空にする）
     function getSchedules() {
       try {
         let data = JSON.parse(localStorage.getItem('cafe_schedules'));
-        if (!Array.isArray(data)) return [];
-        return data;
-      } catch (e) {
-        return [];
-      }
+        return Array.isArray(data) ? data : [];
+      } catch (e) { return []; }
     }
 
     function renderCalendar() {
@@ -128,24 +151,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
           cell.addEventListener("click", () => {
             selectedDateStr = dateStr;
-            const rect = cell.getBoundingClientRect();
-            const isBottomHalf = rect.top > window.innerHeight / 2;
-            
-            if (stampPopup) {
-              stampPopup.className = "fixed left-0 right-0 z-40 bg-[#E0D7C2] shadow-[0_0_20px_rgba(0,0,0,0.15)] p-4 transition-transform duration-300";
-              
-              if (isBottomHalf) {
-                 stampPopup.classList.add("top-0", "rounded-b-3xl", "pb-6", "-translate-y-full");
-                 stampPopup.style.bottom = "auto";
-                 setTimeout(() => stampPopup.classList.remove("-translate-y-full"), 10);
-              } else {
-                 const navBar = document.querySelector("cafe-nav nav");
-                 const navHeight = navBar ? navBar.offsetHeight : 0;
-                 stampPopup.style.bottom = `${navHeight}px`;
-                 stampPopup.classList.add("rounded-t-3xl", "pt-5", "pb-8", "translate-y-full");
-                 setTimeout(() => stampPopup.classList.remove("translate-y-full"), 10);
-              }
-            }
+            updatePopupPosition();
+            setTimeout(() => {
+              stampPopup.classList.remove("translate-y-full", "-translate-y-full");
+            }, 10);
             renderCalendar();
           });
 
@@ -204,6 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             pill.innerHTML = `<div class="text-[10px] truncate w-full">${mainText}${star}</div>${subTextHtml}`;
 
+            // 色の割り当て
             if (sched.type === 'shift') {
               pill.style.backgroundColor = sched.authorColor;
             } else {
@@ -212,16 +222,29 @@ document.addEventListener("DOMContentLoaded", () => {
               } else if (sched.customColor) {
                 pill.style.backgroundColor = sched.customColor;
               } else {
-                if (sched.text === '横動画') pill.style.backgroundColor = '#AAC4FF';
+                if (sched.text === '横動画') pill.style.backgroundColor = '#F0CCB9'; // 変更
                 else if (sched.text === 'ショート') pill.style.backgroundColor = '#D9E4DD';
+                else if (sched.text === '〇' || sched.text === '×') pill.style.backgroundColor = sched.authorColor; // キャラ色
                 else pill.style.backgroundColor = '#AFC8E1'; 
               }
             }
 
+            // 1回タップ(詳細)とダブルタップ(アクション)の検知
+            let tapTimer = null;
             pill.addEventListener('click', (e) => {
               e.stopPropagation();
-              openActionModal(sched);
+              if (tapTimer === null) {
+                tapTimer = setTimeout(() => {
+                  tapTimer = null;
+                  openDetailModal(sched); // 1回タップ
+                }, 250); // 250ミリ秒待機
+              } else {
+                clearTimeout(tapTimer);
+                tapTimer = null;
+                openActionModal(sched); // 2回タップ
+              }
             });
+
             schedContainer.appendChild(pill);
           });
           cell.appendChild(schedContainer);
@@ -270,12 +293,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const editBtn = document.getElementById("sched-edit-btn");
     const cancelBtn = document.getElementById("sched-cancel-btn");
 
-    function openActionModal(schedule) {
-      if(!actionModal) return;
-      activeScheduleId = schedule.id;
-      actionModal.classList.remove('hidden');
-
-      let html = `<div class="font-bold text-lg border-b pb-2 mb-2 text-center">${schedule.text}</div>`;
+    // 1回タップ：詳細表示
+    function openDetailModal(schedule) {
+      if(!detailModal || !detailContentArea) return;
+      
+      let html = `<div class="font-bold text-lg border-b border-gray-600 pb-2 mb-2 text-center">${schedule.text}</div>`;
       if (schedule.title) html += `<p><strong>【タイトル】</strong><br>${schedule.title}</p>`;
       if (schedule.partner) html += `<p><strong>【コラボ相手】</strong><br>${schedule.partner}</p>`;
       if (schedule.time) html += `<p><strong>【時間】</strong><br>${schedule.time}</p>`;
@@ -285,49 +307,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const displayMembers = schedule.members.map(m => names[m] || m).join(', ');
         html += `<p><strong>【メンバー】</strong><br>${displayMembers}</p>`;
       }
-      
       if (schedule.detail) html += `<p><strong>【詳細】</strong><br><span class="whitespace-pre-wrap">${schedule.detail}</span></p>`;
       
       if(!schedule.title && !schedule.partner && !schedule.time && (!schedule.members || schedule.members.length === 0) && !schedule.detail){
-         html += `<p class="text-gray-400 text-center py-2">詳細情報はありません</p>`;
+         html += `<p class="text-gray-600 text-center py-2">詳細情報はありません</p>`;
       }
 
-      if(modalContentArea) modalContentArea.innerHTML = html;
-
-      const shiftTypes = ["休み", "日勤", "夜勤", "明け", "当直"];
-      if (shiftTypes.includes(schedule.text) && schedule.author !== userName) {
-        deleteBtn.classList.add('hidden');
-      } else {
-        deleteBtn.classList.remove('hidden');
-      }
-    }
-
-    if(cancelBtn) cancelBtn.addEventListener('click', () => actionModal.classList.add('hidden'));
-    
-    if(deleteBtn) {
-      deleteBtn.addEventListener('click', () => {
-        if(!confirm("本当に削除しますか？")) return;
-        let schedules = getSchedules();
-        schedules = schedules.filter(s => s.id !== activeScheduleId);
-        localStorage.setItem('cafe_schedules', JSON.stringify(schedules));
-        actionModal.classList.add('hidden');
-        renderCalendar();
-      });
-    }
-
-    if(editBtn) {
-      editBtn.addEventListener('click', () => {
-        window.location.href = `schedule-edit.html?id=${activeScheduleId}`;
-      });
-    }
-
-    if(prevBtn) prevBtn.addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
-    if(nextBtn) nextBtn.addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
-
-    renderCalendar();
-  } catch (error) {
-    // 画面が真っ白になる代わりに、エラーの内容を画面に表示します！
-    alert("カレンダーの描画中にエラーが発生しました！\n" + error.message);
-    console.error("カレンダーエラー:", error);
-  }
-});
+      detailContentArea.innerHTML = html;
