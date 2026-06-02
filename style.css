@@ -24,16 +24,19 @@
   position: relative;
   border-radius: 12px;
   color: #5a4a42;
+  /* 吹き出しが大きくなりすぎないように制限 */
+  max-width: 140px; 
+  word-wrap: break-word;
 }
 
 /* 吹き出しのしっぽ */
 .speech-bubble::after {
   content: '';
   position: absolute;
-  bottom: -8px;
+  bottom: -6px;
   left: 50%;
   transform: translateX(-50%);
-  border-width: 8px 8px 0;
+  border-width: 6px 6px 0;
   border-style: solid;
   border-color: white transparent transparent transparent;
   display: block;
