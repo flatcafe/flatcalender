@@ -9,9 +9,19 @@
   <style>
     body { font-family: 'M PLUS Rounded 1c', sans-serif; }
     .bg-cafe-home { background-image: url('images/back.png'); background-size: cover; background-position: center; }
-    .char-container { position: relative; width: 100%; height: 90vh; }
-    .char-item { position: absolute; display: flex; align-items: center; cursor: pointer; z-index: 10; }
+    
+    /* コンテナをFlexboxで中央配置 */
+    .char-container { 
+      display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+      gap: 30px; width: 100%; height: 80vh; padding-top: 20px;
+    }
+    
+    .char-item { display: flex; align-items: center; cursor: pointer; z-index: 10; }
+    
+    /* キャラ：2倍 (200px) */
     .char-img { width: 200px; height: 200px; object-fit: contain; }
+    
+    /* 吹き出し：2.5倍 (350px * 200px) */
     .speech-box { 
       width: 350px; height: 200px; 
       display: flex; align-items: center; justify-content: center;
@@ -37,19 +47,19 @@
   </div>
 
   <div class="char-container">
-    <div class="char-item top-5 right-4" data-name="waka">
+    <div class="char-item" data-name="waka">
       <div class="speech-box bg-[url('images/wakacom.png')]" contenteditable="true"></div>
       <img src="images/waka.png" class="char-img">
     </div>
-    <div class="char-item top-40 right-20" data-name="yuzu">
+    <div class="char-item" data-name="yuzu">
       <img src="images/yuzu.png" class="char-img">
       <div class="speech-box bg-[url('images/yuzucom.png')]" contenteditable="true"></div>
     </div>
-    <div class="char-item top-72 right-4" data-name="lily">
+    <div class="char-item" data-name="lily">
       <div class="speech-box bg-[url('images/lilycom.png')]" contenteditable="true"></div>
       <img src="images/lily.png" class="char-img">
     </div>
-    <div class="char-item top-[28rem] right-20" data-name="toru">
+    <div class="char-item" data-name="toru">
       <img src="images/toru.png" class="char-img">
       <div class="speech-box bg-[url('images/torucom.png')]" contenteditable="true"></div>
     </div>
@@ -77,7 +87,7 @@
       window.location.href = 'welcome.html';
     });
 
-    // 吹き出し表示
+    // 吹き出し表示ロジック
     const shiftMessages = {
       "日勤": "お昼間はお仕事だよ",
       "休み": "お休みだー！！遊ぶぞ！！",
