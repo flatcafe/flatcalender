@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>☕ふらっとCafe</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-amber-50 h-screen flex flex-col font-sans text-gray-800">
+  
+  <main id="home" class="flex-1 relative overflow-hidden flex flex-col justify-center items-center">
+    <div class="absolute inset-0 bg-[#e6d5c3] z-0"></div>
+    
+    <div class="relative z-10 w-full max-w-md p-4 h-full flex flex-col justify-center">
+      
+      <div class="grid grid-cols-2 gap-y-12 gap-x-4">
+        
+        <div class="character opacity-0 flex flex-col items-center">
+          <div class="speech-bubble bg-white px-3 py-2 text-sm font-bold shadow-md mb-3 text-center">
+            今日はお休み！
+          </div>
+          <div class="text-7xl drop-shadow-lg filter transition-transform hover:scale-110">🌻</div>
+        </div>
+
+        <div class="character opacity-0 flex flex-col items-center">
+          <div class="speech-bubble bg-white px-3 py-2 text-sm font-bold shadow-md mb-3 text-center">
+            日勤だから返信遅いかも！
+          </div>
+          <div class="text-7xl drop-shadow-lg filter transition-transform hover:scale-110">🍃</div>
+        </div>
+
+        <div class="character opacity-0 flex flex-col items-center">
+          <div class="speech-bubble bg-white px-3 py-2 text-sm font-bold shadow-md mb-3 text-center">
+            夜勤だよ～
+          </div>
+          <div class="text-7xl drop-shadow-lg filter transition-transform hover:scale-110">🌸</div>
+        </div>
+
+        <div class="character opacity-0 flex flex-col items-center">
+          <div class="speech-bubble bg-white px-3 py-2 text-sm font-bold shadow-md mb-3 text-center">
+            コラボ準備中！
+          </div>
+          <div class="text-7xl drop-shadow-lg filter transition-transform hover:scale-110">💎</div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <nav class="bg-white border-t border-gray-200 flex justify-around py-2 pb-6 z-20">
+    <button class="flex flex-col items-center text-gray-400 hover:text-amber-700 transition-colors">
+      <span class="text-2xl mb-1">📅</span>
+      <span class="text-[10px] font-bold">カレンダー</span>
+    </button>
+    <button class="flex flex-col items-center text-gray-400 hover:text-amber-700 transition-colors">
+      <span class="text-2xl mb-1">👥</span>
+      <span class="text-[10px] font-bold">今日の予定</span>
+    </button>
+    
+    <button class="flex flex-col items-center text-gray-400 hover:text-amber-700 -mt-6">
+      <div class="bg-amber-600 rounded-full p-4 shadow-lg text-white transform transition-transform hover:scale-105">
+        <span class="text-3xl leading-none">➕</span>
+      </div>
+    </button>
+
+    <button class="flex flex-col items-center text-gray-400 hover:text-amber-700 transition-colors">
+      <span class="text-2xl mb-1">📔</span>
+      <span class="text-[10px] font-bold">ノート</span>
+    </button>
+    <button class="flex flex-col items-center text-gray-400 hover:text-amber-700 transition-colors">
+      <span class="text-2xl mb-1">⚙️</span>
+      <span class="text-[10px] font-bold">その他</span>
+    </button>
+  </nav>
+
+  <script src="app.js"></script>
+</body>
+</html>
