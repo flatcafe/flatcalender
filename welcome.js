@@ -6,10 +6,10 @@ let selectedChar = {
 
 document.querySelectorAll('.char-btn').forEach(btn => {
   btn.addEventListener('click', (e) => {
-    // 選択状態のスタイル（ボタン自体にクリックイベントがくるようclosestで判定）
     const target = e.currentTarget;
+    // 選択状態のスタイル（リングを表示）
     document.querySelectorAll('.char-btn').forEach(b => b.classList.remove('ring-4', 'ring-amber-400'));
-    target.classList.add('ring-4', 'ring-amber-400');
+    target.classList.add('ring-4', 'ring-amber-400', 'rounded-2xl');
     
     selectedChar = {
       name: target.getAttribute('data-name'),
