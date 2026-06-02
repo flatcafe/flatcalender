@@ -8,9 +8,17 @@
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* 全画面背景の設定 */
+/* Indexページの背景画像 */
 .bg-cafe-pattern {
   background-image: url('images/back.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Welcomeページの背景画像 */
+.bg-welcome-pattern {
+  background-image: url('images/gaikan.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
