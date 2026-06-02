@@ -19,49 +19,46 @@
       background-position: center; 
     }
     
-    /* コンテナの行間を狭め、はみ出す場合はスクロールできるように修正 */
+    /* スクロールなしで画面の縦幅に4等分で収めるGridレイアウト */
     .char-container { 
-      display: flex; 
-      flex-wrap: wrap; 
-      justify-content: center; 
-      align-content: flex-start; /* 上から詰めて配置 */
-      row-gap: 10px;    /* 縦の隙間を小さく */
-      column-gap: 30px; /* 横の隙間 */
+      display: grid;
+      grid-template-rows: repeat(4, 1fr);
       width: 100%; 
       height: 100dvh; 
-      padding: 60px 10px 110px 10px; /* 上はログイン情報、下はナビバー(約80px)を避ける */
-      overflow-y: auto; /* 画面が小さい時はスクロール可能にする */
+      padding: 50px 10px 90px 10px; /* 上下UI（ログイン表示やNav）を避ける */
+      overflow: hidden; /* スクロール禁止 */
     }
     
     .char-item { 
       display: flex; 
       align-items: center; 
-      cursor: pointer; 
-      z-index: 10; 
+      justify-content: center; 
+      width: 100%; 
+      height: 100%;
     }
     
-    /* キャラ画像サイズ */
+    /* 枠内に収まるように相対値(%)で指定 */
     .char-img { 
-      width: 200px; 
-      height: 200px; 
+      width: 35%; 
+      height: 90%; 
       object-fit: contain; 
     }
     
-    /* 吹き出しサイズを大きく (旧 350x200 -> 新 420x240) */
     .speech-box { 
-      width: 420px; 
-      height: 240px; 
+      width: 60%; 
+      height: 90%; 
       display: flex; 
       align-items: center; 
       justify-content: center;
       text-align: center; 
-      padding: 30px 45px; /* はみ出さないように左右の余白を多めに */
+      /* 吹き出しのしっぽ等の画像余白を避けるためのパディング */
+      padding: 5% 10%; 
       font-weight: bold;
       background-size: contain; 
       background-repeat: no-repeat; 
       background-position: center;
-      /* デフォルトの文字サイズ（JSで上書きされる） */
-      font-size: 24px; 
+      line-height: 1.3;
+      overflow-wrap: break-word;
     }
   </style>
 </head>
@@ -113,7 +110,6 @@
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
     import { doc, getDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-    // ログアウト用モーダルの操作
     document.getElementById('cancel-logout').addEventListener('click', () => {
       document.getElementById('logout-modal').classList.add('hidden');
     });
@@ -127,7 +123,6 @@
       }
     });
 
-    // 認証状態の監視とデータ取得
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
@@ -153,13 +148,12 @@
       "当直": "当直だよ"
     };
 
-    // 文字数に応じてフォントサイズを動的に変更する関数
+    // 画面幅に連動する可変フォントサイズ (clampを使用し、文字数に応じて最大値を制限)
     function getDynamicFontSize(textLength) {
-      if (textLength > 70) return "13px";
-      if (textLength > 45) return "15px";
-      if (textLength > 25) return "18px";
-      if (textLength > 15) return "21px";
-      return "24px"; // 文字数が少ない場合は大きく表示
+      if (textLength > 50) return "clamp(10px, 2.5vw, 12px)";
+      if (textLength > 30) return "clamp(11px, 3.0vw, 14px)";
+      if (textLength > 15) return "clamp(12px, 3.5vw, 16px)";
+      return "clamp(14px, 4.5vw, 20px)";
     }
 
     async function updateBubbles() {
@@ -183,7 +177,6 @@
         const name = item.getAttribute('data-name');
         const bubble = item.querySelector('.speech-box');
         
-        // そのキャラが作成した、またはメンバーに含まれている予定を抽出
         const charSchedules = todaysSchedules.filter(s => 
           s.characterName === name || (s.members && s.members.includes(name))
         );
@@ -191,7 +184,6 @@
         let msg = "今日は何の日？";
 
         if (charSchedules.length > 0) {
-          // createdAt で降順（新しい順）にソート
           charSchedules.sort((a, b) => {
             const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
             const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
@@ -200,7 +192,6 @@
           
           const latestSched = charSchedules[0];
           
-          // 詳細があれば詳細を優先、なければデフォルトのテキスト
           if (latestSched.detail && latestSched.detail.trim() !== "") {
             msg = latestSched.detail;
           } else {
@@ -208,7 +199,6 @@
           }
         }
         
-        // メッセージの長さに応じてフォントサイズを適用
         bubble.style.fontSize = getDynamicFontSize(msg.length);
         bubble.textContent = msg;
       });
