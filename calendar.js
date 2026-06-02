@@ -29,7 +29,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let charName = "";
     let charColor = "#DFC6B0"; 
     
-    // ユーザー情報の読み込み（ログイン時の情報を保持）
     try {
       const userData = JSON.parse(localStorage.getItem('cafe_user'));
       if (userData) {
@@ -39,31 +38,24 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } catch (e) { console.error(e); }
 
-    // スケジュールデータ（Firebaseからリアルタイムで取得）
     let schedules = [];
     const schedulesRef = collection(db, "schedules");
     onSnapshot(schedulesRef, (snapshot) => {
       schedules = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      renderCalendar(); // データが更新されるたびに再描画
+      renderCalendar();
     });
 
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     
-    // ==========================================
-    // 日本の祝日データを自動取得（API連携）
-    // ==========================================
     let holidaysData = {};
     fetch('https://holidays-jp.github.io/api/v1/date.json')
       .then(response => response.json())
       .then(data => {
         holidaysData = data;
-        renderCalendar(); // 取得後に再描画して赤色を反映
+        renderCalendar();
       })
       .catch(error => console.warn("祝日データの取得に失敗しました:", error));
 
-    const sortOrder = { "lily": 1, "yuzu": 2, "waka": 3, "toru": 4 };
-
-    // 並び順のスコア計算
     function getSortScore(sched) {
       if (sched.type === 'shift') {
         if (sched.characterName === 'lily') return 1;
@@ -186,15 +178,10 @@ document.addEventListener("DOMContentLoaded", () => {
             renderCalendar();
           });
 
-          // 祝日の判定
           let numClass = "text-xs z-10 relative font-bold";
-          if (i % 7 === 5) {
-            numClass += " text-blue-700"; // 土曜
-          } else if (i % 7 === 6 || holidaysData[dateStr]) {
-            numClass += " text-red-700"; // 日曜・祝日
-          } else {
-            numClass += " text-black"; // 平日
-          }
+          if (i % 7 === 5) numClass += " text-blue-700"; 
+          else if (i % 7 === 6 || holidaysData[dateStr]) numClass += " text-red-700"; 
+          else numClass += " text-black"; 
 
           const wrapper = document.createElement("div");
           wrapper.className = "absolute top-1 left-1 w-5 h-5 flex items-center justify-center";
@@ -231,23 +218,17 @@ document.addEventListener("DOMContentLoaded", () => {
             let subTextHtml = "";
             
             if (['横動画', 'ショート', 'コラボ', 'その他', '×', '〇'].includes(sched.text)) {
-              if (sched.text === 'その他' && sched.title) {
-                mainText = sched.title;
-              } else if (sched.title) {
-                subTextHtml = `<div class="text-[9px] font-normal opacity-90 truncate w-full">${sched.title}</div>`;
-              }
+              if (sched.text === 'その他' && sched.title) mainText = sched.title;
+              else if (sched.title) subTextHtml = `<div class="text-[9px] font-normal opacity-90 truncate w-full">${sched.title}</div>`;
             }
 
             pill.innerHTML = `<div class="text-[10px] truncate w-full">${mainText}${star}</div>${subTextHtml}`;
 
-            if (sched.type === 'shift') {
-              pill.style.backgroundColor = sched.authorColor;
-            } else {
-              if (sched.members && sched.members.length > 0) {
-                pill.style.background = getGradient(sched.members);
-              } else if (sched.customColor) {
-                pill.style.backgroundColor = sched.customColor;
-              } else {
+            if (sched.type === 'shift') pill.style.backgroundColor = sched.authorColor;
+            else {
+              if (sched.members && sched.members.length > 0) pill.style.background = getGradient(sched.members);
+              else if (sched.customColor) pill.style.backgroundColor = sched.customColor;
+              else {
                 if (sched.text === '横動画') pill.style.backgroundColor = '#F0CCB9'; 
                 else if (sched.text === 'ショート') pill.style.backgroundColor = '#D9E4DD';
                 else if (sched.text === '〇' || sched.text === '×') pill.style.backgroundColor = sched.authorColor;
@@ -269,7 +250,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 openActionModal(sched);
               }
             });
-
             schedContainer.appendChild(pill);
           });
           cell.appendChild(schedContainer);
@@ -297,7 +277,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const type = btn.getAttribute('data-type');
         const text = btn.getAttribute('data-text');
         
-        // Firestoreへの追加処理
         await addDoc(schedulesRef, {
           date: selectedDateStr,
           type: type,
@@ -307,7 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
           authorColor: charColor,
           createdAt: serverTimestamp()
         });
-
+        
         advanceSelectedDate();
         renderCalendar();
       });
@@ -320,42 +299,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function openDetailModal(schedule) {
       if(!detailModal || !detailContentArea) return;
-      
       let html = `<div class="font-bold text-lg border-b border-gray-600 pb-2 mb-2 text-center">${schedule.text}</div>`;
       if (schedule.title) html += `<p><strong>【タイトル】</strong><br>${schedule.title}</p>`;
       if (schedule.partner) html += `<p><strong>【コラボ相手】</strong><br>${schedule.partner}</p>`;
       if (schedule.time) html += `<p><strong>【時間】</strong><br>${schedule.time}</p>`;
-      
       if (schedule.members && schedule.members.length > 0) {
         const names = { waka: "若凪", yuzu: "柚茶", lily: "Lily00", toru: "とるま" };
         const displayMembers = schedule.members.map(m => names[m] || m).join(', ');
         html += `<p><strong>【メンバー】</strong><br>${displayMembers}</p>`;
       }
       if (schedule.detail) html += `<p><strong>【詳細】</strong><br><span class="whitespace-pre-wrap">${schedule.detail}</span></p>`;
-      
-      if(!schedule.title && !schedule.partner && !schedule.time && (!schedule.members || schedule.members.length === 0) && !schedule.detail){
-          html += `<p class="text-gray-600 text-center py-2">詳細情報はありません</p>`;
-      }
-
+      if(!schedule.title && !schedule.partner && !schedule.time && (!schedule.members || schedule.members.length === 0) && !schedule.detail)
+         html += `<p class="text-gray-600 text-center py-2">詳細情報はありません</p>`;
       detailContentArea.innerHTML = html;
       detailModal.classList.remove('hidden');
     }
 
-    if (detailCloseBtn) {
-      detailCloseBtn.addEventListener('click', () => detailModal.classList.add('hidden'));
-    }
+    if (detailCloseBtn) detailCloseBtn.addEventListener('click', () => detailModal.classList.add('hidden'));
 
     function openActionModal(schedule) {
       if(!actionModal) return;
       activeScheduleId = schedule.id;
       actionModal.classList.remove('hidden');
-
       const shiftTypes = ["休み", "日勤", "夜勤", "明け", "当直"];
-      if (shiftTypes.includes(schedule.text) && schedule.author !== userName) {
-        deleteBtn.classList.add('hidden');
-      } else {
-        deleteBtn.classList.remove('hidden');
-      }
+      if (shiftTypes.includes(schedule.text) && schedule.author !== userName) deleteBtn.classList.add('hidden');
+      else deleteBtn.classList.remove('hidden');
     }
 
     if(cancelBtn) cancelBtn.addEventListener('click', () => actionModal.classList.add('hidden'));
@@ -363,10 +331,17 @@ document.addEventListener("DOMContentLoaded", () => {
     if(deleteBtn) {
       deleteBtn.addEventListener('click', async () => {
         if(!confirm("本当に削除しますか？")) return;
-        // Firestoreからの削除処理
-        await deleteDoc(doc(db, "schedules", activeScheduleId));
+        
+        // 修正箇所：まずモーダルを閉じる
         actionModal.classList.add('hidden');
-        renderCalendar();
+        
+        // 削除実行
+        try {
+            await deleteDoc(doc(db, "schedules", activeScheduleId));
+        } catch (e) {
+            console.error("削除失敗:", e);
+            alert("削除に失敗しました");
+        }
       });
     }
 
