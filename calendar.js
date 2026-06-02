@@ -4,56 +4,78 @@ document.addEventListener("DOMContentLoaded", () => {
   const prevBtn = document.getElementById("prev-month");
   const nextBtn = document.getElementById("next-month");
   
-  // スタンプメニュー関連
   const stampPopup = document.getElementById("stamp-popup");
   const actionModal = document.getElementById("schedule-action-modal");
+  const modalContentArea = document.getElementById("modal-content-area");
   
   let currentDate = new Date();
   const today = new Date();
-  
-  // 現在選択されている日付 (YYYY-MM-DD)
   let selectedDateStr = null;
 
-  // ログイン情報
   let userName = "ゲスト";
+  let charName = "";
   let charColor = "#DFC6B0"; 
   try {
-    const userDataStr = localStorage.getItem('cafe_user');
-    if (userDataStr) {
-      const userData = JSON.parse(userDataStr);
+    const userData = JSON.parse(localStorage.getItem('cafe_user'));
+    if (userData) {
       userName = userData.name || "ゲスト";
+      charName = userData.characterName || "";
       charColor = userData.characterColor || "#DFC6B0";
     }
-  } catch (e) {
-    console.error("データ読み込みエラー", e);
-  }
+  } catch (e) { console.error(e); }
 
   const holidays = ["01-01", "05-03", "05-04", "05-05", "11-03", "11-23"];
   const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-  // ロゴボタンを押したときの挙動（メニューバーが描画された後に取得）
+  // キャラごとの並び順 (lily > yuzu > waka > toru > その他)
+  const sortOrder = { "lily": 1, "yuzu": 2, "waka": 3, "toru": 4 };
+
+  // ロゴボタンでポップアップの開閉
   setTimeout(() => {
     const navLogo = document.getElementById("nav-logo");
-    const navBar = document.querySelector("cafe-nav nav");
-    
-    if (navLogo && stampPopup && navBar) {
-      // ポップアップをメニューバーの真上に配置
-      const navHeight = navBar.offsetHeight;
-      stampPopup.style.bottom = `${navHeight}px`;
-
+    if (navLogo && stampPopup) {
       navLogo.addEventListener("click", (e) => {
-        e.preventDefault(); // hrefへの遷移を防ぐ
-        stampPopup.classList.toggle("translate-y-full");
+        e.preventDefault();
+        if (stampPopup.classList.contains("-translate-y-full") || stampPopup.classList.contains("translate-y-full")) {
+          // 閉じる
+          stampPopup.classList.add("hidden-popup");
+          stampPopup.classList.remove("-translate-y-full", "translate-y-full");
+          // 擬似的に非表示位置へ
+          if (stampPopup.classList.contains("top-0")) {
+            stampPopup.classList.add("-translate-y-full");
+          } else {
+            stampPopup.classList.add("translate-y-full");
+          }
+        } else {
+          // 開く (現在位置に基づいて表示)
+          stampPopup.classList.remove("-translate-y-full", "translate-y-full");
+        }
       });
     }
   }, 100);
 
-  // 日付のフォーマット (YYYY-MM-DD)
-  function getFormatDate(year, monthIndex, day) {
-    return `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  function getFormatDate(y, m, d) {
+    return `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
   }
 
-  // カレンダー描画
+  // メンバーカラーのグラデーション生成 (waka, yuzu, lily, toru の順)
+  function getGradient(members) {
+    const colorMap = { "waka": "#abc888", "yuzu": "#fef263", "lily": "#a12722", "toru": "#968ABD" };
+    const ordered = ["waka", "yuzu", "lily", "toru"].filter(m => members.includes(m));
+    
+    if (ordered.length === 0) return "#AFC8E1"; // デフォルト
+    if (ordered.length === 1) return colorMap[ordered[0]];
+    
+    let gradient = "linear-gradient(90deg, ";
+    const step = 100 / ordered.length;
+    const stops = [];
+    ordered.forEach((m, i) => {
+      stops.push(`${colorMap[m]} ${i * step}%`);
+      stops.push(`${colorMap[m]} ${(i + 1) * step}%`);
+    });
+    return gradient + stops.join(", ") + ")";
+  }
+
   function renderCalendar() {
     if (!calendarDays) return;
     calendarDays.innerHTML = "";
@@ -62,17 +84,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const month = currentDate.getMonth();
     monthDisplay.textContent = `${monthNames[month]} ${year}`;
 
-    const firstDayOfMonth = new Date(year, month, 1).getDay();
+    const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const startDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
-    const totalCellsNeeded = startDay + daysInMonth;
-    const rows = Math.max(5, Math.ceil(totalCellsNeeded / 7));
+    const startDay = firstDay === 0 ? 6 : firstDay - 1;
+    const rows = Math.max(5, Math.ceil((startDay + daysInMonth) / 7));
     const totalCells = rows * 7;
 
     calendarDays.style.gridTemplateRows = `repeat(${rows}, minmax(3rem, 1fr))`;
-
-    // 予定データの取得
-    const schedules = JSON.parse(localStorage.getItem('cafe_schedules')) || [];
+    let schedules = JSON.parse(localStorage.getItem('cafe_schedules')) || [];
 
     for (let i = 0; i < totalCells; i++) {
       const cell = document.createElement("div");
@@ -83,111 +102,136 @@ document.addEventListener("DOMContentLoaded", () => {
         const dateStr = getFormatDate(year, month, dayNum);
         const isToday = (year === today.getFullYear() && month === today.getMonth() && dayNum === today.getDate());
 
-        // 枠が選択されている場合のデザイン
         if (dateStr === selectedDateStr) {
           cell.classList.add("ring-inset", "ring-4", "ring-amber-400", "bg-white/40");
         }
 
-        // セルをタップしたら選択状態にする
+        // タップ時にポップアップの位置を上下切り替え
         cell.addEventListener("click", () => {
           selectedDateStr = dateStr;
+          
+          const rect = cell.getBoundingClientRect();
+          const isBottomHalf = rect.top > window.innerHeight / 2;
+          
+          // 一旦クラスをリセット
+          stampPopup.className = "fixed left-0 right-0 z-40 bg-[#E0D7C2] shadow-[0_0_20px_rgba(0,0,0,0.15)] p-4 transition-transform duration-300";
+          
+          if (isBottomHalf) {
+             stampPopup.classList.add("top-0", "rounded-b-3xl", "pb-6");
+             stampPopup.style.bottom = "auto";
+             // アニメーション表示
+             setTimeout(() => stampPopup.classList.remove("-translate-y-full"), 10);
+          } else {
+             const navBar = document.querySelector("cafe-nav nav");
+             const navHeight = navBar ? navBar.offsetHeight : 0;
+             stampPopup.style.bottom = `${navHeight}px`;
+             stampPopup.classList.add("rounded-t-3xl", "pt-5", "pb-8");
+             // アニメーション表示
+             setTimeout(() => stampPopup.classList.remove("translate-y-full"), 10);
+          }
           renderCalendar();
         });
 
+        // 日付数字の描画
         const monthStr = String(month + 1).padStart(2, '0');
         const dayStr = String(dayNum).padStart(2, '0');
-        const dateRef = `${monthStr}-${dayStr}`;
-
         let numClass = "text-xs z-10 relative font-bold";
-        if (i % 7 === 5) { numClass += " text-blue-700"; } 
-        else if (i % 7 === 6 || holidays.includes(dateRef)) { numClass += " text-red-700"; } 
-        else { numClass += " text-black"; }
+        if (i % 7 === 5) numClass += " text-blue-700";
+        else if (i % 7 === 6 || holidays.includes(`${monthStr}-${dayStr}`)) numClass += " text-red-700";
+        else numClass += " text-black";
 
-        // 数字ラッパー
         const wrapper = document.createElement("div");
         wrapper.className = "absolute top-1 left-1 w-5 h-5 flex items-center justify-center";
-
         if (isToday) {
           const circle = document.createElement("div");
           circle.className = "absolute inset-0 rounded-full opacity-50 z-0";
           circle.style.backgroundColor = charColor;
           wrapper.appendChild(circle);
         }
-
         const span = document.createElement("span");
         span.className = numClass;
         span.textContent = dayNum;
         wrapper.appendChild(span);
         cell.appendChild(wrapper);
 
-        // --- 予定の表示エリア ---
-        const daySchedules = schedules.filter(s => s.date === dateStr);
+        // --- 予定の描画 ---
+        let daySchedules = schedules.filter(s => s.date === dateStr);
+        // 並び替え (lily > yuzu > waka > toru > その他)
+        daySchedules.sort((a, b) => {
+          const aVal = sortOrder[a.characterName] || 5;
+          const bVal = sortOrder[b.characterName] || 5;
+          return aVal - bVal;
+        });
+
         const schedContainer = document.createElement("div");
-        schedContainer.className = "mt-6 flex flex-col gap-[2px] px-0.5 w-full items-center z-20 pointer-events-none"; // pointer-events-noneで子要素にイベントを渡す
+        schedContainer.className = "mt-6 flex flex-col gap-[2px] px-0.5 w-full items-center z-20 pointer-events-none";
 
         daySchedules.forEach(sched => {
           const pill = document.createElement("div");
-          pill.className = "pointer-events-auto text-[10px] w-full rounded-full leading-tight font-bold text-black py-[2px] px-1 truncate text-center shadow-sm cursor-pointer";
-          pill.textContent = sched.text;
+          pill.className = "pointer-events-auto w-full rounded-full leading-tight font-bold text-black py-[2px] px-1 text-center shadow-sm cursor-pointer flex flex-col items-center justify-center";
           
-          // シフト系はキャラカラー、動画系は固定色
+          const hasDetail = sched.detail && sched.detail.trim() !== "";
+          const star = hasDetail ? "☆" : "";
+
+          // メインテキストとタイトルの表示制御
+          let mainText = sched.text;
+          let subTextHtml = "";
+          
+          if (['横動画', 'ショート', 'コラボ', 'その他', '×', '〇'].includes(sched.text)) {
+            if (sched.text === 'その他' && sched.title) {
+              mainText = sched.title;
+            } else if (sched.title) {
+              subTextHtml = `<div class="text-[9px] font-normal opacity-90 truncate w-full">${sched.title}</div>`;
+            }
+          }
+
+          pill.innerHTML = `<div class="text-[10px] truncate w-full">${mainText}${star}</div>${subTextHtml}`;
+
+          // 背景色の適用
           if (sched.type === 'shift') {
             pill.style.backgroundColor = sched.authorColor;
           } else {
-            pill.style.backgroundColor = "#AFC8E1";
+            if (sched.members && sched.members.length > 0) {
+              pill.style.background = getGradient(sched.members);
+            } else if (sched.customColor) {
+              pill.style.backgroundColor = sched.customColor;
+            } else {
+              if (sched.text === '横動画') pill.style.backgroundColor = '#AAC4FF';
+              else if (sched.text === 'ショート') pill.style.backgroundColor = '#D9E4DD';
+              else pill.style.backgroundColor = '#AFC8E1'; // コラボ, その他, ×, 〇
+            }
           }
 
-          // スマホ向けダブルタップ判定
-          let lastTap = 0;
-          pill.addEventListener('touchend', (e) => {
-            const currentTime = new Date().getTime();
-            const tapLength = currentTime - lastTap;
-            if (tapLength < 500 && tapLength > 0) {
-              e.preventDefault();
-              e.stopPropagation();
-              openActionModal(sched);
-            }
-            lastTap = currentTime;
-          });
-
-          // PC向けダブルクリック
-          pill.addEventListener('dblclick', (e) => {
-            e.preventDefault();
+          // 1回タップで詳細モーダル
+          pill.addEventListener('click', (e) => {
             e.stopPropagation();
             openActionModal(sched);
           });
-
           schedContainer.appendChild(pill);
         });
-
         cell.appendChild(schedContainer);
       }
       calendarDays.appendChild(cell);
     }
   }
 
-  // --- 翌日へ自動移動する関数 ---
   function advanceSelectedDate() {
     if (!selectedDateStr) return;
     const [y, m, d] = selectedDateStr.split('-').map(Number);
     const nextDay = new Date(y, m - 1, d + 1);
-    
     selectedDateStr = getFormatDate(nextDay.getFullYear(), nextDay.getMonth(), nextDay.getDate());
-
-    // もし翌日が来月ならカレンダーの表示月もめくる
     if (nextDay.getMonth() !== currentDate.getMonth()) {
       currentDate = new Date(nextDay.getFullYear(), nextDay.getMonth(), 1);
     }
   }
 
-  // --- スタンプ押下時の処理 ---
+  // スタンプ押下処理
   document.querySelectorAll('.stamp-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       if (!selectedDateStr) {
-        alert("カレンダーの日付をタップして、入力したい枠を選択してください！");
+        alert("入力したい枠を選択してください！");
         return;
       }
-      
       const type = btn.getAttribute('data-type');
       const text = btn.getAttribute('data-text');
       const schedules = JSON.parse(localStorage.getItem('cafe_schedules')) || [];
@@ -198,17 +242,16 @@ document.addEventListener("DOMContentLoaded", () => {
         type: type,
         text: text,
         author: userName,
+        characterName: charName,
         authorColor: charColor
       });
-      
       localStorage.setItem('cafe_schedules', JSON.stringify(schedules));
-      
-      advanceSelectedDate(); // 自動で翌日へ
-      renderCalendar();      // 再描画
+      advanceSelectedDate();
+      renderCalendar();
     });
   });
 
-  // --- アクションモーダル制御 ---
+  // モーダル制御
   let activeScheduleId = null;
   const deleteBtn = document.getElementById("sched-delete-btn");
   const editBtn = document.getElementById("sched-edit-btn");
@@ -218,11 +261,31 @@ document.addEventListener("DOMContentLoaded", () => {
     activeScheduleId = schedule.id;
     actionModal.classList.remove('hidden');
 
-    const shiftTypes = ["休み", "日勤", "夜勤", "明け", "当直"];
+    // 詳細情報の描画
+    let html = `<div class="font-bold text-lg border-b pb-2 mb-2 text-center">${schedule.text}</div>`;
+    if (schedule.title) html += `<p><strong>【タイトル】</strong><br>${schedule.title}</p>`;
+    if (schedule.partner) html += `<p><strong>【コラボ相手】</strong><br>${schedule.partner}</p>`;
+    if (schedule.time) html += `<p><strong>【時間】</strong><br>${schedule.time}</p>`;
     
-    // 削除権限の判定（シフトかつ本人が書いたものでない場合は削除不可）
+    // メンバー表示を日本語名に
+    if (schedule.members && schedule.members.length > 0) {
+      const names = { waka: "若凪", yuzu: "柚茶", lily: "Lily00", toru: "とるま" };
+      const displayMembers = schedule.members.map(m => names[m] || m).join(', ');
+      html += `<p><strong>【メンバー】</strong><br>${displayMembers}</p>`;
+    }
+    
+    if (schedule.detail) html += `<p><strong>【詳細】</strong><br><span class="whitespace-pre-wrap">${schedule.detail}</span></p>`;
+    
+    if(!schedule.title && !schedule.partner && !schedule.time && (!schedule.members || schedule.members.length === 0) && !schedule.detail){
+       html += `<p class="text-gray-400 text-center py-2">詳細情報はありません</p>`;
+    }
+
+    modalContentArea.innerHTML = html;
+
+    // 削除権限
+    const shiftTypes = ["休み", "日勤", "夜勤", "明け", "当直"];
     if (shiftTypes.includes(schedule.text) && schedule.author !== userName) {
-      deleteBtn.classList.add('hidden'); // ボタンを隠す
+      deleteBtn.classList.add('hidden');
     } else {
       deleteBtn.classList.remove('hidden');
     }
@@ -231,26 +294,9 @@ document.addEventListener("DOMContentLoaded", () => {
   cancelBtn.addEventListener('click', () => actionModal.classList.add('hidden'));
   
   deleteBtn.addEventListener('click', () => {
+    if(!confirm("本当に削除しますか？")) return;
     let schedules = JSON.parse(localStorage.getItem('cafe_schedules')) || [];
     schedules = schedules.filter(s => s.id !== activeScheduleId);
     localStorage.setItem('cafe_schedules', JSON.stringify(schedules));
     actionModal.classList.add('hidden');
     renderCalendar();
-  });
-
-  editBtn.addEventListener('click', () => {
-    // 将来的に詳細編集ページを作成したらパラメータを渡して遷移
-    window.location.href = `schedule-edit.html?id=${activeScheduleId}`;
-  });
-
-  prevBtn.addEventListener("click", () => {
-    currentDate.setMonth(currentDate.getMonth() - 1);
-    renderCalendar();
-  });
-  nextBtn.addEventListener("click", () => {
-    currentDate.setMonth(currentDate.getMonth() + 1);
-    renderCalendar();
-  });
-
-  renderCalendar();
-});
