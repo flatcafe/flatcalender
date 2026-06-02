@@ -10,13 +10,17 @@
     body { font-family: 'M PLUS Rounded 1c', sans-serif; }
     .bg-cafe-home { background-image: url('images/back.png'); background-size: cover; background-position: center; }
     
-    /* コンテナをFlexboxで中央配置 */
+    /* コンテナ：中央配置、キャラと吹き出しを縦並びに */
     .char-container { 
       display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
-      gap: 30px; width: 100%; height: 80vh; padding-top: 20px;
+      gap: 40px; width: 100%; height: 85vh; padding-top: 30px;
     }
     
-    .char-item { display: flex; align-items: center; cursor: pointer; z-index: 10; }
+    /* 各キャラクターのグループ：縦並びに設定 */
+    .char-item { 
+      display: flex; flex-direction: column; align-items: center; 
+      cursor: pointer; z-index: 10; gap: 10px;
+    }
     
     /* キャラ：2倍 (200px) */
     .char-img { width: 200px; height: 200px; object-fit: contain; }
@@ -52,16 +56,16 @@
       <img src="images/waka.png" class="char-img">
     </div>
     <div class="char-item" data-name="yuzu">
-      <img src="images/yuzu.png" class="char-img">
       <div class="speech-box bg-[url('images/yuzucom.png')]" contenteditable="true"></div>
+      <img src="images/yuzu.png" class="char-img">
     </div>
     <div class="char-item" data-name="lily">
       <div class="speech-box bg-[url('images/lilycom.png')]" contenteditable="true"></div>
       <img src="images/lily.png" class="char-img">
     </div>
     <div class="char-item" data-name="toru">
-      <img src="images/toru.png" class="char-img">
       <div class="speech-box bg-[url('images/torucom.png')]" contenteditable="true"></div>
+      <img src="images/toru.png" class="char-img">
     </div>
   </div>
 
@@ -72,13 +76,11 @@
   <script src="components/navbar.js" defer></script>
 
   <script>
-    // ユーザー名表示
     const userData = JSON.parse(localStorage.getItem('cafe_user'));
     if (userData && userData.name) {
       document.getElementById('display-user-name').textContent = userData.name;
     }
 
-    // ログアウト処理
     document.getElementById('cancel-logout').addEventListener('click', () => {
       document.getElementById('logout-modal').classList.add('hidden');
     });
@@ -87,7 +89,6 @@
       window.location.href = 'welcome.html';
     });
 
-    // 吹き出し表示ロジック
     const shiftMessages = {
       "日勤": "お昼間はお仕事だよ",
       "休み": "お休みだー！！遊ぶぞ！！",
