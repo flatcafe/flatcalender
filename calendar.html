@@ -50,4 +50,38 @@
         <button class="stamp-btn bg-[#D2B48C] text-black text-sm font-bold py-2.5 rounded-full shadow-sm active:scale-95 transition" data-type="shift" data-text="日勤">日勤</button>
         <button class="stamp-btn bg-[#7D98A1] text-black text-sm font-bold py-2.5 rounded-full shadow-sm active:scale-95 transition" data-type="shift" data-text="夜勤">夜勤</button>
         <button class="stamp-btn bg-[#BC9A9A] text-black text-sm font-bold py-2.5 rounded-full shadow-sm active:scale-95 transition" data-type="shift" data-text="明け">明け</button>
-        <button class="stamp-btn bg-[#C6ADCB] text-black text-sm font-bold py-2.5 rounded
+        <button class="stamp-btn bg-[#C6ADCB] text-black text-sm font-bold py-2.5 rounded-full shadow-sm active:scale-95 transition" data-type="shift" data-text="当直">当直</button>
+      </div>
+      <div class="grid grid-cols-6 gap-1.5">
+        <button class="stamp-btn bg-[#F0CCB9] text-black text-[11px] font-bold py-3 rounded-xl shadow-sm active:scale-95 transition" data-type="video" data-text="横動画">横動画</button>
+        <button class="stamp-btn bg-[#D9E4DD] text-black text-[10px] font-bold py-3 rounded-xl shadow-sm active:scale-95 transition" data-type="video" data-text="ショート">ショート</button>
+        <button class="stamp-btn bg-[#AFC8E1] text-black text-[11px] font-bold py-3 rounded-xl shadow-sm active:scale-95 transition" data-type="video" data-text="コラボ">コラボ</button>
+        <button class="stamp-btn bg-[#AFC8E1] text-black text-[13px] font-bold py-3 rounded-xl shadow-sm active:scale-95 transition" data-type="video" data-text="×">×</button>
+        <button class="stamp-btn bg-[#AFC8E1] text-black text-[13px] font-bold py-3 rounded-xl shadow-sm active:scale-95 transition" data-type="video" data-text="〇">〇</button>
+        <button class="stamp-btn bg-[#AFC8E1] text-black text-[11px] font-bold py-3 rounded-xl shadow-sm active:scale-95 transition" data-type="video" data-text="その他">その他</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="schedule-detail-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+    <div class="bg-[#C9BDA6] p-6 rounded-2xl shadow-xl w-72">
+      <div id="detail-content-area" class="mb-5 text-sm text-gray-900 flex flex-col gap-2"></div>
+      <button id="detail-close-btn" class="w-full py-2.5 bg-white/70 text-gray-800 rounded-xl font-bold shadow-sm">閉じる</button>
+    </div>
+  </div>
+
+  <div id="schedule-action-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+    <div class="bg-white p-6 rounded-2xl shadow-xl w-64 text-center">
+      <p class="mb-4 font-bold text-gray-700 border-b pb-2">予定のアクション</p>
+      <div class="flex flex-col gap-3">
+        <button id="sched-edit-btn" class="w-full py-2.5 bg-blue-500 text-white rounded-xl font-bold shadow-sm">編集</button>
+        <button id="sched-delete-btn" class="w-full py-2.5 bg-red-500 text-white rounded-xl font-bold shadow-sm">削除</button>
+        <button id="sched-cancel-btn" class="w-full py-2.5 bg-gray-200 text-gray-700 rounded-xl font-bold shadow-sm mt-2">戻る</button>
+      </div>
+    </div>
+  </div>
+
+  <cafe-nav></cafe-nav>
+  <script src="calendar.js"></script>
+</body>
+</html>
