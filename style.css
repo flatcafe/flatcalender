@@ -62,3 +62,28 @@
   display: block;
   width: 0;
 }
+
+/* =========================================
+   ここからWelcomeページ専用のアニメーション
+   ========================================= */
+
+/* ぴょこぴょこの調整：高さ(-8px)に */
+.idle-bounce { animation: bounceIdle 2s infinite ease-in-out; }
+
+/* 選択時のジャンプ調整：ゆっくり(0.8s)、高さ半分(-30px) */
+.jump { animation: jumpUp 0.8s ease-out forwards; }
+
+/* 明度下げ(-30%)の反応速度を即時に(0.1s) */
+.dimmed { filter: brightness(30%); transition: filter 0.1s; }
+
+/* キーフレーム */
+@keyframes bounceIdle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes jumpUp {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-30px); }
+  100% { transform: translateY(0); }
+}
