@@ -6,7 +6,8 @@
   <title>☕ふらっとCafe - 入店</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="style.css">
-  <script src="auth.js"></script> </head>
+  <script src="auth.js"></script>
+</head>
 <body class="bg-amber-50 h-screen flex flex-col justify-center items-center p-6">
   <div class="w-full max-w-sm bg-white p-8 rounded-2xl shadow-xl">
     <h1 class="text-2xl font-bold text-amber-800 mb-6 text-center">☕ふらっとCafeへようこそ</h1>
@@ -15,10 +16,18 @@
     
     <p class="text-sm text-gray-500 mb-4 text-center">キャラを選択</p>
     <div class="grid grid-cols-4 gap-2 mb-8">
-      <button class="char-btn text-4xl p-3 bg-amber-100 rounded-xl hover:bg-amber-200 transition" data-char="🌻">🌻</button>
-      <button class="char-btn text-4xl p-3 bg-amber-100 rounded-xl hover:bg-amber-200 transition" data-char="🍃">🍃</button>
-      <button class="char-btn text-4xl p-3 bg-amber-100 rounded-xl hover:bg-amber-200 transition" data-char="🌸">🌸</button>
-      <button class="char-btn text-4xl p-3 bg-amber-100 rounded-xl hover:bg-amber-200 transition" data-char="💎">💎</button>
+      <button class="char-btn flex flex-col items-center p-2 bg-amber-100 rounded-xl hover:bg-amber-200 transition" data-name="waka" data-color="#abc888" data-img="images/waka.png">
+        <img src="images/waka.png" alt="waka" class="w-12 h-12 object-contain">
+      </button>
+      <button class="char-btn flex flex-col items-center p-2 bg-amber-100 rounded-xl hover:bg-amber-200 transition" data-name="yuzu" data-color="#fef263" data-img="images/yuzu.png">
+        <img src="images/yuzu.png" alt="yuzu" class="w-12 h-12 object-contain">
+      </button>
+      <button class="char-btn flex flex-col items-center p-2 bg-amber-100 rounded-xl hover:bg-amber-200 transition" data-name="lily" data-color="#a12722" data-img="images/lily.png">
+        <img src="images/lily.png" alt="lily" class="w-12 h-12 object-contain">
+      </button>
+      <button class="char-btn flex flex-col items-center p-2 bg-amber-100 rounded-xl hover:bg-amber-200 transition" data-name="toru" data-color="#968ABD" data-img="images/toru.png">
+        <img src="images/toru.png" alt="toru" class="w-12 h-12 object-contain">
+      </button>
     </div>
 
     <button id="enterBtn" class="w-full bg-amber-600 text-white py-3 rounded-xl font-bold hover:bg-amber-700 transition">入店する</button>
