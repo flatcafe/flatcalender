@@ -1,4 +1,3 @@
-// schedule-edit.js
 import { db } from './firebase-config.js';
 import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
@@ -12,17 +11,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  // Firestoreから予定を取得
-  const scheduleRef = doc(db, "schedules", scheduleId);
-  const docSnap = await getDoc(scheduleRef);
+  let schedule = null;
 
-  if (!docSnap.exists()) {
-    alert("予定が見つかりません");
+  try {
+    // Firestoreから対象の予定データを取得
+    const docSnap = await getDoc(doc(db, "schedules", scheduleId));
+    if (docSnap.exists()) {
+      schedule = docSnap.data();
+    } else {
+      alert("予定が存在しません");
+      window.location.href = 'calendar.html';
+      return;
+    }
+  } catch (error) {
+    console.error("予定の取得に失敗:", error);
+    alert("予定データの読み込みに失敗しました。");
     window.location.href = 'calendar.html';
     return;
   }
-
-  const schedule = docSnap.data();
 
   document.getElementById('edit-header-title').textContent = `${schedule.text} の詳細`;
   const formContainer = document.getElementById('form-container');
@@ -159,9 +165,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       schedule.customColor = document.querySelector('input[name="customColor"]:checked').value;
     }
 
-    // Firestoreを更新
-    await updateDoc(scheduleRef, schedule);
-    window.location.href = 'calendar.html';
+    try {
+      // Firestoreのデータを更新
+      await updateDoc(doc(db, "schedules", scheduleId), schedule);
+      window.location.href = 'calendar.html';
+    } catch (error) {
+      console.error("更新エラー:", error);
+      alert("保存に失敗しました。");
+    }
   });
 
   document.getElementById('back-btn').addEventListener('click', () => {
