@@ -26,26 +26,27 @@ document.addEventListener("DOMContentLoaded", () => {
         charName = userData.characterName || "";
         charColor = userData.characterColor || "#DFC6B0";
       }
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error("ユーザーデータの読み込みエラー", e); }
 
     const holidays = ["01-01", "05-03", "05-04", "05-05", "11-03", "11-23"];
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const sortOrder = { "lily": 1, "yuzu": 2, "waka": 3, "toru": 4 };
 
     // ==========================================
-    // ロゴボタンでポップアップの開閉 (確実に動作するように修正)
+    // ロゴボタンでポップアップの開閉
     // ==========================================
     document.addEventListener("click", (e) => {
-      const navLogo = e.target.closest("#nav-logo");
-      if (navLogo) {
+      // ロゴボタンがクリックされたか判定
+      const navLogo = e.target.closest ? e.target.closest("#nav-logo") : null;
+      
+      if (navLogo && stampPopup) {
         e.preventDefault();
         
-        // 現在ポップアップが隠れているかどうかの判定
+        // ポップアップが隠れているか確認
         const isHidden = stampPopup.classList.contains("translate-y-full") || stampPopup.classList.contains("-translate-y-full");
         
         if (isHidden) {
-          // 【開く】
-          // 基準となるメニューバーの高さを取得
+          // 開く処理
           const navBar = document.querySelector("cafe-nav nav");
           const navHeight = navBar ? navBar.offsetHeight : 0;
           
@@ -54,11 +55,11 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           stampPopup.classList.remove("translate-y-full", "-translate-y-full");
         } else {
-          // 【閉じる】
+          // 閉じる処理
           if (stampPopup.classList.contains("top-0")) {
-            stampPopup.classList.add("-translate-y-full"); // 上に隠す
+            stampPopup.classList.add("-translate-y-full"); 
           } else {
-            stampPopup.classList.add("translate-y-full"); // 下に隠す
+            stampPopup.classList.add("translate-y-full"); 
           }
         }
       }
@@ -69,4 +70,167 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function getGradient(members) {
-      const colorMap = { "waka": "#
+      const colorMap = { "waka": "#abc888", "yuzu": "#fef263", "lily": "#a12722", "toru": "#968ABD" };
+      const ordered = ["waka", "yuzu", "lily", "toru"].filter(m => members.includes(m));
+      
+      if (ordered.length === 0) return "#AFC8E1"; 
+      if (ordered.length === 1) return colorMap[ordered[0]];
+      
+      let gradient = "linear-gradient(90deg, ";
+      const step = 100 / ordered.length;
+      const stops = [];
+      ordered.forEach((m, i) => {
+        stops.push(`${colorMap[m]} ${i * step}%`);
+        stops.push(`${colorMap[m]} ${(i + 1) * step}%`);
+      });
+      return gradient + stops.join(", ") + ")";
+    }
+
+    // 予定データを安全に取得（壊れていたら空にする）
+    function getSchedules() {
+      try {
+        let data = JSON.parse(localStorage.getItem('cafe_schedules'));
+        if (!Array.isArray(data)) return [];
+        return data;
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function renderCalendar() {
+      calendarDays.innerHTML = "";
+      
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      monthDisplay.textContent = `${monthNames[month]} ${year}`;
+
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const startDay = firstDay === 0 ? 6 : firstDay - 1;
+      const rows = Math.max(5, Math.ceil((startDay + daysInMonth) / 7));
+      const totalCells = rows * 7;
+
+      calendarDays.style.gridTemplateRows = `repeat(${rows}, minmax(3rem, 1fr))`;
+      let schedules = getSchedules();
+
+      for (let i = 0; i < totalCells; i++) {
+        const cell = document.createElement("div");
+        cell.className = "border-r border-b border-black relative overflow-hidden flex flex-col items-center cursor-pointer min-h-[3rem]";
+        
+        if (i >= startDay && i < startDay + daysInMonth) {
+          const dayNum = i - startDay + 1;
+          const dateStr = getFormatDate(year, month, dayNum);
+          const isToday = (year === today.getFullYear() && month === today.getMonth() && dayNum === today.getDate());
+
+          if (dateStr === selectedDateStr) {
+            cell.classList.add("ring-inset", "ring-4", "ring-amber-400", "bg-white/40");
+          }
+
+          cell.addEventListener("click", () => {
+            selectedDateStr = dateStr;
+            const rect = cell.getBoundingClientRect();
+            const isBottomHalf = rect.top > window.innerHeight / 2;
+            
+            if (stampPopup) {
+              stampPopup.className = "fixed left-0 right-0 z-40 bg-[#E0D7C2] shadow-[0_0_20px_rgba(0,0,0,0.15)] p-4 transition-transform duration-300";
+              
+              if (isBottomHalf) {
+                 stampPopup.classList.add("top-0", "rounded-b-3xl", "pb-6", "-translate-y-full");
+                 stampPopup.style.bottom = "auto";
+                 setTimeout(() => stampPopup.classList.remove("-translate-y-full"), 10);
+              } else {
+                 const navBar = document.querySelector("cafe-nav nav");
+                 const navHeight = navBar ? navBar.offsetHeight : 0;
+                 stampPopup.style.bottom = `${navHeight}px`;
+                 stampPopup.classList.add("rounded-t-3xl", "pt-5", "pb-8", "translate-y-full");
+                 setTimeout(() => stampPopup.classList.remove("translate-y-full"), 10);
+              }
+            }
+            renderCalendar();
+          });
+
+          const monthStr = String(month + 1).padStart(2, '0');
+          const dayStr = String(dayNum).padStart(2, '0');
+          let numClass = "text-xs z-10 relative font-bold";
+          if (i % 7 === 5) numClass += " text-blue-700";
+          else if (i % 7 === 6 || holidays.includes(`${monthStr}-${dayStr}`)) numClass += " text-red-700";
+          else numClass += " text-black";
+
+          const wrapper = document.createElement("div");
+          wrapper.className = "absolute top-1 left-1 w-5 h-5 flex items-center justify-center";
+          if (isToday) {
+            const circle = document.createElement("div");
+            circle.className = "absolute inset-0 rounded-full opacity-50 z-0";
+            circle.style.backgroundColor = charColor;
+            wrapper.appendChild(circle);
+          }
+          const span = document.createElement("span");
+          span.className = numClass;
+          span.textContent = dayNum;
+          wrapper.appendChild(span);
+          cell.appendChild(wrapper);
+
+          let daySchedules = schedules.filter(s => s.date === dateStr);
+          daySchedules.sort((a, b) => {
+            const aVal = sortOrder[a.characterName] || 5;
+            const bVal = sortOrder[b.characterName] || 5;
+            return aVal - bVal;
+          });
+
+          const schedContainer = document.createElement("div");
+          schedContainer.className = "mt-6 flex flex-col gap-[2px] px-0.5 w-full items-center z-20 pointer-events-none";
+
+          daySchedules.forEach(sched => {
+            const pill = document.createElement("div");
+            pill.className = "pointer-events-auto w-full rounded-full leading-tight font-bold text-black py-[2px] px-1 text-center shadow-sm cursor-pointer flex flex-col items-center justify-center";
+            
+            const hasDetail = sched.detail && sched.detail.trim() !== "";
+            const hasTitle = sched.title && sched.title.trim() !== "";
+            const hasTime = sched.time && sched.time.trim() !== "";
+            const hasPartner = sched.partner && sched.partner.trim() !== "";
+            const hasMembers = sched.members && sched.members.length > 0;
+            const star = (hasDetail || hasTitle || hasTime || hasPartner || hasMembers) ? "☆" : "";
+
+            let mainText = sched.text;
+            let subTextHtml = "";
+            
+            if (['横動画', 'ショート', 'コラボ', 'その他', '×', '〇'].includes(sched.text)) {
+              if (sched.text === 'その他' && sched.title) {
+                mainText = sched.title;
+              } else if (sched.title) {
+                subTextHtml = `<div class="text-[9px] font-normal opacity-90 truncate w-full">${sched.title}</div>`;
+              }
+            }
+
+            pill.innerHTML = `<div class="text-[10px] truncate w-full">${mainText}${star}</div>${subTextHtml}`;
+
+            if (sched.type === 'shift') {
+              pill.style.backgroundColor = sched.authorColor;
+            } else {
+              if (sched.members && sched.members.length > 0) {
+                pill.style.background = getGradient(sched.members);
+              } else if (sched.customColor) {
+                pill.style.backgroundColor = sched.customColor;
+              } else {
+                if (sched.text === '横動画') pill.style.backgroundColor = '#AAC4FF';
+                else if (sched.text === 'ショート') pill.style.backgroundColor = '#D9E4DD';
+                else pill.style.backgroundColor = '#AFC8E1'; 
+              }
+            }
+
+            pill.addEventListener('click', (e) => {
+              e.stopPropagation();
+              openActionModal(sched);
+            });
+            schedContainer.appendChild(pill);
+          });
+          cell.appendChild(schedContainer);
+        }
+        calendarDays.appendChild(cell);
+      }
+    }
+
+    function advanceSelectedDate() {
+      if (!selectedDateStr) return;
+      const [y, m, d] = selectedDateStr.split('-').map(Number);
+      const nextDay = new Date(y, m - 1
