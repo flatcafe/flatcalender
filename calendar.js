@@ -244,6 +244,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (sched.type === 'shift') {
               pill.style.backgroundColor = sched.authorColor;
+              // 「休み」と「明け」の時に明度を下げて少し濃くする
+              if (sched.text === '休み' || sched.text === '明け') {
+                pill.style.filter = 'brightness(0.80)';
+              }
             } else {
               if (sched.members && sched.members.length > 0) {
                 pill.style.background = getGradient(sched.members);
@@ -311,7 +315,7 @@ document.addEventListener("DOMContentLoaded", () => {
             createdAt: new Date().toISOString()
           });
           
-          // 【修正】日付を進めた後、手動でカレンダーを再描画してカーソル位置を反映させる
+          // 日付を進めた後、手動でカレンダーを再描画してカーソル位置を反映させる
           advanceSelectedDate();
           renderCalendar(); 
           
