@@ -10,25 +10,24 @@
     body { font-family: 'M PLUS Rounded 1c', sans-serif; }
     .bg-cafe-home { background-image: url('images/back.png'); background-size: cover; background-position: center; }
     
-    .char-container { position: relative; width: 100%; height: 85vh; display: flex; justify-content: center; align-items: center; }
-    .char-wrapper { position: absolute; display: flex; flex-direction: column; align-items: center; cursor: pointer; z-index: 10; }
-
-    /* --- 設定エリア --- */
-    /* [大きさの数値はここ] */
+    /* コンテナをFlexboxで中央配置 */
+    .char-container { 
+      display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+      gap: 30px; width: 100%; height: 80vh; padding-top: 20px;
+    }
+    
+    .char-item { display: flex; align-items: center; cursor: pointer; z-index: 10; }
+    
+    /* キャラ：2倍 (200px) */
     .char-img { width: 200px; height: 200px; object-fit: contain; }
     
+    /* 吹き出し：2.5倍 (350px * 200px) */
     .speech-box { 
       width: 350px; height: 200px; 
       display: flex; align-items: center; justify-content: center;
       text-align: center; padding: 30px; font-size: 22px; font-weight: bold;
       background-size: contain; background-repeat: no-repeat; background-position: center;
-      /* [回転の数値はここ] */
-      transform-origin: center; 
-      transition: transform 0.3s;
     }
-    
-    .rotate-20 { transform: rotate(20deg); }
-    .rotate-minus-20 { transform: rotate(-20deg); }
   </style>
 </head>
 <body class="bg-cafe-home h-[100dvh] overflow-hidden">
@@ -48,21 +47,21 @@
   </div>
 
   <div class="char-container">
-    <div class="char-wrapper" style="top: 10%; left: 20%;" data-name="waka">
-      <div class="speech-box bg-[url('images/wakacom.png')] rotate-20" contenteditable="true"></div>
+    <div class="char-item" data-name="waka">
+      <div class="speech-box bg-[url('images/wakacom.png')]" contenteditable="true"></div>
       <img src="images/waka.png" class="char-img">
     </div>
-    <div class="char-wrapper" style="top: 10%; right: 20%;" data-name="yuzu">
-      <div class="speech-box bg-[url('images/yuzucom.png')] rotate-minus-20" contenteditable="true"></div>
+    <div class="char-item" data-name="yuzu">
       <img src="images/yuzu.png" class="char-img">
+      <div class="speech-box bg-[url('images/yuzucom.png')]" contenteditable="true"></div>
     </div>
-    <div class="char-wrapper" style="bottom: 15%; left: 20%;" data-name="lily">
-      <div class="speech-box bg-[url('images/lilycom.png')] rotate-20" contenteditable="true"></div>
+    <div class="char-item" data-name="lily">
+      <div class="speech-box bg-[url('images/lilycom.png')]" contenteditable="true"></div>
       <img src="images/lily.png" class="char-img">
     </div>
-    <div class="char-wrapper" style="bottom: 15%; right: 20%;" data-name="toru">
-      <div class="speech-box bg-[url('images/torucom.png')] rotate-minus-20" contenteditable="true"></div>
+    <div class="char-item" data-name="toru">
       <img src="images/toru.png" class="char-img">
+      <div class="speech-box bg-[url('images/torucom.png')]" contenteditable="true"></div>
     </div>
   </div>
 
@@ -71,25 +70,49 @@
   </div>
   
   <script src="components/navbar.js" defer></script>
+
   <script>
-    // ユーザー名表示・ログアウト処理などはこれまで通り保持
+    // ユーザー名表示
     const userData = JSON.parse(localStorage.getItem('cafe_user'));
-    if (userData && userData.name) document.getElementById('display-user-name').textContent = userData.name;
+    if (userData && userData.name) {
+      document.getElementById('display-user-name').textContent = userData.name;
+    }
 
-    document.getElementById('cancel-logout').addEventListener('click', () => document.getElementById('logout-modal').classList.add('hidden'));
-    document.getElementById('confirm-logout').addEventListener('click', () => { localStorage.removeItem('cafe_user'); window.location.href = 'welcome.html'; });
+    // ログアウト処理
+    document.getElementById('cancel-logout').addEventListener('click', () => {
+      document.getElementById('logout-modal').classList.add('hidden');
+    });
+    document.getElementById('confirm-logout').addEventListener('click', () => {
+      localStorage.removeItem('cafe_user');
+      window.location.href = 'welcome.html';
+    });
 
-    const shiftMessages = { "日勤": "お昼間はお仕事だよ", "休み": "お休みだー！！遊ぶぞ！！", "夜勤": "朝も昼もお仕事・・・", "明け": "明け！！やっとゲームできる！！", "当直": "当直だよ" };
+    // 吹き出し表示ロジック
+    const shiftMessages = {
+      "日勤": "お昼間はお仕事だよ",
+      "休み": "お休みだー！！遊ぶぞ！！",
+      "夜勤": "朝も昼もお仕事・・・",
+      "明け": "明け！！やっとゲームできる！！",
+      "当直": "当直だよ"
+    };
 
     function updateBubbles() {
       const today = new Date();
       const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
       const schedules = JSON.parse(localStorage.getItem('cafe_schedules')) || [];
-      document.querySelectorAll('.char-wrapper').forEach(item => {
+
+      document.querySelectorAll('.char-item').forEach(item => {
         const name = item.getAttribute('data-name');
         const bubble = item.querySelector('.speech-box');
         const todaySched = schedules.find(s => s.date === dateStr && s.characterName === name);
-        bubble.textContent = todaySched ? (shiftMessages[todaySched.text] || todaySched.text) + (todaySched.detail?.trim() ? "☆" : "") : "今日は何の日？";
+        
+        if (todaySched) {
+          let msg = shiftMessages[todaySched.text] || todaySched.text;
+          if (todaySched.detail && todaySched.detail.trim() !== "") msg += "☆";
+          bubble.textContent = msg;
+        } else {
+          bubble.textContent = "今日は何の日？";
+        }
       });
     }
     updateBubbles();
