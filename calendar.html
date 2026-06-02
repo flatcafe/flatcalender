@@ -10,34 +10,31 @@
   <script src="auth.js"></script>
   <script src="components/navbar.js" defer></script>
 </head>
-<body class="h-[100dvh] flex flex-col font-sans text-gray-800 overflow-hidden">
+<body class="bg-cafe-pattern h-[100dvh] flex flex-col font-sans text-gray-800 overflow-hidden">
   
-  <main class="flex-1 relative overflow-y-auto flex flex-col items-center bg-cafe-pattern p-4 pb-24">
+  <main class="flex-1 relative flex flex-col items-center w-full pb-safe">
     
-    <div class="w-full max-w-md bg-white/20 backdrop-blur-sm border border-black rounded-xl p-4 shadow-lg flex flex-col">
-      
-      <div class="flex justify-between items-center mb-4 text-black">
-        <button id="prev-month" class="px-3 py-1 bg-white/60 border border-black rounded shadow-sm text-sm font-bold hover:bg-white/80 active:scale-95 transition">先月</button>
-        <h2 id="month-display" class="text-xl font-bold tracking-wide">2026年 6月</h2>
-        <button id="next-month" class="px-3 py-1 bg-white/60 border border-black rounded shadow-sm text-sm font-bold hover:bg-white/80 active:scale-95 transition">来月</button>
+    <div class="w-full px-4 pt-6 pb-2 flex justify-between items-end text-black z-10">
+      <h2 id="month-display" class="text-2xl font-bold tracking-wider leading-none">June 2026</h2>
+      <div class="flex gap-6 text-xl font-bold">
+        <button id="prev-month" class="px-2 hover:scale-125 transition">&lt;</button>
+        <button id="next-month" class="px-2 hover:scale-125 transition">&gt;</button>
       </div>
+    </div>
 
-      <div class="flex-1 flex flex-col bg-white/40 border-t border-l border-black">
-        
-        <div class="grid grid-cols-7 text-center font-bold text-sm bg-white/50 border-b border-black">
-          <div class="border-r border-black py-1">月</div>
-          <div class="border-r border-black py-1">火</div>
-          <div class="border-r border-black py-1">水</div>
-          <div class="border-r border-black py-1">木</div>
-          <div class="border-r border-black py-1">金</div>
-          <div class="border-r border-black py-1 text-blue-700">土</div>
-          <div class="border-r border-black py-1 text-red-700">日</div>
+    <div class="w-full grid grid-cols-7 text-center text-sm font-bold z-10 mb-1">
+      <div class="text-black">Mon</div>
+      <div class="text-black">Tue</div>
+      <div class="text-black">Wed</div>
+      <div class="text-black">Thu</div>
+      <div class="text-black">Fri</div>
+      <div class="text-blue-700">Sat</div>
+      <div class="text-red-700">Sun</div>
+    </div>
+
+    <div class="w-full flex-1 bg-white/20 border-t border-black flex flex-col z-10">
+      <div id="calendar-days" class="w-full h-full grid grid-cols-7 border-l border-black">
         </div>
-        
-        <div id="calendar-days" class="grid grid-cols-7 border-black">
-          </div>
-
-      </div>
     </div>
   </main>
 
