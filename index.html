@@ -10,18 +10,17 @@
     body { font-family: 'M PLUS Rounded 1c', sans-serif; }
     .bg-cafe-home { background-image: url('images/back.png'); background-size: cover; background-position: center; }
     
-    /* コンテナを調整 */
     .char-container { position: relative; width: 100%; height: 90vh; }
     .char-item { position: absolute; display: flex; align-items: center; cursor: pointer; z-index: 10; }
     
-    /* キャラ：1.5倍 (150px) */
-    .char-img { width: 150px; height: 150px; object-fit: contain; }
+    /* キャラ：2倍 (200px) */
+    .char-img { width: 200px; height: 200px; object-fit: contain; }
     
-    /* 吹き出し：2倍 (280px * 160px) */
+    /* 吹き出し：2.5倍 (350px * 200px) */
     .speech-box { 
-      width: 280px; height: 160px; 
+      width: 350px; height: 200px; 
       display: flex; align-items: center; justify-content: center;
-      text-align: center; padding: 20px; font-size: 18px; font-weight: bold;
+      text-align: center; padding: 30px; font-size: 22px; font-weight: bold;
       background-size: contain; background-repeat: no-repeat; background-position: center;
     }
   </style>
