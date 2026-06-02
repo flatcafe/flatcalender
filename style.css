@@ -1,0 +1,47 @@
+/* キャラクターのフェードインアニメーション */
+.fade-in {
+  animation: fadeInSoft 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes fadeInSoft {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 吹き出しの装飾 */
+.speech-bubble {
+  position: relative;
+  border-radius: 12px;
+  color: #5a4a42; /* カフェっぽい文字色 */
+}
+
+/* 吹き出しのしっぽ */
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 8px 8px 0;
+  border-style: solid;
+  border-color: white transparent transparent transparent;
+  display: block;
+  width: 0;
+}
+
+/* まばたきなどの小アニメーション（CSSのみで実装可能） */
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.character {
+  /* 常に少しだけふわふわさせる場合はこれを有効化 */
+  /* animation: bounce-slow 3s infinite ease-in-out; */
+}
