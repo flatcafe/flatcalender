@@ -13,44 +13,36 @@
     .char-container { position: relative; width: 100%; height: 85vh; }
     .char-item { position: absolute; display: flex; align-items: center; cursor: pointer; }
     
-    /* キャラ：1.5倍 (元100px*1.5 = 150px) */
-    .char-img { width: 150px; height: 150px; object-fit: contain; }
-    
-    /* 吹き出し：2.5倍 (元140*2.5=350px, 80*2.5=200px) */
+    .char-img { width: 100px; height: 100px; object-fit: contain; }
     .speech-box { 
-      width: 350px; height: 200px; 
+      width: 140px; height: 80px; 
       display: flex; align-items: center; justify-content: center;
-      text-align: center; padding: 30px; font-size: 22px; font-weight: bold;
+      text-align: center; padding: 10px; font-size: 14px; font-weight: bold;
       background-size: contain; background-repeat: no-repeat; background-position: center;
-      transition: transform 0.3s;
     }
-
-    /* 回転設定 */
-    .rotate-right { transform: rotate(20deg); }
-    .rotate-left { transform: rotate(-20deg); }
   </style>
 </head>
 <body class="bg-cafe-home h-[100dvh] overflow-hidden">
 
   <div class="char-container">
     <div class="char-item top-5 right-4" data-name="waka">
-      <div class="speech-box bg-[url('images/wakacom.png')] rotate-right" contenteditable="true"></div>
+      <div class="speech-box bg-[url('images/wakacom.png')]" contenteditable="true"></div>
       <img src="images/waka.png" class="char-img">
     </div>
 
     <div class="char-item top-40 right-20" data-name="yuzu">
       <img src="images/yuzu.png" class="char-img">
-      <div class="speech-box bg-[url('images/yuzucom.png')] rotate-left" contenteditable="true"></div>
+      <div class="speech-box bg-[url('images/yuzucom.png')]" contenteditable="true"></div>
     </div>
 
     <div class="char-item top-72 right-4" data-name="lily">
-      <div class="speech-box bg-[url('images/lilycom.png')] rotate-right" contenteditable="true"></div>
+      <div class="speech-box bg-[url('images/lilycom.png')]" contenteditable="true"></div>
       <img src="images/lily.png" class="char-img">
     </div>
 
     <div class="char-item top-[28rem] right-20" data-name="toru">
       <img src="images/toru.png" class="char-img">
-      <div class="speech-box bg-[url('images/torucom.png')] rotate-left" contenteditable="true"></div>
+      <div class="speech-box bg-[url('images/torucom.png')]" contenteditable="true"></div>
     </div>
   </div>
 
