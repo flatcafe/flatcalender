@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>☕ふらっとCafe - カレンダー</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="auth.js"></script>
+  <script src="components/navbar.js" defer></script>
+</head>
+<body class="h-[100dvh] flex flex-col font-sans text-gray-800 overflow-hidden">
+  
+  <main class="flex-1 relative overflow-y-auto flex flex-col items-center bg-cafe-pattern p-4 pb-24">
+    
+    <div class="w-full max-w-md bg-white/20 backdrop-blur-sm border border-black rounded-xl p-4 shadow-lg flex flex-col">
+      
+      <div class="flex justify-between items-center mb-4 text-black">
+        <button id="prev-month" class="px-3 py-1 bg-white/60 border border-black rounded shadow-sm text-sm font-bold hover:bg-white/80 active:scale-95 transition">先月</button>
+        <h2 id="month-display" class="text-xl font-bold tracking-wide">2026年 6月</h2>
+        <button id="next-month" class="px-3 py-1 bg-white/60 border border-black rounded shadow-sm text-sm font-bold hover:bg-white/80 active:scale-95 transition">来月</button>
+      </div>
+
+      <div class="flex-1 flex flex-col bg-white/40 border-t border-l border-black">
+        
+        <div class="grid grid-cols-7 text-center font-bold text-sm bg-white/50 border-b border-black">
+          <div class="border-r border-black py-1">月</div>
+          <div class="border-r border-black py-1">火</div>
+          <div class="border-r border-black py-1">水</div>
+          <div class="border-r border-black py-1">木</div>
+          <div class="border-r border-black py-1">金</div>
+          <div class="border-r border-black py-1 text-blue-700">土</div>
+          <div class="border-r border-black py-1 text-red-700">日</div>
+        </div>
+        
+        <div id="calendar-days" class="grid grid-cols-7 border-black">
+          </div>
+
+      </div>
+    </div>
+  </main>
+
+  <cafe-nav></cafe-nav>
+
+  <script src="calendar.js"></script>
+</body>
+</html>
