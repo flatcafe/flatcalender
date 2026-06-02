@@ -36,9 +36,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const holidays = ["01-01", "05-03", "05-04", "05-05", "11-03", "11-23"];
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    const sortOrder = { "lily": 1, "yuzu": 2, "waka": 3, "toru": 4 };
+    
+    // ==========================================
+    // 並び順のスコア計算（数値が小さいほど上にくる）
+    // ==========================================
+    function getSortScore(sched) {
+      if (sched.type === 'shift') {
+        if (sched.characterName === 'lily') return 1;
+        if (sched.characterName === 'yuzu') return 2;
+        if (sched.characterName === 'waka') return 3;
+        if (sched.characterName === 'toru') return 4;
+        return 5;
+      } else {
+        if (sched.text === '横動画') return 10;
+        if (sched.text === 'ショート') return 11;
+        if (sched.text === 'コラボ') return 12;
+        return 13; // その他、〇、× など
+      }
+    }
 
-    // ポップアップの表示位置（上・下）を更新する関数
     function updatePopupPosition() {
       const navBar = document.querySelector("cafe-nav nav");
       const navHeight = navBar ? navBar.offsetHeight : 0;
@@ -95,7 +111,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function getGradient(members) {
-      const colorMap = { "waka": "#abc888", "yuzu": "#fef263", "lily": "#a12722", "toru": "#968ABD" };
+      // Lilyの色を #F0566E に変更
+      const colorMap = { "waka": "#abc888", "yuzu": "#fef263", "lily": "#F0566E", "toru": "#968ABD" };
       const ordered = ["waka", "yuzu", "lily", "toru"].filter(m => members.includes(m));
       if (ordered.length === 0) return "#AFC8E1"; 
       if (ordered.length === 1) return colorMap[ordered[0]];
@@ -176,11 +193,9 @@ document.addEventListener("DOMContentLoaded", () => {
           cell.appendChild(wrapper);
 
           let daySchedules = schedules.filter(s => s.date === dateStr);
-          daySchedules.sort((a, b) => {
-            const aVal = sortOrder[a.characterName] || 5;
-            const bVal = sortOrder[b.characterName] || 5;
-            return aVal - bVal;
-          });
+          
+          // ★ 新しいルールで並び替え ★
+          daySchedules.sort((a, b) => getSortScore(a) - getSortScore(b));
 
           const schedContainer = document.createElement("div");
           schedContainer.className = "mt-6 flex flex-col gap-[2px] px-0.5 w-full items-center z-20 pointer-events-none";
