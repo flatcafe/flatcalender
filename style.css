@@ -42,7 +42,8 @@
   transform: translateX(-50%);
   border-width: 6px 6px 0;
   border-style: solid;
-  border-color: white transparent transparent transparent;
+  /* ここを #DFC6B0 に変更 */
+  border-color: #DFC6B0 transparent transparent transparent;
   display: block;
   width: 0;
 }
