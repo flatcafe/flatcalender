@@ -30,6 +30,11 @@
       display: flex; align-items: center; justify-content: center;
       text-align: center; padding: 30px; font-size: 22px; font-weight: bold;
       background-size: contain; background-repeat: no-repeat; background-position: center;
+      /* 詳細が長くなった時はみ出さないよう調整 */
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
     }
   </style>
 </head>
@@ -86,7 +91,7 @@
     
     document.getElementById('confirm-logout').addEventListener('click', async () => {
       try {
-        await signOut(auth); // Firebase Authのログアウト処理
+        await signOut(auth); 
         window.location.href = 'welcome.html';
       } catch (error) {
         console.error("ログアウトエラー:", error);
@@ -96,7 +101,6 @@
     // 認証状態の監視とデータ取得
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        // 1. ログイン中のユーザー名を取得して表示
         try {
           const docRef = doc(db, "users", user.uid);
           const docSnap = await getDoc(docRef);
@@ -108,7 +112,6 @@
           console.error("ユーザー情報取得エラー:", error);
         }
 
-        // 2. 本日のスケジュールを取得して吹き出しを更新
         updateBubbles();
       }
     });
@@ -128,7 +131,6 @@
       let todaysSchedules = [];
 
       try {
-        // Firestoreから本日の日付（dateStr）に一致するスケジュールだけをクエリで取得
         const q = query(collection(db, "schedules"), where("date", "==", dateStr));
         const querySnapshot = await getDocs(q);
         
@@ -139,17 +141,33 @@
         console.error("スケジュールの取得エラー:", error);
       }
 
-      // キャラクターごとに吹き出しを更新
       document.querySelectorAll('.char-item').forEach(item => {
         const name = item.getAttribute('data-name');
         const bubble = item.querySelector('.speech-box');
         
-        // 取得した本日のスケジュールから、該当キャラの予定を探す
-        const charSched = todaysSchedules.find(s => s.characterName === name);
+        // そのキャラが作成した、またはメンバーに含まれている予定を抽出
+        const charSchedules = todaysSchedules.filter(s => 
+          s.characterName === name || (s.members && s.members.includes(name))
+        );
         
-        if (charSched) {
-          let msg = shiftMessages[charSched.text] || charSched.text;
-          if (charSched.detail && charSched.detail.trim() !== "") msg += "☆";
+        if (charSchedules.length > 0) {
+          // createdAt で降順（新しい順）にソート
+          charSchedules.sort((a, b) => {
+            const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
+            const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
+            return dateB - dateA;
+          });
+          
+          const latestSched = charSchedules[0];
+          
+          // 詳細があれば詳細を優先、なければデフォルトのテキスト
+          let msg = "";
+          if (latestSched.detail && latestSched.detail.trim() !== "") {
+            msg = latestSched.detail;
+          } else {
+            msg = shiftMessages[latestSched.text] || latestSched.text;
+          }
+          
           bubble.textContent = msg;
         } else {
           bubble.textContent = "今日は何の日？";
