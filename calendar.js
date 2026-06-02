@@ -310,8 +310,11 @@ document.addEventListener("DOMContentLoaded", () => {
             authorColor: charColor,
             createdAt: new Date().toISOString()
           });
+          
+          // 【修正】日付を進めた後、手動でカレンダーを再描画してカーソル位置を反映させる
           advanceSelectedDate();
-          // ※ renderCalendar は onSnapshot が自動的に発火させるのでここでは不要
+          renderCalendar(); 
+          
         } catch (error) {
           console.error("保存エラー:", error);
           alert("予定の保存に失敗しました。");
