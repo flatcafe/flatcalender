@@ -1,10 +1,12 @@
-// auth.js
+// 全ページで読み込むことでログインを強制・自動化
 const user = localStorage.getItem('cafe_user');
+const path = window.location.pathname;
 
-// welcomeページにいる時
-if (window.location.pathname.includes('welcome.html')) {
-  if (user) window.location.href = 'index.html'; // 登録済みならindexへ
-} else {
-  // indexページ等にいる時
-  if (!user) window.location.href = 'welcome.html'; // 未登録ならwelcomeへ
+// ログインしていない場合
+if (!user && !path.includes('welcome.html')) {
+  window.location.href = 'welcome.html';
+}
+// ログインしているのにwelcomeにいる場合
+else if (user && path.includes('welcome.html')) {
+  window.location.href = 'index.html';
 }
