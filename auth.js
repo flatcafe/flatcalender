@@ -1,22 +1,15 @@
-// auth.js
 import { auth } from './firebase-config.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-// Firebaseでログイン状態を監視する
-onAuthStateChanged(auth, (user) => {
-  const path = window.location.pathname;
-  const isWelcomePage = path.includes('welcome.html');
+const path = window.location.pathname;
 
+onAuthStateChanged(auth, (user) => {
   // ログインしていない場合
-  if (!user) {
-    if (!isWelcomePage) {
-      window.location.href = 'welcome.html';
-    }
-  } 
-  // ログインしている場合
-  else {
-    if (isWelcomePage) {
-      window.location.href = 'index.html';
-    }
+  if (!user && !path.includes('welcome.html')) {
+    window.location.href = 'welcome.html';
+  }
+  // ログインしているのにwelcomeにいる場合
+  else if (user && path.includes('welcome.html')) {
+    window.location.href = 'calendar.html';
   }
 });
