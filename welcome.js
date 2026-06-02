@@ -7,14 +7,14 @@ let selectedChar = {
 document.querySelectorAll('.char-btn').forEach(btn => {
   btn.addEventListener('click', (e) => {
     const target = e.currentTarget;
-
-    // 1. 全キャラの「ぴょこぴょこ(idle)」を停止
+    
+    // 1. 即座に他のキャラを暗くする
     document.querySelectorAll('.char-btn').forEach(b => {
       b.classList.remove('idle-bounce', 'ring-4', 'ring-amber-400');
-      b.classList.add('dimmed'); // 他のキャラを暗くする
+      b.classList.add('dimmed'); 
     });
 
-    // 2. タップされたキャラの設定
+    // 2. 選択されたキャラを即座に光らせてジャンプさせる
     target.classList.remove('dimmed');
     target.classList.add('jump', 'ring-4', 'ring-amber-400', 'rounded-2xl');
     
