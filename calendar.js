@@ -9,11 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // ログインしているキャラクターのデータを取得
   const userData = JSON.parse(localStorage.getItem('cafe_user'));
-  const charColor = userData ? userData.characterColor : "#DFC6B0"; // データがない場合の予備色
+  const charColor = userData ? userData.characterColor : "#DFC6B0"; 
 
-  // ※祝日判定のプレースホルダー（JavaScriptには標準の祝日データがないため、仮で固定日を設定）
-  // 実際にはAPIや年ごとの祝日リストを追加する必要があります。
   const holidays = ["01-01", "05-03", "05-04", "05-05", "11-03", "11-23"];
+  const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   function renderCalendar() {
     calendarDays.innerHTML = "";
@@ -21,74 +20,78 @@ document.addEventListener("DOMContentLoaded", () => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
 
-    // 年月の表示
-    monthDisplay.textContent = `${year}年 ${month + 1}月`;
+    // 英語表記に変更 (例: June 2026)
+    monthDisplay.textContent = `${monthNames[month]} ${year}`;
 
-    const firstDayOfMonth = new Date(year, month, 1).getDay(); // 月の初日（0:日, 1:月...）
-    const daysInMonth = new Date(year, month + 1, 0).getDate(); // 今月の日数
-    const daysInPrevMonth = new Date(year, month, 0).getDate(); // 先月の日数
+    const firstDayOfMonth = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-    // 月曜始まりのための調整 (0:月, 1:火 ... 6:日 に変換)
+    // 月曜始まりのための調整 (0:月, 1:火 ... 6:日)
     const startDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
 
-    // カレンダーは常に6週分(42マス)表示してレイアウトを固定
-    for (let i = 0; i < 42; i++) {
+    // 必要な行数を計算 (月によって5行か6行になる)
+    const totalCellsNeeded = startDay + daysInMonth;
+    const rows = Math.ceil(totalCellsNeeded / 7);
+    const totalCells = rows * 7;
+
+    // 高さを均等に割るためにインラインスタイルでグリッドの行を設定
+    calendarDays.style.gridTemplateRows = `repeat(${rows}, minmax(0, 1fr))`;
+
+    for (let i = 0; i < totalCells; i++) {
       const cell = document.createElement("div");
-      // 各マスの黒細線設定
-      cell.className = "border-r border-b border-black relative flex flex-col items-center p-1 min-h-[4rem] text-sm";
+      // 各マス: 黒細線、余白なしで目一杯広く
+      cell.className = "border-r border-b border-black relative";
 
-      let dayNum;
-      let isCurrentMonth = false;
-
-      // --- 日付の計算と色の設定 ---
-      if (i < startDay) {
-        // 先月の日付
-        dayNum = daysInPrevMonth - startDay + i + 1;
-        cell.classList.add("text-gray-500", "bg-black/5"); // 灰色＆少し暗く
-      } else if (i >= startDay && i < startDay + daysInMonth) {
-        // 今月の日付
-        dayNum = i - startDay + 1;
-        isCurrentMonth = true;
+      // 今月の日付のみを描画 (来月・先月分は枠線のみの空マス)
+      if (i >= startDay && i < startDay + daysInMonth) {
+        const dayNum = i - startDay + 1;
         
-        // 祝日の判定用 (MM-DD)
         const monthStr = String(month + 1).padStart(2, '0');
         const dayStr = String(dayNum).padStart(2, '0');
         const dateRef = `${monthStr}-${dayStr}`;
 
-        if (i % 7 === 5) {
-          cell.classList.add("text-blue-700", "font-bold"); // 土曜（青）
-        } else if (i % 7 === 6 || holidays.includes(dateRef)) {
-          cell.classList.add("text-red-700", "font-bold"); // 日曜・祝日（赤）
-        } else {
-          cell.classList.add("text-black", "font-bold"); // 平日
-        }
+        // 数字と丸をまとめるラッパー（左上に配置）
+        const numWrapper = document.createElement("div");
+        numWrapper.className = "absolute top-1 left-1 w-6 h-6 flex items-center justify-center";
 
-        // 今日の日付ならキャラの色の丸をつける
-        if (year === today.getFullYear() && month === today.getMonth() && dayNum === today.getDate()) {
+        // 今日のハイライト
+        const isToday = (year === today.getFullYear() && month === today.getMonth() && dayNum === today.getDate());
+        
+        if (isToday) {
           const circle = document.createElement("div");
-          // 透明度50%、数字が隠れるくらいの大きさ(w-8 h-8)で中央配置
-          circle.className = "absolute top-0.5 left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full opacity-50 z-0";
+          // 透明度50%、数字の背面に配置
+          circle.className = "absolute inset-0 rounded-full opacity-50 z-0";
           circle.style.backgroundColor = charColor;
-          cell.appendChild(circle);
-          cell.classList.add("text-black"); // 今日は曜日にかかわらず見やすく
+          numWrapper.appendChild(circle);
         }
-      } else {
-        // 来月の日付
-        dayNum = i - startDay - daysInMonth + 1;
-        cell.classList.add("text-gray-500", "bg-black/5"); // 灰色＆少し暗く
-      }
 
-      // 数字部分を描画
-      const numSpan = document.createElement("span");
-      numSpan.className = "relative z-10 mt-1";
-      numSpan.textContent = dayNum;
+        // 日付の数字
+        const numSpan = document.createElement("span");
+        numSpan.className = "text-xs z-10 relative"; // text-xs で小さく
+        numSpan.textContent = dayNum;
+
+        // 土・日・祝日・平日の色分け
+        if (i % 7 === 5) {
+          numSpan.classList.add("text-blue-700", "font-bold");
+        } else if (i % 7 === 6 || holidays.includes(dateRef)) {
+          numSpan.classList.add("text-red-700", "font-bold");
+        } else {
+          // 今日の場合は黒で太字にして見やすくする
+          if(isToday) {
+             numSpan.classList.add("text-black", "font-bold");
+          } else {
+             numSpan.classList.add("text-black");
+          }
+        }
+        
+        numWrapper.appendChild(numSpan);
+        cell.appendChild(numWrapper);
+      }
       
-      cell.appendChild(numSpan);
       calendarDays.appendChild(cell);
     }
   }
 
-  // 先月・来月ボタンのイベント
   prevBtn.addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() - 1);
     renderCalendar();
@@ -99,6 +102,5 @@ document.addEventListener("DOMContentLoaded", () => {
     renderCalendar();
   });
 
-  // 初回描画
   renderCalendar();
 });
