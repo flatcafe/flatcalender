@@ -1,8 +1,14 @@
 /* Nunitoフォントの適用 */
-.font-nunito { font-family: 'Nunito', sans-serif; }
+.font-nunito {
+  font-family: 'Nunito', sans-serif;
+}
 
-.pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+/* Androidのシステムバーを避けるための安全余白 */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
 
+/* Welcomeページ専用の背景 (gaikan.png) */
 .bg-welcome-pattern {
   background-image: url('images/gaikan.png');
   background-size: cover;
@@ -10,33 +16,28 @@
   background-repeat: no-repeat;
 }
 
+/* その他のページ用の背景 (back.png) */
+.bg-cafe-pattern {
+  background-image: url('images/back.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 /* キャラクターのフェードインアニメーション */
-.fade-in { animation: fadeIn 1s ease-out forwards; }
-
-/* ぴょこぴょこの調整：高さ(-8px)に */
-.idle-bounce { animation: bounceIdle 2s infinite ease-in-out; }
-
-/* 選択時のジャンプ調整：ゆっくり(0.8s)、高さ半分(-30px) */
-.jump { animation: jumpUp 0.8s ease-out forwards; }
-
-/* 明度下げの反応速度を即時に(0.1s) */
-.dimmed { filter: brightness(30%); transition: filter 0.1s; }
-
-/* キーフレーム */
-@keyframes fadeIn {
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
+.fade-in {
+  animation: fadeInSoft 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-@keyframes bounceIdle {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-@keyframes jumpUp {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-30px); }
-  100% { transform: translateY(0); }
+@keyframes fadeInSoft {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* 吹き出しの装飾 */
