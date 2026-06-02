@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>☕ふらっとCafe - 予定編集</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-amber-50 h-[100dvh] flex flex-col font-sans text-gray-800">
+  
+  <header class="bg-[#DFC6B0] p-4 flex justify-between items-center shadow-sm shrink-0">
+    <button id="back-btn" class="font-bold text-gray-700 py-1 px-2 active:scale-95">キャンセル</button>
+    <h1 id="edit-header-title" class="font-bold text-lg text-[#5a4a42]">予定の編集</h1>
+    <button id="save-btn" class="font-bold text-blue-600 py-1 px-2 active:scale-95">保存</button>
+  </header>
+
+  <main class="flex-1 overflow-y-auto p-5 pb-20">
+    <div id="form-container" class="flex flex-col gap-5 max-w-md mx-auto bg-white p-6 rounded-2xl shadow-sm">
+      </div>
+  </main>
+
+  <script src="schedule-edit.js"></script>
+</body>
+</html>
