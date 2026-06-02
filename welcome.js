@@ -1,3 +1,8 @@
+// welcome.js
+import { auth, db } from './firebase-config.js';
+import { signInAnonymously } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
 let selectedChar = {
   name: null,
   color: null,
@@ -31,19 +36,31 @@ document.querySelectorAll('.char-btn').forEach(btn => {
   });
 });
 
-document.getElementById('enterBtn').addEventListener('click', () => {
+document.getElementById('enterBtn').addEventListener('click', async () => {
   const username = document.getElementById('username').value;
   if (!username || !selectedChar.name) {
     alert("お名前とキャラを選んでね！");
-  } else {
-    const user = {
+    return;
+  }
+
+  try {
+    // 匿名ログインを実行
+    const userCredential = await signInAnonymously(auth);
+    const user = userCredential.user;
+
+    // Firestoreにユーザー情報を保存
+    await setDoc(doc(db, "users", user.uid), {
       name: username,
       characterName: selectedChar.name,
       characterColor: selectedChar.color,
       characterImg: selectedChar.img,
       createdAt: new Date().toISOString()
-    };
-    localStorage.setItem('cafe_user', JSON.stringify(user));
+    });
+
+    // ログイン成功したらメイン画面へ
     window.location.href = 'index.html';
+  } catch (error) {
+    console.error("入店エラー:", error);
+    alert("入店に失敗しました。もう一度試してください。");
   }
 });
