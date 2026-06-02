@@ -1,3 +1,7 @@
+// calendar.js
+import { auth, db } from './firebase-config.js';
+import { collection, onSnapshot, addDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   try {
     const monthDisplay = document.getElementById("month-display");
@@ -25,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let charName = "";
     let charColor = "#DFC6B0"; 
     
+    // ユーザー情報の読み込み（ログイン時の情報を保持）
     try {
       const userData = JSON.parse(localStorage.getItem('cafe_user'));
       if (userData) {
@@ -33,6 +38,14 @@ document.addEventListener("DOMContentLoaded", () => {
         charColor = userData.characterColor || "#DFC6B0";
       }
     } catch (e) { console.error(e); }
+
+    // スケジュールデータ（Firebaseからリアルタイムで取得）
+    let schedules = [];
+    const schedulesRef = collection(db, "schedules");
+    onSnapshot(schedulesRef, (snapshot) => {
+      schedules = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      renderCalendar(); // データが更新されるたびに再描画
+    });
 
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     
@@ -136,13 +149,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return gradient + stops.join(", ") + ")";
     }
 
-    function getSchedules() {
-      try {
-        let data = JSON.parse(localStorage.getItem('cafe_schedules'));
-        return Array.isArray(data) ? data : [];
-      } catch (e) { return []; }
-    }
-
     function renderCalendar() {
       calendarDays.innerHTML = "";
       
@@ -157,7 +163,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const totalCells = rows * 7;
 
       calendarDays.style.gridTemplateRows = `repeat(${rows}, minmax(3rem, 1fr))`;
-      let schedules = getSchedules();
 
       for (let i = 0; i < totalCells; i++) {
         const cell = document.createElement("div");
@@ -181,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
             renderCalendar();
           });
 
-          // 祝日の判定（holidaysData から検索）
+          // 祝日の判定
           let numClass = "text-xs z-10 relative font-bold";
           if (i % 7 === 5) {
             numClass += " text-blue-700"; // 土曜
@@ -284,25 +289,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     document.querySelectorAll('.stamp-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', async () => {
         if (!selectedDateStr) {
           alert("入力したい枠を選択してください！");
           return;
         }
         const type = btn.getAttribute('data-type');
         const text = btn.getAttribute('data-text');
-        const schedules = getSchedules();
         
-        schedules.push({
-          id: Date.now().toString(),
+        // Firestoreへの追加処理
+        await addDoc(schedulesRef, {
           date: selectedDateStr,
           type: type,
           text: text,
           author: userName,
           characterName: charName,
-          authorColor: charColor
+          authorColor: charColor,
+          createdAt: serverTimestamp()
         });
-        localStorage.setItem('cafe_schedules', JSON.stringify(schedules));
+
         advanceSelectedDate();
         renderCalendar();
       });
@@ -329,7 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (schedule.detail) html += `<p><strong>【詳細】</strong><br><span class="whitespace-pre-wrap">${schedule.detail}</span></p>`;
       
       if(!schedule.title && !schedule.partner && !schedule.time && (!schedule.members || schedule.members.length === 0) && !schedule.detail){
-         html += `<p class="text-gray-600 text-center py-2">詳細情報はありません</p>`;
+          html += `<p class="text-gray-600 text-center py-2">詳細情報はありません</p>`;
       }
 
       detailContentArea.innerHTML = html;
@@ -356,11 +361,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if(cancelBtn) cancelBtn.addEventListener('click', () => actionModal.classList.add('hidden'));
     
     if(deleteBtn) {
-      deleteBtn.addEventListener('click', () => {
+      deleteBtn.addEventListener('click', async () => {
         if(!confirm("本当に削除しますか？")) return;
-        let schedules = getSchedules();
-        schedules = schedules.filter(s => s.id !== activeScheduleId);
-        localStorage.setItem('cafe_schedules', JSON.stringify(schedules));
+        // Firestoreからの削除処理
+        await deleteDoc(doc(db, "schedules", activeScheduleId));
         actionModal.classList.add('hidden');
         renderCalendar();
       });
