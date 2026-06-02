@@ -10,31 +10,58 @@
   <script type="module" src="auth.js" defer></script>
 
   <style>
-    body { font-family: 'M PLUS Rounded 1c', sans-serif; }
-    .bg-cafe-home { background-image: url('images/back.png'); background-size: cover; background-position: center; }
-    
-    /* コンテナをFlexboxで中央配置 */
-    .char-container { 
-      display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
-      gap: 30px; width: 100%; height: 80vh; padding-top: 20px;
+    body { 
+      font-family: 'M PLUS Rounded 1c', sans-serif; 
+    }
+    .bg-cafe-home { 
+      background-image: url('images/back.png'); 
+      background-size: cover; 
+      background-position: center; 
     }
     
-    .char-item { display: flex; align-items: center; cursor: pointer; z-index: 10; }
+    /* コンテナの行間を狭め、はみ出す場合はスクロールできるように修正 */
+    .char-container { 
+      display: flex; 
+      flex-wrap: wrap; 
+      justify-content: center; 
+      align-content: flex-start; /* 上から詰めて配置 */
+      row-gap: 10px;    /* 縦の隙間を小さく */
+      column-gap: 30px; /* 横の隙間 */
+      width: 100%; 
+      height: 100dvh; 
+      padding: 60px 10px 110px 10px; /* 上はログイン情報、下はナビバー(約80px)を避ける */
+      overflow-y: auto; /* 画面が小さい時はスクロール可能にする */
+    }
     
-    /* キャラ：2倍 (200px) */
-    .char-img { width: 200px; height: 200px; object-fit: contain; }
+    .char-item { 
+      display: flex; 
+      align-items: center; 
+      cursor: pointer; 
+      z-index: 10; 
+    }
     
-    /* 吹き出し：2.5倍 (350px * 200px) */
+    /* キャラ画像サイズ */
+    .char-img { 
+      width: 200px; 
+      height: 200px; 
+      object-fit: contain; 
+    }
+    
+    /* 吹き出しサイズを大きく (旧 350x200 -> 新 420x240) */
     .speech-box { 
-      width: 350px; height: 200px; 
-      display: flex; align-items: center; justify-content: center;
-      text-align: center; padding: 30px; font-size: 22px; font-weight: bold;
-      background-size: contain; background-repeat: no-repeat; background-position: center;
-      /* 詳細が長くなった時はみ出さないよう調整 */
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 4;
-      -webkit-box-orient: vertical;
+      width: 420px; 
+      height: 240px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      text-align: center; 
+      padding: 30px 45px; /* はみ出さないように左右の余白を多めに */
+      font-weight: bold;
+      background-size: contain; 
+      background-repeat: no-repeat; 
+      background-position: center;
+      /* デフォルトの文字サイズ（JSで上書きされる） */
+      font-size: 24px; 
     }
   </style>
 </head>
@@ -56,25 +83,27 @@
 
   <div class="char-container">
     <div class="char-item" data-name="waka">
-      <div class="speech-box bg-[url('images/wakacom.png')]" contenteditable="true"></div>
+      <div class="speech-box bg-[url('images/wakacom.png')]"></div>
       <img src="images/waka.png" class="char-img">
     </div>
     <div class="char-item" data-name="yuzu">
       <img src="images/yuzu.png" class="char-img">
-      <div class="speech-box bg-[url('images/yuzucom.png')]" contenteditable="true"></div>
+      <div class="speech-box bg-[url('images/yuzucom.png')]"></div>
     </div>
     <div class="char-item" data-name="lily">
-      <div class="speech-box bg-[url('images/lilycom.png')]" contenteditable="true"></div>
+      <div class="speech-box bg-[url('images/lilycom.png')]"></div>
       <img src="images/lily.png" class="char-img">
     </div>
     <div class="char-item" data-name="toru">
       <img src="images/toru.png" class="char-img">
-      <div class="speech-box bg-[url('images/torucom.png')]" contenteditable="true"></div>
+      <div class="speech-box bg-[url('images/torucom.png')]"></div>
     </div>
   </div>
 
-  <div class="fixed bottom-0 w-full z-50">
-    <cafe-nav></cafe-nav>
+  <div class="fixed bottom-0 w-full z-50 pointer-events-none">
+    <div class="pointer-events-auto">
+      <cafe-nav></cafe-nav>
+    </div>
   </div>
   
   <script src="components/navbar.js" defer></script>
@@ -124,6 +153,15 @@
       "当直": "当直だよ"
     };
 
+    // 文字数に応じてフォントサイズを動的に変更する関数
+    function getDynamicFontSize(textLength) {
+      if (textLength > 70) return "13px";
+      if (textLength > 45) return "15px";
+      if (textLength > 25) return "18px";
+      if (textLength > 15) return "21px";
+      return "24px"; // 文字数が少ない場合は大きく表示
+    }
+
     async function updateBubbles() {
       const today = new Date();
       const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
@@ -150,6 +188,8 @@
           s.characterName === name || (s.members && s.members.includes(name))
         );
         
+        let msg = "今日は何の日？";
+
         if (charSchedules.length > 0) {
           // createdAt で降順（新しい順）にソート
           charSchedules.sort((a, b) => {
@@ -161,17 +201,16 @@
           const latestSched = charSchedules[0];
           
           // 詳細があれば詳細を優先、なければデフォルトのテキスト
-          let msg = "";
           if (latestSched.detail && latestSched.detail.trim() !== "") {
             msg = latestSched.detail;
           } else {
             msg = shiftMessages[latestSched.text] || latestSched.text;
           }
-          
-          bubble.textContent = msg;
-        } else {
-          bubble.textContent = "今日は何の日？";
         }
+        
+        // メッセージの長さに応じてフォントサイズを適用
+        bubble.style.fontSize = getDynamicFontSize(msg.length);
+        bubble.textContent = msg;
       });
     }
   </script>
