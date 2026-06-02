@@ -1,6 +1,6 @@
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { doc, getDoc, collection, addDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   try {
@@ -29,9 +29,11 @@ document.addEventListener("DOMContentLoaded", () => {
     let charName = "";
     let charColor = "#DFC6B0"; 
     
-    // Firebase Authでログイン状態を監視し、Firestoreからユーザー情報を取得
+    let allSchedules = []; // Firestoreから取得した全スケジュールを保持
+
     onAuthStateChanged(auth, async (user) => {
       if (user) {
+        // ユーザー情報の取得
         try {
           const docRef = doc(db, "users", user.uid);
           const docSnap = await getDoc(docRef);
@@ -45,29 +47,26 @@ document.addEventListener("DOMContentLoaded", () => {
           console.error("ユーザー情報の取得エラー:", e);
         }
         
-        // データの取得が完了してからカレンダーの初期描画を行う
-        updatePopupPosition();
-        renderCalendar();
+        // スケジュールのリアルタイム監視（追加・変更・削除が自動反映される）
+        onSnapshot(collection(db, "schedules"), (snapshot) => {
+          allSchedules = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          updatePopupPosition();
+          renderCalendar();
+        });
       }
     });
 
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     
-    // ==========================================
-    // 日本の祝日データを自動取得（API連携）
-    // ==========================================
     let holidaysData = {};
     fetch('https://holidays-jp.github.io/api/v1/date.json')
       .then(response => response.json())
       .then(data => {
         holidaysData = data;
-        renderCalendar(); // 取得後に再描画して赤色を反映
+        if (allSchedules.length > 0) renderCalendar();
       })
       .catch(error => console.warn("祝日データの取得に失敗しました:", error));
 
-    const sortOrder = { "lily": 1, "yuzu": 2, "waka": 3, "toru": 4 };
-
-    // 並び順のスコア計算
     function getSortScore(sched) {
       if (sched.type === 'shift') {
         if (sched.characterName === 'lily') return 1;
@@ -153,13 +152,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return gradient + stops.join(", ") + ")";
     }
 
-    function getSchedules() {
-      try {
-        let data = JSON.parse(localStorage.getItem('cafe_schedules'));
-        return Array.isArray(data) ? data : [];
-      } catch (e) { return []; }
-    }
-
     function renderCalendar() {
       calendarDays.innerHTML = "";
       
@@ -174,7 +166,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const totalCells = rows * 7;
 
       calendarDays.style.gridTemplateRows = `repeat(${rows}, minmax(3rem, 1fr))`;
-      let schedules = getSchedules();
 
       for (let i = 0; i < totalCells; i++) {
         const cell = document.createElement("div");
@@ -198,14 +189,13 @@ document.addEventListener("DOMContentLoaded", () => {
             renderCalendar();
           });
 
-          // 祝日の判定（holidaysData から検索）
           let numClass = "text-xs z-10 relative font-bold";
           if (i % 7 === 5) {
-            numClass += " text-blue-700"; // 土曜
+            numClass += " text-blue-700";
           } else if (i % 7 === 6 || holidaysData[dateStr]) {
-            numClass += " text-red-700"; // 日曜・祝日
+            numClass += " text-red-700";
           } else {
-            numClass += " text-black"; // 平日
+            numClass += " text-black";
           }
 
           const wrapper = document.createElement("div");
@@ -213,7 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (isToday) {
             const circle = document.createElement("div");
             circle.className = "absolute inset-0 rounded-full opacity-50 z-0";
-            circle.style.backgroundColor = charColor; // Firebaseから取得したカラーが適用される
+            circle.style.backgroundColor = charColor; 
             wrapper.appendChild(circle);
           }
           const span = document.createElement("span");
@@ -222,7 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
           wrapper.appendChild(span);
           cell.appendChild(wrapper);
 
-          let daySchedules = schedules.filter(s => s.date === dateStr);
+          let daySchedules = allSchedules.filter(s => s.date === dateStr);
           daySchedules.sort((a, b) => getSortScore(a) - getSortScore(b));
 
           const schedContainer = document.createElement("div");
@@ -301,27 +291,31 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     document.querySelectorAll('.stamp-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', async () => {
         if (!selectedDateStr) {
           alert("入力したい枠を選択してください！");
           return;
         }
         const type = btn.getAttribute('data-type');
         const text = btn.getAttribute('data-text');
-        const schedules = getSchedules();
         
-        schedules.push({
-          id: Date.now().toString(),
-          date: selectedDateStr,
-          type: type,
-          text: text,
-          author: userName, // Firebaseから取得した名前
-          characterName: charName, // Firebaseから取得したキャラ名
-          authorColor: charColor // Firebaseから取得したカラー
-        });
-        localStorage.setItem('cafe_schedules', JSON.stringify(schedules));
-        advanceSelectedDate();
-        renderCalendar();
+        try {
+          // Firestoreに新スケジュールを追加
+          await addDoc(collection(db, "schedules"), {
+            date: selectedDateStr,
+            type: type,
+            text: text,
+            author: userName,
+            characterName: charName,
+            authorColor: charColor,
+            createdAt: new Date().toISOString()
+          });
+          advanceSelectedDate();
+          // ※ renderCalendar は onSnapshot が自動的に発火させるのでここでは不要
+        } catch (error) {
+          console.error("保存エラー:", error);
+          alert("予定の保存に失敗しました。");
+        }
       });
     });
 
@@ -359,7 +353,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function openActionModal(schedule) {
       if(!actionModal) return;
-      activeScheduleId = schedule.id;
+      activeScheduleId = schedule.id; // FirestoreのドキュメントID
       actionModal.classList.remove('hidden');
 
       const shiftTypes = ["休み", "日勤", "夜勤", "明け", "当直"];
@@ -373,13 +367,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if(cancelBtn) cancelBtn.addEventListener('click', () => actionModal.classList.add('hidden'));
     
     if(deleteBtn) {
-      deleteBtn.addEventListener('click', () => {
+      deleteBtn.addEventListener('click', async () => {
         if(!confirm("本当に削除しますか？")) return;
-        let schedules = getSchedules();
-        schedules = schedules.filter(s => s.id !== activeScheduleId);
-        localStorage.setItem('cafe_schedules', JSON.stringify(schedules));
-        actionModal.classList.add('hidden');
-        renderCalendar();
+        try {
+          // Firestoreから削除
+          await deleteDoc(doc(db, "schedules", activeScheduleId));
+          actionModal.classList.add('hidden');
+        } catch (error) {
+          console.error("削除エラー:", error);
+          alert("削除に失敗しました。");
+        }
       });
     }
 
