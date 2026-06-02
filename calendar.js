@@ -233,4 +233,101 @@ document.addEventListener("DOMContentLoaded", () => {
     function advanceSelectedDate() {
       if (!selectedDateStr) return;
       const [y, m, d] = selectedDateStr.split('-').map(Number);
-      const nextDay = new Date(y, m - 1
+      const nextDay = new Date(y, m - 1, d + 1);
+      selectedDateStr = getFormatDate(nextDay.getFullYear(), nextDay.getMonth(), nextDay.getDate());
+      if (nextDay.getMonth() !== currentDate.getMonth()) {
+        currentDate = new Date(nextDay.getFullYear(), nextDay.getMonth(), 1);
+      }
+    }
+
+    document.querySelectorAll('.stamp-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (!selectedDateStr) {
+          alert("入力したい枠を選択してください！");
+          return;
+        }
+        const type = btn.getAttribute('data-type');
+        const text = btn.getAttribute('data-text');
+        const schedules = getSchedules();
+        
+        schedules.push({
+          id: Date.now().toString(),
+          date: selectedDateStr,
+          type: type,
+          text: text,
+          author: userName,
+          characterName: charName,
+          authorColor: charColor
+        });
+        localStorage.setItem('cafe_schedules', JSON.stringify(schedules));
+        advanceSelectedDate();
+        renderCalendar();
+      });
+    });
+
+    let activeScheduleId = null;
+    const deleteBtn = document.getElementById("sched-delete-btn");
+    const editBtn = document.getElementById("sched-edit-btn");
+    const cancelBtn = document.getElementById("sched-cancel-btn");
+
+    function openActionModal(schedule) {
+      if(!actionModal) return;
+      activeScheduleId = schedule.id;
+      actionModal.classList.remove('hidden');
+
+      let html = `<div class="font-bold text-lg border-b pb-2 mb-2 text-center">${schedule.text}</div>`;
+      if (schedule.title) html += `<p><strong>【タイトル】</strong><br>${schedule.title}</p>`;
+      if (schedule.partner) html += `<p><strong>【コラボ相手】</strong><br>${schedule.partner}</p>`;
+      if (schedule.time) html += `<p><strong>【時間】</strong><br>${schedule.time}</p>`;
+      
+      if (schedule.members && schedule.members.length > 0) {
+        const names = { waka: "若凪", yuzu: "柚茶", lily: "Lily00", toru: "とるま" };
+        const displayMembers = schedule.members.map(m => names[m] || m).join(', ');
+        html += `<p><strong>【メンバー】</strong><br>${displayMembers}</p>`;
+      }
+      
+      if (schedule.detail) html += `<p><strong>【詳細】</strong><br><span class="whitespace-pre-wrap">${schedule.detail}</span></p>`;
+      
+      if(!schedule.title && !schedule.partner && !schedule.time && (!schedule.members || schedule.members.length === 0) && !schedule.detail){
+         html += `<p class="text-gray-400 text-center py-2">詳細情報はありません</p>`;
+      }
+
+      if(modalContentArea) modalContentArea.innerHTML = html;
+
+      const shiftTypes = ["休み", "日勤", "夜勤", "明け", "当直"];
+      if (shiftTypes.includes(schedule.text) && schedule.author !== userName) {
+        deleteBtn.classList.add('hidden');
+      } else {
+        deleteBtn.classList.remove('hidden');
+      }
+    }
+
+    if(cancelBtn) cancelBtn.addEventListener('click', () => actionModal.classList.add('hidden'));
+    
+    if(deleteBtn) {
+      deleteBtn.addEventListener('click', () => {
+        if(!confirm("本当に削除しますか？")) return;
+        let schedules = getSchedules();
+        schedules = schedules.filter(s => s.id !== activeScheduleId);
+        localStorage.setItem('cafe_schedules', JSON.stringify(schedules));
+        actionModal.classList.add('hidden');
+        renderCalendar();
+      });
+    }
+
+    if(editBtn) {
+      editBtn.addEventListener('click', () => {
+        window.location.href = `schedule-edit.html?id=${activeScheduleId}`;
+      });
+    }
+
+    if(prevBtn) prevBtn.addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
+    if(nextBtn) nextBtn.addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
+
+    renderCalendar();
+  } catch (error) {
+    // 画面が真っ白になる代わりに、エラーの内容を画面に表示します！
+    alert("カレンダーの描画中にエラーが発生しました！\n" + error.message);
+    console.error("カレンダーエラー:", error);
+  }
+});
