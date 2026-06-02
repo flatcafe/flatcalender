@@ -18,7 +18,7 @@
 .speech-bubble {
   position: relative;
   border-radius: 12px;
-  color: #5a4a42; /* カフェっぽい文字色 */
+  color: #5a4a42;
 }
 
 /* 吹き出しのしっぽ */
@@ -33,15 +33,4 @@
   border-color: white transparent transparent transparent;
   display: block;
   width: 0;
-}
-
-/* まばたきなどの小アニメーション（CSSのみで実装可能） */
-@keyframes bounce-slow {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
-}
-
-.character {
-  /* 常に少しだけふわふわさせる場合はこれを有効化 */
-  /* animation: bounce-slow 3s infinite ease-in-out; */
 }
