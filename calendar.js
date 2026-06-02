@@ -49,4 +49,54 @@ document.addEventListener("DOMContentLoaded", () => {
         const monthStr = String(month + 1).padStart(2, '0');
         const dayStr = String(dayNum).padStart(2, '0');
         const dateRef = `${monthStr}-${dayStr}`;
-        const isToday = (year === today.getFullYear() && month === today.getMonth() && dayNum ===
+        const isToday = (year === today.getFullYear() && month === today.getMonth() && dayNum === today.getDate());
+
+        // 文字色の判定
+        let numClass = "text-xs z-10 relative font-bold";
+        if (i % 7 === 5) {
+          numClass += " text-blue-700"; // 土曜
+        } else if (i % 7 === 6 || holidays.includes(dateRef)) {
+          numClass += " text-red-700"; // 日曜・祝日
+        } else {
+          numClass += " text-black"; // 平日
+        }
+
+        // 数字を囲むラッパー（左上に配置）
+        const wrapper = document.createElement("div");
+        wrapper.className = "absolute top-1 left-1 w-5 h-5 flex items-center justify-center";
+
+        // 今日の場合はキャラカラーの丸をつける
+        if (isToday) {
+          const circle = document.createElement("div");
+          circle.className = "absolute inset-0 rounded-full opacity-50 z-0";
+          circle.style.backgroundColor = charColor;
+          wrapper.appendChild(circle);
+        }
+
+        // 日付テキスト
+        const span = document.createElement("span");
+        span.className = numClass;
+        span.textContent = dayNum;
+        
+        wrapper.appendChild(span);
+        cell.appendChild(wrapper);
+      }
+      
+      calendarDays.appendChild(cell);
+    }
+  }
+
+  // 先月・来月ボタンのイベント
+  prevBtn.addEventListener("click", () => {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    renderCalendar();
+  });
+
+  nextBtn.addEventListener("click", () => {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    renderCalendar();
+  });
+
+  // 初回描画
+  renderCalendar();
+});
