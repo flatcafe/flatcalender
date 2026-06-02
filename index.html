@@ -5,39 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>☕ふらっとCafe - Home</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- かわいいフォント（Google Fonts） -->
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'M PLUS Rounded 1c', sans-serif; }
-    .char-container { position: relative; width: 100%; height: 90vh; }
+    /* 背景をimages/back.pngに設定 */
+    .bg-cafe-home { background-image: url('images/back.png'); background-size: cover; background-position: center; }
+    
+    .char-container { position: relative; width: 100%; height: 85vh; }
     .char-item { position: absolute; display: flex; align-items: center; cursor: pointer; }
-    .char-img { width: 100px; height: 100px; object-fit: contain; }
-    /* 吹き出しの文字枠 */
+    
+    /* 2倍サイズに拡大 */
+    .char-img { width: 200px; height: 200px; object-fit: contain; }
     .speech-box { 
-      width: 140px; height: 80px; margin-left: -10px; 
+      width: 240px; height: 140px; 
       display: flex; align-items: center; justify-content: center;
-      text-align: center; padding: 10px; font-size: 12px; font-weight: bold;
-      background-size: contain; background-repeat: no-repeat;
+      text-align: center; padding: 20px; font-size: 16px; font-weight: bold;
+      background-size: contain; background-repeat: no-repeat; background-position: center;
     }
   </style>
 </head>
-<body class="bg-cafe-pattern h-[100dvh] overflow-hidden">
+<body class="bg-cafe-home h-[100dvh] overflow-hidden">
 
-  <div class="char-container" id="char-area">
-    <!-- 各キャラの配置 -->
-    <div class="char-item top-10 right-4" data-name="waka" data-com="wakacom">
-      <img src="images/waka.png" class="char-img">
+  <div class="char-container">
+    <div class="char-item top-5 right-4" data-name="waka">
       <div class="speech-box bg-[url('images/wakacom.png')]" contenteditable="true"></div>
+      <img src="images/waka.png" class="char-img">
     </div>
-    <div class="char-item top-40 right-20" data-name="yuzu" data-com="yuzucom">
+
+    <div class="char-item top-40 right-20" data-name="yuzu">
       <img src="images/yuzu.png" class="char-img">
       <div class="speech-box bg-[url('images/yuzucom.png')]" contenteditable="true"></div>
     </div>
-    <div class="char-item top-72 right-4" data-name="lily" data-com="lilycom">
-      <img src="images/lily.png" class="char-img">
+
+    <div class="char-item top-72 right-4" data-name="lily">
       <div class="speech-box bg-[url('images/lilycom.png')]" contenteditable="true"></div>
+      <img src="images/lily.png" class="char-img">
     </div>
-    <div class="char-item top-[28rem] right-20" data-name="toru" data-com="torucom">
+
+    <div class="char-item top-[28rem] right-20" data-name="toru">
       <img src="images/toru.png" class="char-img">
       <div class="speech-box bg-[url('images/torucom.png')]" contenteditable="true"></div>
     </div>
@@ -64,12 +69,10 @@
         const name = item.getAttribute('data-name');
         const bubble = item.querySelector('.speech-box');
         
-        // その日の予定を探す
         const todaySched = schedules.find(s => s.date === dateStr && s.characterName === name);
         
         if (todaySched) {
           let msg = shiftMessages[todaySched.text] || todaySched.text;
-          // 詳細があったら☆をつける
           if (todaySched.detail && todaySched.detail.trim() !== "") {
             msg += "☆";
           }
@@ -79,8 +82,6 @@
         }
       });
     }
-
-    // ページ読み込み時に自動更新
     updateBubbles();
   </script>
 </body>
