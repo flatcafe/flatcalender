@@ -1,4 +1,8 @@
-document.addEventListener("DOMContentLoaded", () => {
+// schedule-edit.js
+import { db } from './firebase-config.js';
+import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+document.addEventListener("DOMContentLoaded", async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const scheduleId = urlParams.get('id');
   
@@ -8,15 +12,17 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  let schedules = JSON.parse(localStorage.getItem('cafe_schedules')) || [];
-  const scheduleIndex = schedules.findIndex(s => s.id === scheduleId);
-  const schedule = schedules[scheduleIndex];
+  // Firestoreから予定を取得
+  const scheduleRef = doc(db, "schedules", scheduleId);
+  const docSnap = await getDoc(scheduleRef);
 
-  if (!schedule) {
+  if (!docSnap.exists()) {
     alert("予定が見つかりません");
     window.location.href = 'calendar.html';
     return;
   }
+
+  const schedule = docSnap.data();
 
   document.getElementById('edit-header-title').textContent = `${schedule.text} の詳細`;
   const formContainer = document.getElementById('form-container');
@@ -138,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  document.getElementById('save-btn').addEventListener('click', () => {
+  document.getElementById('save-btn').addEventListener('click', async () => {
     if (document.getElementById('input-title')) schedule.title = document.getElementById('input-title').value;
     if (document.getElementById('input-partner')) schedule.partner = document.getElementById('input-partner').value;
     if (document.getElementById('input-time')) schedule.time = document.getElementById('input-time').value;
@@ -153,8 +159,8 @@ document.addEventListener("DOMContentLoaded", () => {
       schedule.customColor = document.querySelector('input[name="customColor"]:checked').value;
     }
 
-    schedules[scheduleIndex] = schedule;
-    localStorage.setItem('cafe_schedules', JSON.stringify(schedules));
+    // Firestoreを更新
+    await updateDoc(scheduleRef, schedule);
     window.location.href = 'calendar.html';
   });
 
