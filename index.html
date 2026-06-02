@@ -2,61 +2,40 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>☕ふらっとCafe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>☕ふらっとCafe - Home</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <script src="auth.js"></script>
-  <script src="components/navbar.js" defer></script>
+  <style>
+    /* キャラセットのコンテナ */
+    .char-container { position: relative; width: 100%; height: 100vh; overflow: hidden; }
+    .char-item { position: absolute; display: flex; align-items: center; }
+    .char-img { width: 120px; height: 120px; object-fit: contain; }
+    .speech-bubble { width: 140px; height: auto; object-fit: contain; margin-left: -20px; }
+  </style>
 </head>
-<body class="h-[100dvh] flex flex-col font-sans text-gray-800 overflow-hidden">
-  
-  <main id="home" class="flex-1 relative overflow-hidden flex flex-col justify-center items-center bg-cafe-pattern">
-    
-    <button id="user-display" class="absolute top-4 right-4 z-50 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-bold text-amber-900 border border-amber-200 shadow-sm active:scale-95 transition-transform">
-      読み込み中...
-    </button>
+<body class="bg-cafe-pattern h-[100dvh] overflow-hidden">
 
-    <div id="logout-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
-      <div class="bg-white p-6 rounded-2xl shadow-xl w-64 text-center">
-        <p class="mb-6 font-bold text-gray-700">ログアウトしますか？</p>
-        <div class="flex gap-4">
-          <button id="cancel-logout" class="flex-1 py-2 bg-gray-100 rounded-lg text-gray-600 font-bold">キャンセル</button>
-          <button id="confirm-logout" class="flex-1 py-2 bg-red-500 text-white rounded-lg font-bold">はい</button>
-        </div>
-      </div>
+  <div class="char-container">
+    <div class="char-item top-10 right-4">
+      <img src="images/waka.png" class="char-img">
+      <img src="images/wakacom.png" class="speech-bubble">
     </div>
-
-    <div class="relative z-10 w-full max-w-md p-4 h-full flex flex-col justify-center">
-      <div class="grid grid-cols-2 gap-y-8 gap-x-2">
-        
-        <div class="character opacity-0 flex flex-col items-center">
-          <div class="speech-bubble bg-[#DFC6B0] px-2 py-1.5 text-xs font-bold shadow-md mb-2 text-center whitespace-nowrap">今日はお休み！</div>
-          <div class="text-5xl sm:text-7xl drop-shadow-lg filter transition-transform hover:scale-110">🌻</div>
-        </div>
-
-        <div class="character opacity-0 flex flex-col items-center">
-          <div class="speech-bubble bg-[#DFC6B0] px-2 py-1.5 text-xs font-bold shadow-md mb-2 text-center whitespace-nowrap">日勤だから返信遅いかも！</div>
-          <div class="text-5xl sm:text-7xl drop-shadow-lg filter transition-transform hover:scale-110">🍃</div>
-        </div>
-
-        <div class="character opacity-0 flex flex-col items-center">
-          <div class="speech-bubble bg-[#DFC6B0] px-2 py-1.5 text-xs font-bold shadow-md mb-2 text-center whitespace-nowrap">夜勤だよ～</div>
-          <div class="text-5xl sm:text-7xl drop-shadow-lg filter transition-transform hover:scale-110">🌸</div>
-        </div>
-
-        <div class="character opacity-0 flex flex-col items-center">
-          <div class="speech-bubble bg-[#DFC6B0] px-2 py-1.5 text-xs font-bold shadow-md mb-2 text-center whitespace-nowrap">コラボ準備中！</div>
-          <div class="text-5xl sm:text-7xl drop-shadow-lg filter transition-transform hover:scale-110">💎</div>
-        </div>
-        
-      </div>
+    <div class="char-item top-40 right-20">
+      <img src="images/yuzu.png" class="char-img">
+      <img src="images/yuzucom.png" class="speech-bubble">
     </div>
-  </main>
+    <div class="char-item top-72 right-4">
+      <img src="images/lily.png" class="char-img">
+      <img src="images/lilycom.png" class="speech-bubble">
+    </div>
+    <div class="char-item top-[28rem] right-20">
+      <img src="images/toru.png" class="char-img">
+      <img src="images/torucom.png" class="speech-bubble">
+    </div>
+  </div>
 
   <cafe-nav></cafe-nav>
 
-  <script src="app.js"></script>
+  <script src="components/navbar.js" defer></script>
 </body>
 </html>
