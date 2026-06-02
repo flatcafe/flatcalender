@@ -5,37 +5,83 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>☕ふらっとCafe - Home</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- かわいいフォント（Google Fonts） -->
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700&display=swap" rel="stylesheet">
   <style>
-    /* キャラセットのコンテナ */
-    .char-container { position: relative; width: 100%; height: 100vh; overflow: hidden; }
-    .char-item { position: absolute; display: flex; align-items: center; }
-    .char-img { width: 120px; height: 120px; object-fit: contain; }
-    .speech-bubble { width: 140px; height: auto; object-fit: contain; margin-left: -20px; }
+    body { font-family: 'M PLUS Rounded 1c', sans-serif; }
+    .char-container { position: relative; width: 100%; height: 90vh; }
+    .char-item { position: absolute; display: flex; align-items: center; cursor: pointer; }
+    .char-img { width: 100px; height: 100px; object-fit: contain; }
+    /* 吹き出しの文字枠 */
+    .speech-box { 
+      width: 140px; height: 80px; margin-left: -10px; 
+      display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 10px; font-size: 12px; font-weight: bold;
+      background-size: contain; background-repeat: no-repeat;
+    }
   </style>
 </head>
 <body class="bg-cafe-pattern h-[100dvh] overflow-hidden">
 
-  <div class="char-container">
-    <div class="char-item top-10 right-4">
+  <div class="char-container" id="char-area">
+    <!-- 各キャラの配置 -->
+    <div class="char-item top-10 right-4" data-name="waka" data-com="wakacom">
       <img src="images/waka.png" class="char-img">
-      <img src="images/wakacom.png" class="speech-bubble">
+      <div class="speech-box bg-[url('images/wakacom.png')]" contenteditable="true"></div>
     </div>
-    <div class="char-item top-40 right-20">
+    <div class="char-item top-40 right-20" data-name="yuzu" data-com="yuzucom">
       <img src="images/yuzu.png" class="char-img">
-      <img src="images/yuzucom.png" class="speech-bubble">
+      <div class="speech-box bg-[url('images/yuzucom.png')]" contenteditable="true"></div>
     </div>
-    <div class="char-item top-72 right-4">
+    <div class="char-item top-72 right-4" data-name="lily" data-com="lilycom">
       <img src="images/lily.png" class="char-img">
-      <img src="images/lilycom.png" class="speech-bubble">
+      <div class="speech-box bg-[url('images/lilycom.png')]" contenteditable="true"></div>
     </div>
-    <div class="char-item top-[28rem] right-20">
+    <div class="char-item top-[28rem] right-20" data-name="toru" data-com="torucom">
       <img src="images/toru.png" class="char-img">
-      <img src="images/torucom.png" class="speech-bubble">
+      <div class="speech-box bg-[url('images/torucom.png')]" contenteditable="true"></div>
     </div>
   </div>
 
   <cafe-nav></cafe-nav>
-
   <script src="components/navbar.js" defer></script>
+
+  <script>
+    const shiftMessages = {
+      "日勤": "お昼間はお仕事だよ",
+      "休み": "お休みだー！！遊ぶぞ！！",
+      "夜勤": "朝も昼もお仕事・・・",
+      "明け": "明け！！やっとゲームできる！！",
+      "当直": "当直だよ"
+    };
+
+    function updateBubbles() {
+      const today = new Date();
+      const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+      const schedules = JSON.parse(localStorage.getItem('cafe_schedules')) || [];
+
+      document.querySelectorAll('.char-item').forEach(item => {
+        const name = item.getAttribute('data-name');
+        const bubble = item.querySelector('.speech-box');
+        
+        // その日の予定を探す
+        const todaySched = schedules.find(s => s.date === dateStr && s.characterName === name);
+        
+        if (todaySched) {
+          let msg = shiftMessages[todaySched.text] || todaySched.text;
+          // 詳細があったら☆をつける
+          if (todaySched.detail && todaySched.detail.trim() !== "") {
+            msg += "☆";
+          }
+          bubble.textContent = msg;
+        } else {
+          bubble.textContent = "今日は何の日？";
+        }
+      });
+    }
+
+    // ページ読み込み時に自動更新
+    updateBubbles();
+  </script>
 </body>
 </html>
