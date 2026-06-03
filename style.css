@@ -87,3 +87,12 @@
   50% { transform: translateY(-30px); }
   100% { transform: translateY(0); }
 }
+
+/* スクロールバーを隠すユーティリティ */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
