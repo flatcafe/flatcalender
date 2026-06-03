@@ -1,406 +1,90 @@
-import { auth, db } from './firebase-config.js';
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { doc, getDoc, collection, addDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+<!DOCTYPE html>
+<html lang="ja" class="bg-[#DFC6B0]">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>☕ふらっとCafe - カレンダー</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="auth.js"></script>
+  <script src="components/navbar.js" defer></script>
+</head>
+<body class="bg-cafe-pattern fixed inset-0 flex flex-col font-sans text-gray-800 overflow-hidden h-[100dvh]">
+  
+  <main class="relative flex flex-col items-center w-full z-10 overflow-hidden h-[calc(100dvh-70px)]">
+    <div class="w-full px-4 pt-[calc(env(safe-area-inset-top)+16px)] pb-2 flex justify-between items-end text-black z-10 shrink-0">
+      <h2 id="month-display" class="text-2xl font-bold tracking-wider leading-none">June 2026</h2>
+      <div class="flex gap-6 text-xl font-bold">
+        <button id="prev-month" class="px-2 hover:scale-125 transition">&lt;</button>
+        <button id="next-month" class="px-2 hover:scale-125 transition">&gt;</button>
+      </div>
+    </div>
 
-document.addEventListener("DOMContentLoaded", () => {
-  try {
-    const monthDisplay = document.getElementById("month-display");
-    const calendarDays = document.getElementById("calendar-days");
-    const prevBtn = document.getElementById("prev-month");
-    const nextBtn = document.getElementById("next-month");
-    
-    const stampPopup = document.getElementById("stamp-popup");
-    const popupToggleBtn = document.getElementById("popup-toggle-btn");
+    <div class="w-full grid grid-cols-7 text-center text-sm font-bold z-10 mb-1 shrink-0">
+      <div class="text-black">Mon</div>
+      <div class="text-black">Tue</div>
+      <div class="text-black">Wed</div>
+      <div class="text-black">Thu</div>
+      <div class="text-black">Fri</div>
+      <div class="text-blue-700">Sat</div>
+      <div class="text-red-700">Sun</div>
+    </div>
 
-    const detailModal = document.getElementById("schedule-detail-modal");
-    const detailContentArea = document.getElementById("detail-content-area");
-    const detailCloseBtn = document.getElementById("detail-close-btn");
+    <div class="w-full flex-1 bg-white/50 border-t border-black flex flex-col z-10 min-h-0 overflow-hidden">
+      <div id="calendar-days" class="w-full flex-1 grid grid-cols-7 border-l border-black min-h-0 overflow-hidden">
+      </div>
+    </div>
+  </main>
 
-    const actionModal = document.getElementById("schedule-action-modal");
-    
-    if (!calendarDays) return;
+  <div id="stamp-popup" class="fixed left-0 right-0 z-40 bg-[#E0D7C2] shadow-[0_0_20px_rgba(0,0,0,0.15)] p-4 transition-transform duration-300 translate-y-full bottom-0 rounded-t-3xl pt-4 pb-8">
+    <div class="flex flex-col gap-3 max-w-md mx-auto">
+      <div class="flex justify-between items-center px-1 mb-1">
+        <span class="text-sm font-bold text-amber-900">予定スタンプ</span>
+        <button id="popup-toggle-btn" class="bg-white/60 px-3 py-1 rounded-full text-xs font-bold shadow-sm active:scale-95 transition border border-gray-300">▲ 上へ移動</button>
+      </div>
+      <div class="grid grid-cols-5 gap-2">
+        <button class="stamp-btn bg-[#D4A5AA] text-black text-sm font-bold py-2.5 rounded-full shadow-sm active:scale-95 transition" data-type="shift" data-text="休み">休み</button>
+        <button class="stamp-btn bg-[#D2B48C] text-black text-sm font-bold py-2.5 rounded-full shadow-sm active:scale-95 transition" data-type="shift" data-text="日勤">日勤</button>
+        <button class="stamp-btn bg-[#7D98A1] text-black text-sm font-bold py-2.5 rounded-full shadow-sm active:scale-95 transition" data-type="shift" data-text="夜勤">夜勤</button>
+        <button class="stamp-btn bg-[#BC9A9A] text-black text-sm font-bold py-2.5 rounded-full shadow-sm active:scale-95 transition" data-type="shift" data-text="明け">明け</button>
+        <button class="stamp-btn bg-[#C6ADCB] text-black text-sm font-bold py-2.5 rounded-full shadow-sm active:scale-95 transition" data-type="shift" data-text="当直">当直</button>
+      </div>
+      <div class="grid grid-cols-6 gap-1.5">
+        <button class="stamp-btn bg-[#F0CCB9] text-black text-[11px] font-bold py-3 rounded-xl shadow-sm active:scale-95 transition" data-type="video" data-text="横動画">横動画</button>
+        <button class="stamp-btn bg-[#D9E4DD] text-black text-[10px] font-bold py-3 rounded-xl shadow-sm active:scale-95 transition" data-type="video" data-text="ショート">ショート</button>
+        <button class="stamp-btn bg-[#AFC8E1] text-black text-[11px] font-bold py-3 rounded-xl shadow-sm active:scale-95 transition" data-type="video" data-text="コラボ">コラボ</button>
+        <button class="stamp-btn bg-[#AFC8E1] text-black text-[13px] font-bold py-3 rounded-xl shadow-sm active:scale-95 transition" data-type="video" data-text="×">×</button>
+        <button class="stamp-btn bg-[#AFC8E1] text-black text-[13px] font-bold py-3 rounded-xl shadow-sm active:scale-95 transition" data-type="video" data-text="〇">〇</button>
+        <button class="stamp-btn bg-[#AFC8E1] text-black text-[11px] font-bold py-3 rounded-xl shadow-sm active:scale-95 transition" data-type="video" data-text="その他">その他</button>
+      </div>
+    </div>
+  </div>
 
-    let currentDate = new Date();
-    const today = new Date();
-    let selectedDateStr = null;
-    let isPopupTop = false; 
+  <div id="schedule-detail-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+    <div class="bg-[#C9BDA6] p-6 rounded-2xl shadow-xl w-72">
+      <div id="detail-content-area" class="mb-5 text-sm text-gray-900 flex flex-col gap-2"></div>
+      <button id="detail-close-btn" class="w-full py-2.5 bg-white/70 text-gray-800 rounded-xl font-bold shadow-sm">閉じる</button>
+    </div>
+  </div>
 
-    let userName = "ゲスト";
-    let charName = "";
-    let charColor = "#DFC6B0"; 
-    
-    let allSchedules = [];
-    let groupColors = {
-      waka: { main: "#abc888", sub: "#8fae6f" },
-      yuzu: { main: "#fef263", sub: "#dfd344" },
-      lily: { main: "#F0566E", sub: "#d13850" },
-      toru: { main: "#968ABD", sub: "#786c9f" }
-    };
+  <div id="schedule-action-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+    <div class="bg-white p-6 rounded-2xl shadow-xl w-64 text-center">
+      <p class="mb-4 font-bold text-gray-700 border-b pb-2">予定のアクション</p>
+      <div class="flex flex-col gap-3">
+        <button id="sched-edit-btn" class="w-full py-2.5 bg-blue-500 text-white rounded-xl font-bold shadow-sm">編集</button>
+        <button id="sched-delete-btn" class="w-full py-2.5 bg-red-500 text-white rounded-xl shadow-sm">削除</button>
+        <button id="sched-cancel-btn" class="w-full py-2.5 bg-gray-200 text-gray-700 rounded-xl font-bold shadow-sm mt-2">戻る</button>
+      </div>
+    </div>
+  </div>
 
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        try {
-          const docRef = doc(db, "users", user.uid);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            const userData = docSnap.data();
-            userName = userData.name || "ゲスト";
-            charName = userData.characterName || "";
-            charColor = userData.characterColor || "#DFC6B0";
-          }
-        } catch (e) {
-          console.error("ユーザー情報の取得エラー:", e);
-        }
-        
-        onSnapshot(doc(db, "settings", "colors"), (docSnap) => {
-          if (docSnap.exists()) {
-            groupColors = { ...groupColors, ...docSnap.data() };
-            if (allSchedules.length > 0) renderCalendar();
-          }
-        });
-
-        onSnapshot(collection(db, "schedules"), (snapshot) => {
-          allSchedules = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-          updatePopupPosition();
-          renderCalendar();
-        });
-      }
-    });
-
-    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    let holidaysData = {};
-    fetch('https://holidays-jp.github.io/api/v1/date.json')
-      .then(response => response.json())
-      .then(data => {
-        holidaysData = data;
-        if (allSchedules.length > 0) renderCalendar();
-      })
-      .catch(error => console.warn("祝日データの取得に失敗しました:", error));
-
-    function getSortScore(sched) {
-      if (sched.type === 'shift') {
-        if (sched.characterName === 'lily') return 1;
-        if (sched.characterName === 'yuzu') return 2;
-        if (sched.characterName === 'waka') return 3;
-        if (sched.characterName === 'toru') return 4;
-        return 5;
-      } else {
-        if (sched.text === '横動画') return 10;
-        if (sched.text === 'ショート') return 11;
-        if (sched.text === 'コラボ') return 12;
-        return 13;
-      }
-    }
-
-    function updatePopupPosition() {
-      const navBar = document.querySelector("cafe-nav nav");
-      const navHeight = navBar ? navBar.offsetHeight : 0;
-      
-      const isHiddenTop = stampPopup.classList.contains("-translate-y-full");
-      const isHiddenBottom = stampPopup.classList.contains("translate-y-full");
-      stampPopup.className = "fixed left-0 right-0 z-40 bg-[#E0D7C2] shadow-[0_0_20px_rgba(0,0,0,0.15)] p-4 transition-transform duration-300";
-      if (isPopupTop) {
-        stampPopup.classList.add("top-0", "rounded-b-3xl", "pb-6");
-        stampPopup.style.bottom = "auto";
-        if (isHiddenTop || isHiddenBottom) stampPopup.classList.add("-translate-y-full");
-        if (popupToggleBtn) popupToggleBtn.textContent = "▼ 下へ移動";
-      } else {
-        stampPopup.classList.add("rounded-t-3xl", "pt-4", "pb-8");
-        stampPopup.style.bottom = `${navHeight}px`;
-        if (isHiddenTop || isHiddenBottom) stampPopup.classList.add("translate-y-full");
-        if (popupToggleBtn) popupToggleBtn.textContent = "▲ 上へ移動";
-      }
-    }
-
-    if (popupToggleBtn) {
-      popupToggleBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        isPopupTop = !isPopupTop;
-        updatePopupPosition();
-      });
-    }
-
-    document.addEventListener("click", (e) => {
-      const navLogo = e.target.closest ? e.target.closest("#nav-logo") : null;
-      if (navLogo && stampPopup) {
-        e.preventDefault();
-        const isHidden = stampPopup.classList.contains("translate-y-full") || stampPopup.classList.contains("-translate-y-full");
-        
-        if (isHidden) {
-          updatePopupPosition();
-          setTimeout(() => {
-            stampPopup.classList.remove("translate-y-full", "-translate-y-full");
-          }, 10);
-        } else {
-          if (isPopupTop) {
-            stampPopup.classList.add("-translate-y-full"); 
-          } else {
-            stampPopup.classList.add("translate-y-full"); 
-          }
-        }
-      }
-    });
-
-    function getFormatDate(y, m, d) {
-      return `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-    }
-
-    function getGradient(members) {
-      const ordered = ["waka", "yuzu", "lily", "toru"].filter(m => members.includes(m));
-      if (ordered.length === 0) return "#AFC8E1"; 
-      if (ordered.length === 1) return groupColors[ordered[0]]?.main || "#AFC8E1";
-      let gradient = "linear-gradient(90deg, ";
-      const step = 100 / ordered.length;
-      const stops = [];
-      ordered.forEach((m, i) => {
-        const col = groupColors[m]?.main || "#AFC8E1";
-        stops.push(`${col} ${i * step}%`);
-        stops.push(`${col} ${(i + 1) * step}%`);
-      });
-      return gradient + stops.join(", ") + ")";
-    }
-
-    function renderCalendar() {
-      calendarDays.innerHTML = "";
-      
-      const year = currentDate.getFullYear();
-      const month = currentDate.getMonth();
-      monthDisplay.textContent = `${monthNames[month]} ${year}`;
-
-      const firstDay = new Date(year, month, 1).getDay();
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
-      const startDay = firstDay === 0 ? 6 : firstDay - 1;
-      const rows = Math.max(5, Math.ceil((startDay + daysInMonth) / 7));
-      const totalCells = rows * 7;
-      
-      // 🔥 コンテンツ量に潰されないよう 1fr で均等固定
-      calendarDays.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
-
-      for (let i = 0; i < totalCells; i++) {
-        const cell = document.createElement("div");
-        // 🔥 min-h ではなく h-full min-h-0 で枠内に収める
-        cell.className = "border-r border-b border-black relative overflow-hidden flex flex-col items-center cursor-pointer w-full h-full min-h-0";
-        if (i >= startDay && i < startDay + daysInMonth) {
-          const dayNum = i - startDay + 1;
-          const dateStr = getFormatDate(year, month, dayNum);
-          const isToday = (year === today.getFullYear() && month === today.getMonth() && dayNum === today.getDate());
-          if (dateStr === selectedDateStr) {
-            cell.classList.add("ring-inset", "ring-4", "ring-amber-400", "bg-white/40");
-          }
-
-          cell.addEventListener("click", () => {
-            selectedDateStr = dateStr;
-            updatePopupPosition();
-            setTimeout(() => {
-              stampPopup.classList.remove("translate-y-full", "-translate-y-full");
-            }, 10);
-            renderCalendar();
-          });
-
-          let numClass = "text-xs z-10 relative font-bold";
-          if (i % 7 === 5) {
-            numClass += " text-blue-700";
-          } else if (i % 7 === 6 || holidaysData[dateStr]) {
-            numClass += " text-red-700";
-          } else {
-            numClass += " text-black";
-          }
-
-          const wrapper = document.createElement("div");
-          wrapper.className = "absolute top-1 left-1 w-5 h-5 flex items-center justify-center";
-          if (isToday) {
-            const circle = document.createElement("div");
-            circle.className = "absolute inset-0 rounded-full opacity-50 z-0";
-            const myColors = groupColors[charName] || { main: charColor };
-            circle.style.backgroundColor = myColors.main;
-            wrapper.appendChild(circle);
-          }
-          const span = document.createElement("span");
-          span.className = numClass;
-          span.textContent = dayNum;
-          wrapper.appendChild(span);
-          cell.appendChild(wrapper);
-
-          let daySchedules = allSchedules.filter(s => s.date === dateStr);
-          daySchedules.sort((a, b) => getSortScore(a) - getSortScore(b));
-
-          const schedContainer = document.createElement("div");
-          schedContainer.className = "mt-6 flex flex-col gap-[2px] px-0.5 w-full items-center z-20 pointer-events-none overflow-hidden";
-          daySchedules.forEach(sched => {
-            const pill = document.createElement("div");
-            pill.className = "pointer-events-auto w-full rounded-full leading-tight font-bold text-black py-[2px] px-1 text-center shadow-sm cursor-pointer flex flex-col items-center justify-center";
-            
-            const hasDetail = sched.detail && sched.detail.trim() !== "";
-            const hasTitle = sched.title && sched.title.trim() !== "";
-            const hasTime = sched.time && sched.time.trim() !== "";
-            const hasPartner = sched.partner && sched.partner.trim() !== "";
-            const hasMembers = sched.members && sched.members.length > 0;
-            const star = (hasDetail || hasTitle || hasTime || hasPartner || hasMembers) ? "☆" : "";
-
-            let mainText = sched.text;
-            let subTextHtml = "";
-            
-            if (['横動画', 'ショート', 'コラボ', 'その他', '×', '〇'].includes(sched.text)) {
-              if (sched.text === 'その他' && sched.title) {
-                mainText = sched.title;
-              } else if (sched.title) {
-                subTextHtml = `<div class="text-[9px] font-normal opacity-90 truncate w-full">${sched.title}</div>`;
-              }
-            }
-
-            pill.innerHTML = `<div class="text-[10px] truncate w-full">${mainText}${star}</div>${subTextHtml}`;
-            if (sched.type === 'shift') {
-              const charId = sched.characterName;
-              const colors = groupColors[charId] || { main: sched.authorColor, sub: sched.authorColor };
-              if (sched.text === '休み' || sched.text === '明け') {
-                pill.style.backgroundColor = colors.sub;
-              } else {
-                pill.style.backgroundColor = colors.main;
-              }
-            } else {
-              if (sched.members && sched.members.length > 0) {
-                pill.style.background = getGradient(sched.members);
-              } else if (sched.customColor) {
-                pill.style.backgroundColor = sched.customColor;
-              } else {
-                if (sched.text === '横動画') pill.style.backgroundColor = '#F0CCB9';
-                else if (sched.text === 'ショート') pill.style.backgroundColor = '#D9E4DD';
-                else if (sched.text === '〇' || sched.text === '×') {
-                  const charId = sched.characterName;
-                  pill.style.backgroundColor = groupColors[charId]?.main || sched.authorColor;
-                }
-                else pill.style.backgroundColor = '#AFC8E1';
-              }
-            }
-
-            let tapTimer = null;
-            pill.addEventListener('click', (e) => {
-              e.stopPropagation();
-              if (tapTimer === null) {
-                tapTimer = setTimeout(() => {
-                  tapTimer = null;
-                  openDetailModal(sched);
-                }, 250);
-              } else {
-                clearTimeout(tapTimer);
-                tapTimer = null;
-                openActionModal(sched);
-              }
-            });
-
-            schedContainer.appendChild(pill);
-          });
-          cell.appendChild(schedContainer);
-        }
-        calendarDays.appendChild(cell);
-      }
-    }
-
-    function advanceSelectedDate() {
-      if (!selectedDateStr) return;
-      const [y, m, d] = selectedDateStr.split('-').map(Number);
-      const nextDay = new Date(y, m - 1, d + 1);
-      selectedDateStr = getFormatDate(nextDay.getFullYear(), nextDay.getMonth(), nextDay.getDate());
-      if (nextDay.getMonth() !== currentDate.getMonth()) {
-        currentDate = new Date(nextDay.getFullYear(), nextDay.getMonth(), 1);
-      }
-    }
-
-    document.querySelectorAll('.stamp-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        if (!selectedDateStr) {
-          alert("入力したい枠を選択してください！");
-          return;
-        }
-        const type = btn.getAttribute('data-type');
-        const text = btn.getAttribute('data-text');
-        
-        try {
-          await addDoc(collection(db, "schedules"), {
-            date: selectedDateStr,
-            type: type,
-            text: text,
-            author: userName,
-            characterName: charName,
-            authorColor: charColor,
-            createdAt: new Date().toISOString()
-          });
-          
-          advanceSelectedDate();
-          renderCalendar(); 
-          
-        } catch (error) {
-          console.error("保存エラー:", error);
-          alert("予定の保存に失敗しました。");
-        }
-      });
-    });
-
-    let activeScheduleId = null;
-    const deleteBtn = document.getElementById("sched-delete-btn");
-    const editBtn = document.getElementById("sched-edit-btn");
-    const cancelBtn = document.getElementById("sched-cancel-btn");
-    function openDetailModal(schedule) {
-      if(!detailModal || !detailContentArea) return;
-      let html = `<div class="font-bold text-lg border-b border-gray-600 pb-2 mb-2 text-center">${schedule.text}</div>`;
-      if (schedule.title) html += `<p><strong>【タイトル】</strong><br>${schedule.title}</p>`;
-      if (schedule.partner) html += `<p><strong>【コラボ相手】</strong><br>${schedule.partner}</p>`;
-      if (schedule.time) html += `<p><strong>【時間】</strong><br>${schedule.time}</p>`;
-      if (schedule.members && schedule.members.length > 0) {
-        const names = { waka: "若凪", yuzu: "柚茶", lily: "Lily00", toru: "とるま" };
-        const displayMembers = schedule.members.map(m => names[m] || m).join(', ');
-        html += `<p><strong>【メンバー】</strong><br>${displayMembers}</p>`;
-      }
-      if (schedule.detail) html += `<p><strong>【詳細】</strong><br><span class="whitespace-pre-wrap">${schedule.detail}</span></p>`;
-      if(!schedule.title && !schedule.partner && !schedule.time && (!schedule.members || schedule.members.length === 0) && !schedule.detail){
-         html += `<p class="text-gray-600 text-center py-2">詳細情報はありません</p>`;
-      }
-
-      detailContentArea.innerHTML = html;
-      detailModal.classList.remove('hidden');
-    }
-
-    if (detailCloseBtn) {
-      detailCloseBtn.addEventListener('click', () => detailModal.classList.add('hidden'));
-    }
-
-    function openActionModal(schedule) {
-      if(!actionModal) return;
-      activeScheduleId = schedule.id; 
-      actionModal.classList.remove('hidden');
-      const shiftTypes = ["休み", "日勤", "夜勤", "明け", "当直"];
-      if (shiftTypes.includes(schedule.text) && schedule.author !== userName) {
-        deleteBtn.classList.add('hidden');
-      } else {
-        deleteBtn.classList.remove('hidden');
-      }
-    }
-
-    if(cancelBtn) cancelBtn.addEventListener('click', () => actionModal.classList.add('hidden'));
-    if(deleteBtn) {
-      deleteBtn.addEventListener('click', async () => {
-        if(!confirm("本当に削除しますか？")) return;
-        try {
-          await deleteDoc(doc(db, "schedules", activeScheduleId));
-          actionModal.classList.add('hidden');
-        } catch (error) {
-          console.error("削除エラー:", error);
-          alert("削除に失敗しました。");
-        }
-      });
-    }
-
-    if(editBtn) {
-      editBtn.addEventListener('click', () => {
-        window.location.href = `schedule-edit.html?id=${activeScheduleId}`;
-      });
-    }
-
-    if(prevBtn) prevBtn.addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
-    if(nextBtn) nextBtn.addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
-
-  } catch (error) {
-    alert("カレンダーの描画中にエラーが発生しました！\n" + error.message);
-    console.error("カレンダーエラー:", error);
-  }
-});
+  <div class="fixed bottom-0 w-full z-50 pointer-events-none pb-safe">
+    <div class="pointer-events-auto">
+      <cafe-nav></cafe-nav>
+    </div>
+  </div>
+  
+  <script type="module" src="calendar.js"></script>
+</body>
+</html>
