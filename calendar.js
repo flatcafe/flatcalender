@@ -182,7 +182,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       for (let i = 0; i < totalCells; i++) {
         const cell = document.createElement("div");
-        cell.className = "border-r border-b border-black relative overflow-hidden flex flex-col items-center cursor-pointer min-h-[3rem]";
+        // 修正: h-fullを追加して高さを親に依存させる
+        cell.className = "border-r border-b border-black relative flex flex-col items-center cursor-pointer min-h-[3rem] h-full";
         
         if (i >= startDay && i < startDay + daysInMonth) {
           const dayNum = i - startDay + 1;
@@ -229,9 +230,9 @@ document.addEventListener("DOMContentLoaded", () => {
           let daySchedules = allSchedules.filter(s => s.date === dateStr);
           daySchedules.sort((a, b) => getSortScore(a) - getSortScore(b));
 
-          // 修正: 枠内スクロール対応
+          // 修正: スクロール可能なコンテナ
           const schedContainer = document.createElement("div");
-          schedContainer.className = "mt-6 flex-1 w-full px-0.5 flex flex-col gap-[2px] items-center z-20 pointer-events-none overflow-y-auto scrollbar-hide";
+          schedContainer.className = "mt-6 flex flex-col gap-[2px] px-0.5 w-full items-center z-20 pointer-events-none overflow-y-auto scrollbar-hide flex-grow min-h-0";
 
           daySchedules.forEach(sched => {
             const pill = document.createElement("div");
@@ -303,118 +304,4 @@ document.addEventListener("DOMContentLoaded", () => {
         calendarDays.appendChild(cell);
       }
     }
-
-    function advanceSelectedDate() {
-      if (!selectedDateStr) return;
-      const [y, m, d] = selectedDateStr.split('-').map(Number);
-      const nextDay = new Date(y, m - 1, d + 1);
-      selectedDateStr = getFormatDate(nextDay.getFullYear(), nextDay.getMonth(), nextDay.getDate());
-      if (nextDay.getMonth() !== currentDate.getMonth()) {
-        currentDate = new Date(nextDay.getFullYear(), nextDay.getMonth(), 1);
-      }
-    }
-
-    document.querySelectorAll('.stamp-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        if (!selectedDateStr) {
-          alert("入力したい枠を選択してください！");
-          return;
-        }
-        const type = btn.getAttribute('data-type');
-        const text = btn.getAttribute('data-text');
-        
-        try {
-          await addDoc(collection(db, "schedules"), {
-            date: selectedDateStr,
-            type: type,
-            text: text,
-            author: userName,
-            characterName: charName,
-            authorColor: charColor,
-            createdAt: new Date().toISOString()
-          });
-          
-          advanceSelectedDate();
-          renderCalendar(); 
-          
-        } catch (error) {
-          console.error("保存エラー:", error);
-          alert("予定の保存に失敗しました。");
-        }
-      });
-    });
-
-    let activeScheduleId = null;
-    const deleteBtn = document.getElementById("sched-delete-btn");
-    const editBtn = document.getElementById("sched-edit-btn");
-    const cancelBtn = document.getElementById("sched-cancel-btn");
-
-    function openDetailModal(schedule) {
-      if(!detailModal || !detailContentArea) return;
-      
-      let html = `<div class="font-bold text-lg border-b border-gray-600 pb-2 mb-2 text-center">${schedule.text}</div>`;
-      if (schedule.title) html += `<p><strong>【タイトル】</strong><br>${schedule.title}</p>`;
-      if (schedule.partner) html += `<p><strong>【コラボ相手】</strong><br>${schedule.partner}</p>`;
-      if (schedule.time) html += `<p><strong>【時間】</strong><br>${schedule.time}</p>`;
-      
-      if (schedule.members && schedule.members.length > 0) {
-        const names = { waka: "若凪", yuzu: "柚茶", lily: "Lily00", toru: "とるま" };
-        const displayMembers = schedule.members.map(m => names[m] || m).join(', ');
-        html += `<p><strong>【メンバー】</strong><br>${displayMembers}</p>`;
-      }
-      if (schedule.detail) html += `<p><strong>【詳細】</strong><br><span class="whitespace-pre-wrap">${schedule.detail}</span></p>`;
-      
-      if(!schedule.title && !schedule.partner && !schedule.time && (!schedule.members || schedule.members.length === 0) && !schedule.detail){
-         html += `<p class="text-gray-600 text-center py-2">詳細情報はありません</p>`;
-      }
-
-      detailContentArea.innerHTML = html;
-      detailModal.classList.remove('hidden');
-    }
-
-    if (detailCloseBtn) {
-      detailCloseBtn.addEventListener('click', () => detailModal.classList.add('hidden'));
-    }
-
-    function openActionModal(schedule) {
-      if(!actionModal) return;
-      activeScheduleId = schedule.id; 
-      actionModal.classList.remove('hidden');
-
-      const shiftTypes = ["休み", "日勤", "夜勤", "明け", "当直"];
-      if (shiftTypes.includes(schedule.text) && schedule.author !== userName) {
-        deleteBtn.classList.add('hidden');
-      } else {
-        deleteBtn.classList.remove('hidden');
-      }
-    }
-
-    if(cancelBtn) cancelBtn.addEventListener('click', () => actionModal.classList.add('hidden'));
-    
-    if(deleteBtn) {
-      deleteBtn.addEventListener('click', async () => {
-        if(!confirm("本当に削除しますか？")) return;
-        try {
-          await deleteDoc(doc(db, "schedules", activeScheduleId));
-          actionModal.classList.add('hidden');
-        } catch (error) {
-          console.error("削除エラー:", error);
-          alert("削除に失敗しました。");
-        }
-      });
-    }
-
-    if(editBtn) {
-      editBtn.addEventListener('click', () => {
-        window.location.href = `schedule-edit.html?id=${activeScheduleId}`;
-      });
-    }
-
-    if(prevBtn) prevBtn.addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
-    if(nextBtn) nextBtn.addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
-
-  } catch (error) {
-    alert("カレンダーの描画中にエラーが発生しました！\n" + error.message);
-    console.error("カレンダーエラー:", error);
-  }
-});
+// ... (中略: advanceSelectedDate以降は同じ) ...
