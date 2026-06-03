@@ -30,8 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let charColor = "#DFC6B0"; 
     
     let allSchedules = [];
-
-    // 🔥 全体のカラー設定を保持（初期値）
     let groupColors = {
       waka: { main: "#abc888", sub: "#8fae6f" },
       yuzu: { main: "#fef263", sub: "#dfd344" },
@@ -41,7 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        // ユーザー情報の取得
         try {
           const docRef = doc(db, "users", user.uid);
           const docSnap = await getDoc(docRef);
@@ -55,16 +52,13 @@ document.addEventListener("DOMContentLoaded", () => {
           console.error("ユーザー情報の取得エラー:", e);
         }
         
-        // 🔥 カラー設定のリアルタイム監視
         onSnapshot(doc(db, "settings", "colors"), (docSnap) => {
           if (docSnap.exists()) {
             groupColors = { ...groupColors, ...docSnap.data() };
-            // 色が変わったらカレンダーを再描画
             if (allSchedules.length > 0) renderCalendar();
           }
         });
 
-        // スケジュールのリアルタイム監視
         onSnapshot(collection(db, "schedules"), (snapshot) => {
           allSchedules = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
           updatePopupPosition();
@@ -74,7 +68,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    
     let holidaysData = {};
     fetch('https://holidays-jp.github.io/api/v1/date.json')
       .then(response => response.json())
@@ -95,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (sched.text === '横動画') return 10;
         if (sched.text === 'ショート') return 11;
         if (sched.text === 'コラボ') return 12;
-        return 13; 
+        return 13;
       }
     }
 
@@ -105,9 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
       
       const isHiddenTop = stampPopup.classList.contains("-translate-y-full");
       const isHiddenBottom = stampPopup.classList.contains("translate-y-full");
-      
       stampPopup.className = "fixed left-0 right-0 z-40 bg-[#E0D7C2] shadow-[0_0_20px_rgba(0,0,0,0.15)] p-4 transition-transform duration-300";
-      
       if (isPopupTop) {
         stampPopup.classList.add("top-0", "rounded-b-3xl", "pb-6");
         stampPopup.style.bottom = "auto";
@@ -154,12 +145,10 @@ document.addEventListener("DOMContentLoaded", () => {
       return `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
     }
 
-    // 🔥 メンバー色をFirebaseから取得した設定に置き換え
     function getGradient(members) {
       const ordered = ["waka", "yuzu", "lily", "toru"].filter(m => members.includes(m));
       if (ordered.length === 0) return "#AFC8E1"; 
       if (ordered.length === 1) return groupColors[ordered[0]]?.main || "#AFC8E1";
-      
       let gradient = "linear-gradient(90deg, ";
       const step = 100 / ordered.length;
       const stops = [];
@@ -183,18 +172,18 @@ document.addEventListener("DOMContentLoaded", () => {
       const startDay = firstDay === 0 ? 6 : firstDay - 1;
       const rows = Math.max(5, Math.ceil((startDay + daysInMonth) / 7));
       const totalCells = rows * 7;
-
-      calendarDays.style.gridTemplateRows = `repeat(${rows}, minmax(3rem, 1fr))`;
+      
+      // 🔥 コンテンツ量に潰されないよう 1fr で均等固定
+      calendarDays.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
 
       for (let i = 0; i < totalCells; i++) {
         const cell = document.createElement("div");
-        cell.className = "border-r border-b border-black relative overflow-hidden flex flex-col items-center cursor-pointer min-h-[3rem]";
-        
+        // 🔥 min-h ではなく h-full min-h-0 で枠内に収める
+        cell.className = "border-r border-b border-black relative overflow-hidden flex flex-col items-center cursor-pointer w-full h-full min-h-0";
         if (i >= startDay && i < startDay + daysInMonth) {
           const dayNum = i - startDay + 1;
           const dateStr = getFormatDate(year, month, dayNum);
           const isToday = (year === today.getFullYear() && month === today.getMonth() && dayNum === today.getDate());
-
           if (dateStr === selectedDateStr) {
             cell.classList.add("ring-inset", "ring-4", "ring-amber-400", "bg-white/40");
           }
@@ -222,7 +211,6 @@ document.addEventListener("DOMContentLoaded", () => {
           if (isToday) {
             const circle = document.createElement("div");
             circle.className = "absolute inset-0 rounded-full opacity-50 z-0";
-            // 自分のメインカラーを使う
             const myColors = groupColors[charName] || { main: charColor };
             circle.style.backgroundColor = myColors.main;
             wrapper.appendChild(circle);
@@ -237,8 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
           daySchedules.sort((a, b) => getSortScore(a) - getSortScore(b));
 
           const schedContainer = document.createElement("div");
-          schedContainer.className = "mt-6 flex flex-col gap-[2px] px-0.5 w-full items-center z-20 pointer-events-none";
-
+          schedContainer.className = "mt-6 flex flex-col gap-[2px] px-0.5 w-full items-center z-20 pointer-events-none overflow-hidden";
           daySchedules.forEach(sched => {
             const pill = document.createElement("div");
             pill.className = "pointer-events-auto w-full rounded-full leading-tight font-bold text-black py-[2px] px-1 text-center shadow-sm cursor-pointer flex flex-col items-center justify-center";
@@ -262,13 +249,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             pill.innerHTML = `<div class="text-[10px] truncate w-full">${mainText}${star}</div>${subTextHtml}`;
-
-            // 🔥 カラーの適用ロジック
             if (sched.type === 'shift') {
-              const charId = sched.characterName; 
+              const charId = sched.characterName;
               const colors = groupColors[charId] || { main: sched.authorColor, sub: sched.authorColor };
-              
-              // 「休み」と「明け」の時に設定されたサブカラーにする
               if (sched.text === '休み' || sched.text === '明け') {
                 pill.style.backgroundColor = colors.sub;
               } else {
@@ -280,13 +263,13 @@ document.addEventListener("DOMContentLoaded", () => {
               } else if (sched.customColor) {
                 pill.style.backgroundColor = sched.customColor;
               } else {
-                if (sched.text === '横動画') pill.style.backgroundColor = '#F0CCB9'; 
+                if (sched.text === '横動画') pill.style.backgroundColor = '#F0CCB9';
                 else if (sched.text === 'ショート') pill.style.backgroundColor = '#D9E4DD';
                 else if (sched.text === '〇' || sched.text === '×') {
                   const charId = sched.characterName;
                   pill.style.backgroundColor = groupColors[charId]?.main || sched.authorColor;
                 }
-                else pill.style.backgroundColor = '#AFC8E1'; 
+                else pill.style.backgroundColor = '#AFC8E1';
               }
             }
 
@@ -357,22 +340,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const deleteBtn = document.getElementById("sched-delete-btn");
     const editBtn = document.getElementById("sched-edit-btn");
     const cancelBtn = document.getElementById("sched-cancel-btn");
-
     function openDetailModal(schedule) {
       if(!detailModal || !detailContentArea) return;
-      
       let html = `<div class="font-bold text-lg border-b border-gray-600 pb-2 mb-2 text-center">${schedule.text}</div>`;
       if (schedule.title) html += `<p><strong>【タイトル】</strong><br>${schedule.title}</p>`;
       if (schedule.partner) html += `<p><strong>【コラボ相手】</strong><br>${schedule.partner}</p>`;
       if (schedule.time) html += `<p><strong>【時間】</strong><br>${schedule.time}</p>`;
-      
       if (schedule.members && schedule.members.length > 0) {
         const names = { waka: "若凪", yuzu: "柚茶", lily: "Lily00", toru: "とるま" };
         const displayMembers = schedule.members.map(m => names[m] || m).join(', ');
         html += `<p><strong>【メンバー】</strong><br>${displayMembers}</p>`;
       }
       if (schedule.detail) html += `<p><strong>【詳細】</strong><br><span class="whitespace-pre-wrap">${schedule.detail}</span></p>`;
-      
       if(!schedule.title && !schedule.partner && !schedule.time && (!schedule.members || schedule.members.length === 0) && !schedule.detail){
          html += `<p class="text-gray-600 text-center py-2">詳細情報はありません</p>`;
       }
@@ -389,7 +368,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if(!actionModal) return;
       activeScheduleId = schedule.id; 
       actionModal.classList.remove('hidden');
-
       const shiftTypes = ["休み", "日勤", "夜勤", "明け", "当直"];
       if (shiftTypes.includes(schedule.text) && schedule.author !== userName) {
         deleteBtn.classList.add('hidden');
@@ -399,7 +377,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if(cancelBtn) cancelBtn.addEventListener('click', () => actionModal.classList.add('hidden'));
-    
     if(deleteBtn) {
       deleteBtn.addEventListener('click', async () => {
         if(!confirm("本当に削除しますか？")) return;
