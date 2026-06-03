@@ -29,7 +29,15 @@ document.addEventListener("DOMContentLoaded", () => {
     let charName = "";
     let charColor = "#DFC6B0"; 
     
-    let allSchedules = []; // Firestoreから取得した全スケジュールを保持
+    let allSchedules = [];
+
+    // 🔥 全体のカラー設定を保持（初期値）
+    let groupColors = {
+      waka: { main: "#abc888", sub: "#8fae6f" },
+      yuzu: { main: "#fef263", sub: "#dfd344" },
+      lily: { main: "#F0566E", sub: "#d13850" },
+      toru: { main: "#968ABD", sub: "#786c9f" }
+    };
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -47,7 +55,16 @@ document.addEventListener("DOMContentLoaded", () => {
           console.error("ユーザー情報の取得エラー:", e);
         }
         
-        // スケジュールのリアルタイム監視（追加・変更・削除が自動反映される）
+        // 🔥 カラー設定のリアルタイム監視
+        onSnapshot(doc(db, "settings", "colors"), (docSnap) => {
+          if (docSnap.exists()) {
+            groupColors = { ...groupColors, ...docSnap.data() };
+            // 色が変わったらカレンダーを再描画
+            if (allSchedules.length > 0) renderCalendar();
+          }
+        });
+
+        // スケジュールのリアルタイム監視
         onSnapshot(collection(db, "schedules"), (snapshot) => {
           allSchedules = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
           updatePopupPosition();
@@ -137,17 +154,19 @@ document.addEventListener("DOMContentLoaded", () => {
       return `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
     }
 
+    // 🔥 メンバー色をFirebaseから取得した設定に置き換え
     function getGradient(members) {
-      const colorMap = { "waka": "#abc888", "yuzu": "#fef263", "lily": "#F0566E", "toru": "#968ABD" };
       const ordered = ["waka", "yuzu", "lily", "toru"].filter(m => members.includes(m));
       if (ordered.length === 0) return "#AFC8E1"; 
-      if (ordered.length === 1) return colorMap[ordered[0]];
+      if (ordered.length === 1) return groupColors[ordered[0]]?.main || "#AFC8E1";
+      
       let gradient = "linear-gradient(90deg, ";
       const step = 100 / ordered.length;
       const stops = [];
       ordered.forEach((m, i) => {
-        stops.push(`${colorMap[m]} ${i * step}%`);
-        stops.push(`${colorMap[m]} ${(i + 1) * step}%`);
+        const col = groupColors[m]?.main || "#AFC8E1";
+        stops.push(`${col} ${i * step}%`);
+        stops.push(`${col} ${(i + 1) * step}%`);
       });
       return gradient + stops.join(", ") + ")";
     }
@@ -203,7 +222,9 @@ document.addEventListener("DOMContentLoaded", () => {
           if (isToday) {
             const circle = document.createElement("div");
             circle.className = "absolute inset-0 rounded-full opacity-50 z-0";
-            circle.style.backgroundColor = charColor; 
+            // 自分のメインカラーを使う
+            const myColors = groupColors[charName] || { main: charColor };
+            circle.style.backgroundColor = myColors.main;
             wrapper.appendChild(circle);
           }
           const span = document.createElement("span");
@@ -242,11 +263,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
             pill.innerHTML = `<div class="text-[10px] truncate w-full">${mainText}${star}</div>${subTextHtml}`;
 
+            // 🔥 カラーの適用ロジック
             if (sched.type === 'shift') {
-              pill.style.backgroundColor = sched.authorColor;
-              // 「休み」と「明け」の時に明度を下げて少し濃くする
+              const charId = sched.characterName; 
+              const colors = groupColors[charId] || { main: sched.authorColor, sub: sched.authorColor };
+              
+              // 「休み」と「明け」の時に設定されたサブカラーにする
               if (sched.text === '休み' || sched.text === '明け') {
-                pill.style.filter = 'brightness(0.80)';
+                pill.style.backgroundColor = colors.sub;
+              } else {
+                pill.style.backgroundColor = colors.main;
               }
             } else {
               if (sched.members && sched.members.length > 0) {
@@ -256,7 +282,10 @@ document.addEventListener("DOMContentLoaded", () => {
               } else {
                 if (sched.text === '横動画') pill.style.backgroundColor = '#F0CCB9'; 
                 else if (sched.text === 'ショート') pill.style.backgroundColor = '#D9E4DD';
-                else if (sched.text === '〇' || sched.text === '×') pill.style.backgroundColor = sched.authorColor;
+                else if (sched.text === '〇' || sched.text === '×') {
+                  const charId = sched.characterName;
+                  pill.style.backgroundColor = groupColors[charId]?.main || sched.authorColor;
+                }
                 else pill.style.backgroundColor = '#AFC8E1'; 
               }
             }
@@ -304,7 +333,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const text = btn.getAttribute('data-text');
         
         try {
-          // Firestoreに新スケジュールを追加
           await addDoc(collection(db, "schedules"), {
             date: selectedDateStr,
             type: type,
@@ -315,7 +343,6 @@ document.addEventListener("DOMContentLoaded", () => {
             createdAt: new Date().toISOString()
           });
           
-          // 日付を進めた後、手動でカレンダーを再描画してカーソル位置を反映させる
           advanceSelectedDate();
           renderCalendar(); 
           
@@ -360,7 +387,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function openActionModal(schedule) {
       if(!actionModal) return;
-      activeScheduleId = schedule.id; // FirestoreのドキュメントID
+      activeScheduleId = schedule.id; 
       actionModal.classList.remove('hidden');
 
       const shiftTypes = ["休み", "日勤", "夜勤", "明け", "当直"];
@@ -377,7 +404,6 @@ document.addEventListener("DOMContentLoaded", () => {
       deleteBtn.addEventListener('click', async () => {
         if(!confirm("本当に削除しますか？")) return;
         try {
-          // Firestoreから削除
           await deleteDoc(doc(db, "schedules", activeScheduleId));
           actionModal.classList.add('hidden');
         } catch (error) {
