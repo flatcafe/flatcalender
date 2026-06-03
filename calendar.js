@@ -229,9 +229,9 @@ document.addEventListener("DOMContentLoaded", () => {
           let daySchedules = allSchedules.filter(s => s.date === dateStr);
           daySchedules.sort((a, b) => getSortScore(a) - getSortScore(b));
 
-          // 修正箇所: 枠内スクロール用の設定
+          // 修正: 枠内スクロール対応
           const schedContainer = document.createElement("div");
-          schedContainer.className = "mt-6 flex flex-col gap-[2px] px-0.5 w-full items-center z-20 pointer-events-none overflow-y-auto scrollbar-hide h-[calc(100%-1.5rem)]";
+          schedContainer.className = "mt-6 flex-1 w-full px-0.5 flex flex-col gap-[2px] items-center z-20 pointer-events-none overflow-y-auto scrollbar-hide";
 
           daySchedules.forEach(sched => {
             const pill = document.createElement("div");
