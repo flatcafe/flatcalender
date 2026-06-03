@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>☕ふらっとCafe - 入店</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-welcome-pattern h-screen flex flex-col justify-center items-center p-6">
+  <div class="w-full max-w-sm bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-xl">
+    <h1 class="text-2xl font-bold text-amber-800 mb-6 text-center">☕ふらっとCafeへ<br>ようこそ</h1>
+    
+    <input type="text" id="username" placeholder="お名前を入力" class="w-full p-3 border-2 border-amber-200 rounded-xl mb-6 focus:border-amber-500 outline-none">
+    
+    <p class="text-sm text-gray-500 mb-4 text-center">キャラを選択</p>
+    
+    <div class="grid grid-cols-2 gap-4 mb-8">
+      <button class="char-btn flex flex-col items-center p-2 rounded-2xl transition hover:scale-105 idle-bounce" data-name="waka" data-color="#abc888" data-img="images/waka.png">
+        <img src="images/waka.png" alt="waka" class="w-36 h-36 object-contain">
+      </button>
+      <button class="char-btn flex flex-col items-center p-2 rounded-2xl transition hover:scale-105 idle-bounce" data-name="yuzu" data-color="#fef263" data-img="images/yuzu.png">
+        <img src="images/yuzu.png" alt="yuzu" class="w-36 h-36 object-contain">
+      </button>
+      <button class="char-btn flex flex-col items-center p-2 rounded-2xl transition hover:scale-105 idle-bounce" data-name="lily" data-color="#F0566E" data-img="images/lily.png">
+        <img src="images/lily.png" alt="lily" class="w-36 h-36 object-contain">
+      </button>
+      <button class="char-btn flex flex-col items-center p-2 rounded-2xl transition hover:scale-105 idle-bounce" data-name="toru" data-color="#968ABD" data-img="images/toru.png">
+        <img src="images/toru.png" alt="toru" class="w-36 h-36 object-contain">
+      </button>
+    </div>
+
+    <button id="enterBtn" class="w-full bg-amber-600 text-white py-3 rounded-xl font-bold hover:bg-amber-700 transition">入店する</button>
+  </div>
+  <script type="module" src="welcome.js" defer></script>
+</body>
+</html>
