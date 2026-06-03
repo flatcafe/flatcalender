@@ -3,6 +3,14 @@ import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/
 import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+  // 強制更新ボタンの処理
+  const refreshBtn = document.getElementById('refresh-page-btn');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', () => {
+      window.location.reload(true);
+    });
+  }
+
   const saveBtn = document.getElementById('save-colors-btn');
   const userDisplay = document.getElementById('display-user-name');
   
