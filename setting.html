@@ -28,11 +28,44 @@
     </div>
   </div>
 
-  <main class="flex-1 flex flex-col items-center justify-center p-6">
-    <h1 class="text-2xl font-bold text-gray-800 mb-8">設定</h1>
-    <div class="bg-white/80 p-6 rounded-2xl shadow-sm w-full max-w-sm">
-      <p class="text-gray-600">ここから設定を変更できます。</p>
+  <main class="flex-1 flex flex-col items-center p-6 pb-24 overflow-y-auto mt-10">
+    <h1 class="text-2xl font-bold text-gray-800 mb-6">メンバーカラー設定</h1>
+    <div class="bg-white/90 p-6 rounded-2xl shadow-sm w-full max-w-sm">
+      <p class="text-gray-600 mb-6 text-sm leading-relaxed">カレンダーで表示される各メンバーのメインカラーと、<span class="font-bold text-red-500">「休み」「明け」用のサブカラー</span>を設定・保存します。</p>
+      
+      <div id="color-forms" class="flex flex-col gap-5">
+        <div class="flex items-center justify-between border-b border-gray-200 pb-3">
+          <div class="font-bold text-[#abc888]">若凪 (waka)</div>
+          <div class="flex gap-4">
+            <label class="flex flex-col items-center text-xs text-gray-500 font-bold">メイン<input type="color" id="waka-main" class="w-8 h-8 mt-1 cursor-pointer border-none"></label>
+            <label class="flex flex-col items-center text-xs text-gray-500 font-bold">サブ<input type="color" id="waka-sub" class="w-8 h-8 mt-1 cursor-pointer border-none"></label>
+          </div>
+        </div>
+        <div class="flex items-center justify-between border-b border-gray-200 pb-3">
+          <div class="font-bold text-[#e0d346]">柚茶 (yuzu)</div>
+          <div class="flex gap-4">
+            <label class="flex flex-col items-center text-xs text-gray-500 font-bold">メイン<input type="color" id="yuzu-main" class="w-8 h-8 mt-1 cursor-pointer border-none"></label>
+            <label class="flex flex-col items-center text-xs text-gray-500 font-bold">サブ<input type="color" id="yuzu-sub" class="w-8 h-8 mt-1 cursor-pointer border-none"></label>
+          </div>
+        </div>
+        <div class="flex items-center justify-between border-b border-gray-200 pb-3">
+          <div class="font-bold text-[#F0566E]">Lily00 (lily)</div>
+          <div class="flex gap-4">
+            <label class="flex flex-col items-center text-xs text-gray-500 font-bold">メイン<input type="color" id="lily-main" class="w-8 h-8 mt-1 cursor-pointer border-none"></label>
+            <label class="flex flex-col items-center text-xs text-gray-500 font-bold">サブ<input type="color" id="lily-sub" class="w-8 h-8 mt-1 cursor-pointer border-none"></label>
+          </div>
+        </div>
+        <div class="flex items-center justify-between pb-1">
+          <div class="font-bold text-[#968ABD]">とるま (toru)</div>
+          <div class="flex gap-4">
+            <label class="flex flex-col items-center text-xs text-gray-500 font-bold">メイン<input type="color" id="toru-main" class="w-8 h-8 mt-1 cursor-pointer border-none"></label>
+            <label class="flex flex-col items-center text-xs text-gray-500 font-bold">サブ<input type="color" id="toru-sub" class="w-8 h-8 mt-1 cursor-pointer border-none"></label>
+          </div>
+        </div>
       </div>
+
+      <button id="save-colors-btn" class="w-full mt-8 bg-amber-600 text-white py-3 rounded-xl font-bold shadow-sm active:scale-95 transition hover:bg-amber-700">設定を保存する</button>
+    </div>
   </main>
 
   <div class="fixed bottom-0 w-full z-50">
@@ -40,22 +73,6 @@
   </div>
   
   <script src="components/navbar.js" defer></script>
-
-  <script>
-    // ユーザー名表示
-    const userData = JSON.parse(localStorage.getItem('cafe_user'));
-    if (userData && userData.name) {
-      document.getElementById('display-user-name').textContent = userData.name;
-    }
-
-    // ログアウト処理
-    document.getElementById('cancel-logout').addEventListener('click', () => {
-      document.getElementById('logout-modal').classList.add('hidden');
-    });
-    document.getElementById('confirm-logout').addEventListener('click', () => {
-      localStorage.removeItem('cafe_user');
-      window.location.href = 'welcome.html';
-    });
-  </script>
+  <script type="module" src="setting.js" defer></script>
 </body>
 </html>
