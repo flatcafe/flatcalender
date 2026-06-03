@@ -31,7 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
     
     let allSchedules = [];
 
-    // 🔥 全体のカラー設定を保持（初期値）
     let groupColors = {
       waka: { main: "#abc888", sub: "#8fae6f" },
       yuzu: { main: "#fef263", sub: "#dfd344" },
@@ -41,7 +40,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        // ユーザー情報の取得
         try {
           const docRef = doc(db, "users", user.uid);
           const docSnap = await getDoc(docRef);
@@ -55,16 +53,13 @@ document.addEventListener("DOMContentLoaded", () => {
           console.error("ユーザー情報の取得エラー:", e);
         }
         
-        // 🔥 カラー設定のリアルタイム監視
         onSnapshot(doc(db, "settings", "colors"), (docSnap) => {
           if (docSnap.exists()) {
             groupColors = { ...groupColors, ...docSnap.data() };
-            // 色が変わったらカレンダーを再描画
             if (allSchedules.length > 0) renderCalendar();
           }
         });
 
-        // スケジュールのリアルタイム監視
         onSnapshot(collection(db, "schedules"), (snapshot) => {
           allSchedules = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
           updatePopupPosition();
@@ -154,7 +149,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
     }
 
-    // 🔥 メンバー色をFirebaseから取得した設定に置き換え
     function getGradient(members) {
       const ordered = ["waka", "yuzu", "lily", "toru"].filter(m => members.includes(m));
       if (ordered.length === 0) return "#AFC8E1"; 
@@ -222,7 +216,6 @@ document.addEventListener("DOMContentLoaded", () => {
           if (isToday) {
             const circle = document.createElement("div");
             circle.className = "absolute inset-0 rounded-full opacity-50 z-0";
-            // 自分のメインカラーを使う
             const myColors = groupColors[charName] || { main: charColor };
             circle.style.backgroundColor = myColors.main;
             wrapper.appendChild(circle);
@@ -236,12 +229,13 @@ document.addEventListener("DOMContentLoaded", () => {
           let daySchedules = allSchedules.filter(s => s.date === dateStr);
           daySchedules.sort((a, b) => getSortScore(a) - getSortScore(b));
 
+          // 修正箇所: 枠内スクロール用の設定
           const schedContainer = document.createElement("div");
-          schedContainer.className = "mt-6 flex flex-col gap-[2px] px-0.5 w-full items-center z-20 pointer-events-none";
+          schedContainer.className = "mt-6 flex flex-col gap-[2px] px-0.5 w-full items-center z-20 pointer-events-none overflow-y-auto scrollbar-hide h-[calc(100%-1.5rem)]";
 
           daySchedules.forEach(sched => {
             const pill = document.createElement("div");
-            pill.className = "pointer-events-auto w-full rounded-full leading-tight font-bold text-black py-[2px] px-1 text-center shadow-sm cursor-pointer flex flex-col items-center justify-center";
+            pill.className = "pointer-events-auto w-full rounded-full leading-tight font-bold text-black py-[2px] px-1 text-center shadow-sm cursor-pointer flex flex-col items-center justify-center shrink-0";
             
             const hasDetail = sched.detail && sched.detail.trim() !== "";
             const hasTitle = sched.title && sched.title.trim() !== "";
@@ -263,12 +257,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             pill.innerHTML = `<div class="text-[10px] truncate w-full">${mainText}${star}</div>${subTextHtml}`;
 
-            // 🔥 カラーの適用ロジック
             if (sched.type === 'shift') {
               const charId = sched.characterName; 
               const colors = groupColors[charId] || { main: sched.authorColor, sub: sched.authorColor };
-              
-              // 「休み」と「明け」の時に設定されたサブカラーにする
               if (sched.text === '休み' || sched.text === '明け') {
                 pill.style.backgroundColor = colors.sub;
               } else {
