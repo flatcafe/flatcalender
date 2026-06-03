@@ -3,10 +3,10 @@
   font-family: 'Nunito', sans-serif;
 }
 
-/* Androidのシステムバーを避けるための安全余白
+/* Androidのシステムバーを避けるための安全余白 */
 .pb-safe {
   padding-bottom: env(safe-area-inset-bottom);
-} */
+}
 
 /* Welcomeページ専用の背景 (gaikan.png) */
 .bg-welcome-pattern {
