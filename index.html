@@ -10,72 +10,17 @@
   <script type="module" src="auth.js" defer></script>
 
   <style>
-    body { 
-      font-family: 'M PLUS Rounded 1c', sans-serif; 
-    }
-    .bg-cafe-home { 
-      background-image: url('images/back.png'); 
-      background-size: cover; 
-      background-position: center; 
-    }
-    
-    /* ベース（スマホ向け）：1列4行 */
-.char-container {
-  position: relative;
-  width: 100%;
-  height: 100dvh;
-  overflow: hidden;
-  display: grid; /* ←これ必須 */
-}
-    
-    /* PC・タブレット向け：2列2行 */
-    @media (min-width: 768px) {
-      .char-container {
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(2, 1fr);
-        padding: 80px 40px 100px 40px;
-        gap: 0px;
-      }
-    }
-    
-    /* キャラ画像サイズ */
-.char-img {
-  height: 100%;
-  max-height: 270px;
-  width: auto;
-  max-width: none;
-  object-fit: contain;
-}
-    .char-img {
-  transform: scale(1.1);
-  transform-origin: bottom center;
+   body { 
+  font-family: 'M PLUS Rounded 1c', sans-serif; 
 }
 
-/* waka 右上 */
-.char-item[data-name="waka"]{
-  top: 10px;
-  right: 20px;
+.bg-cafe-home { 
+  background-image: url('images/back.png'); 
+  background-size: cover; 
+  background-position: center; 
 }
 
-/* yuzu 左上 */
-.char-item[data-name="yuzu"]{
-  top: 100px;
-  left: 20px;
-}
-
-/* lily 右側・yuzuの少し下 */
-.char-item[data-name="lily"]{
-  top: 250px;
-  right: 40px;
-}
-
-/* toru 左下 */
-.char-item[data-name="toru"]{
-  bottom: 60px !important;
-  left: 40px !important;
-  top: auto !important;
-}
-    /* 吹き出しサイズ */
+/* コンテナ */
 .char-container {
   position: relative;
   width: 100%;
@@ -83,12 +28,15 @@
   overflow: hidden;
 }
 
+/* キャラ */
 .char-item {
   position: absolute;
   display: flex;
+  align-items: flex-start;
   z-index: 10;
 }
 
+/* 吹き出し */
 .speech-box {
   width: 660px;
   height: 360px;
@@ -97,7 +45,8 @@
   background-position: center;
   background-color: rgba(255,0,0,0.2);
 }
-    
+
+/* 吹き出し画像 */
 .char-item[data-name="waka"] .speech-box {
   background-image: url('images/wakacom.png');
 }
@@ -113,18 +62,32 @@
 .char-item[data-name="toru"] .speech-box {
   background-image: url('images/torucom.png');
 }
-    .char-item[data-name="yuzu"] .speech-box,
-.char-item[data-name="lily"] .speech-box {
+
+/* 位置 */
+.char-item[data-name="waka"]{
+  top: 10px;
+  right: 20px;
+}
+
+.char-item[data-name="yuzu"]{
+  top: 100px;
+  left: 20px;
+}
+
+.char-item[data-name="lily"]{
+  top: 250px;
+  right: 40px;
+}
+
+.char-item[data-name="toru"]{
+  bottom: 60px;
+  left: 40px;
+}
+
+/* 微調整 */
+.char-item[data-name="yuzu"],
+.char-item[data-name="lily"]{
   transform: translateY(10px);
-}
-    .char-item {
-  align-items: flex-start;
-}
-.char-item {
-  position: absolute;
-  display: flex;
-  align-items: flex-start;
-  z-index: 10;
 }
 
   </style>
