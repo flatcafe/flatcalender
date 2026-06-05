@@ -98,6 +98,7 @@
 .char-item {
   position: absolute;
   display: flex;
+  align-items: flex-start;
   z-index: 10;
 }
 
@@ -125,18 +126,10 @@
 .char-item[data-name="toru"] .speech-box {
   background-image: url('images/torucom.png');
 }
-    .char-item[data-name="yuzu"] .speech-box,
-.char-item[data-name="lily"] .speech-box {
+/* 微調整 */
+.char-item[data-name="yuzu"],
+.char-item[data-name="lily"] {
   transform: translateY(10px);
-}
-    .char-item {
-  align-items: flex-start;
-}
-.char-item {
-  position: absolute;
-  display: flex;
-  align-items: flex-start;
-  z-index: 10;
 }
 
   </style>
