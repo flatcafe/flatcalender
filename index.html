@@ -71,28 +71,31 @@
 
 /* toru 左下 */
 .char-item[data-name="toru"]{
-  bottom: 60px;
-  left: 40px;
+  bottom: 60px !important;
+  left: 40px !important;
+  top: auto !important;
 }
     /* 吹き出しサイズ */
-.speech-box {
-  width: 660px;
-  height: 360px;
-
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-
-  border: 2px solid red;
+.char-container {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
 }
-    <div class="char-item" data-name="waka">
-  <div class="speech-box"></div>
-</div>
+
 .char-item {
   position: absolute;
   display: flex;
-  align-items: flex-start;
-  gap: -20px;
+  z-index: 10;
+}
+
+.speech-box {
+  width: 660px;
+  height: 360px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: rgba(255,0,0,0.2);
 }
     
 .char-item[data-name="waka"] .speech-box {
