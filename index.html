@@ -19,17 +19,12 @@
       background-position: center; 
     }
     
-    /* ベース（スマホ向け）：1列4行 */
-    .char-container { 
-      display: grid;
-      grid-template-columns: 1fr;
-      grid-template-rows: repeat(4, 1fr);
-      width: 100%; 
-      height: 100dvh; 
-      padding: 60px 10px 90px 10px; /* 上下UIを避ける */
-      overflow: hidden; /* スクロール禁止 */
-      gap: 5px;
-    }
+    /* ベース（スマホ向け）：1列4行 */.char-container {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+}
     
     /* PC・タブレット向け：2列2行 */
     @media (min-width: 768px) {
@@ -41,15 +36,12 @@
       }
     }
     
-    .char-item { 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      width: 100%; 
-      height: 100%;
-      min-height: 0; /* Flexboxのはみ出し防止 */
-      gap: 10px;
-    }
+   .char-item {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
     
     /* キャラ画像サイズ */
     .char-img { 
@@ -59,7 +51,30 @@
       max-width: 40%; /* 横幅も制限 */
       object-fit: contain; 
     }
-    
+
+    /* waka 右上 */
+.char-item[data-name="waka"]{
+  top: 40px;
+  right: 40px;
+}
+
+/* yuzu 左中央 */
+.char-item[data-name="yuzu"]{
+  top: 250px;
+  left: 40px;
+}
+
+/* lily 右下寄り */
+.char-item[data-name="lily"]{
+  top: 500px;
+  right: 40px;
+}
+
+/* toru 左下 */
+.char-item[data-name="toru"]{
+  bottom: 120px;
+  left: 40px;
+}
     /* 吹き出しサイズ */
     .speech-box { 
       height: 100%;
