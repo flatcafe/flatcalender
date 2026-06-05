@@ -10,7 +10,7 @@
   <script type="module" src="auth.js" defer></script>
 
   <style>
-    body { 
+       body { 
       font-family: 'M PLUS Rounded 1c', sans-serif; 
     }
     .bg-cafe-home { 
@@ -71,9 +71,9 @@
 
 /* toru 左下 */
 .char-item[data-name="toru"]{
-  bottom: 60px !important;
-  left: 40px !important;
-  top: auto !important;
+  bottom: 20px;
+  left: 40px;
+  transform: translateY(40%);
 }
     /* 吹き出しサイズ */
 .char-container {
@@ -86,6 +86,7 @@
 .char-item {
   position: absolute;
   display: flex;
+  align-items: flex-start;
   z-index: 10;
 }
 
@@ -113,20 +114,21 @@
 .char-item[data-name="toru"] .speech-box {
   background-image: url('images/torucom.png');
 }
-    .char-item[data-name="yuzu"] .speech-box,
-.char-item[data-name="lily"] .speech-box {
+/* 微調整 */
+.char-item[data-name="yuzu"],
+.char-item[data-name="lily"] {
   transform: translateY(10px);
 }
-    .char-item {
-  align-items: flex-start;
-}
-.char-item {
-  position: absolute;
-  display: flex;
-  align-items: flex-start;
-  z-index: 10;
-}
+@media (max-width: 768px) {
+  .speech-box {
+    width: 280px;
+    height: 160px;
+  }
 
+  .char-item {
+    transform: scale(0.85);
+  }
+}
   </style>
 </head>
 <body class="bg-cafe-home h-[100dvh] overflow-hidden">
