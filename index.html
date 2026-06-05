@@ -40,8 +40,8 @@
 .char-item {
   position: absolute;
   display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: flex-start;
+  gap: 0px;
 }  
     /* キャラ画像サイズ */
 .char-img {
@@ -52,7 +52,7 @@
   object-fit: contain;
 }
     .char-img {
-  transform: scale(1.2);
+  transform: scale(1.1);
   transform-origin: bottom center;
 }
   .char-item {
@@ -110,6 +110,9 @@
 
 .char-item[data-name="toru"] .speech-box {
   background-image: url('images/torucom.png');
+}
+    .char-item {
+  align-items: flex-start;
 }
      /* スマホ表示時のサイズアップ */
     @media (max-width: 767px) {
