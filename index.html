@@ -1,25 +1,69 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ふらっとCafe</title>
-
-<style>
-body {
-  margin: 0;
-  font-family: 'M PLUS Rounded 1c', sans-serif;
+    body { 
+      font-family: 'M PLUS Rounded 1c', sans-serif; 
+    }
+    .bg-cafe-home { 
+      background-image: url('images/back.png'); 
+      background-size: cover; 
+      background-position: center; 
+    }
+    
+    /* ベース（スマホ向け）：1列4行 */
+.char-container {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  display: grid; /* ←これ必須 */
+}
+    
+    /* PC・タブレット向け：2列2行 */
+    @media (min-width: 768px) {
+      .char-container {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        padding: 80px 40px 100px 40px;
+        gap: 0px;
+      }
+    }
+    
+    /* キャラ画像サイズ */
+.char-img {
+  height: 100%;
+  max-height: 270px;
+  width: auto;
+  max-width: none;
+  object-fit: contain;
+}
+    .char-img {
+  transform: scale(1.1);
+  transform-origin: bottom center;
 }
 
-.bg-cafe-home {
-  background-image: url('images/back.png');
-  background-size: cover;
-  background-position: center;
+/* waka 右上 */
+.char-item[data-name="waka"]{
+  top: 10px;
+  right: 20px;
 }
 
-/* =========================
-   コンテナ
-========================= */
+/* yuzu 左上 */
+.char-item[data-name="yuzu"]{
+  top: 100px;
+  left: 20px;
+}
+
+/* lily 右側・yuzuの少し下 */
+.char-item[data-name="lily"]{
+  top: 250px;
+  right: 40px;
+}
+
+/* toru 左下 */
+.char-item[data-name="toru"]{
+  bottom: 20px;
+  left: 40px;
+  transform: translateY(40%);
+}
+    /* 吹き出しサイズ */
 .char-container {
   position: relative;
   width: 100%;
@@ -27,105 +71,52 @@ body {
   overflow: hidden;
 }
 
-/* =========================
-   キャラ全体
-========================= */
 .char-item {
   position: absolute;
   display: flex;
-  align-items: flex-end;
-  gap: 10px;
+  align-items: flex-start;
+  z-index: 10;
 }
 
-/* キャラ画像 */
-.char-img {
-  height: 260px;
-  width: auto;
-  object-fit: contain;
-}
-
-/* =========================
-   吹き出し
-========================= */
 .speech-box {
   width: 660px;
   height: 360px;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
+  background-color: rgba(255,0,0,0.2);
 }
-
-/* 吹き出し画像 */
-.waka .speech-box {
+    
+.char-item[data-name="waka"] .speech-box {
   background-image: url('images/wakacom.png');
 }
-.yuzu .speech-box {
+
+.char-item[data-name="yuzu"] .speech-box {
   background-image: url('images/yuzucom.png');
 }
-.lily .speech-box {
+
+.char-item[data-name="lily"] .speech-box {
   background-image: url('images/lilycom.png');
 }
-.toru .speech-box {
+
+.char-item[data-name="toru"] .speech-box {
   background-image: url('images/torucom.png');
 }
-
-/* =========================
-   位置（PC）
-========================= */
-.waka { top: 10px; right: 20px; }
-.yuzu { top: 120px; left: 20px; }
-.lily { top: 260px; right: 40px; }
-.toru { bottom: 0px; left: 40px; }
-
-/* =========================
-   スマホ対応
-========================= */
+/* 微調整 */
+.char-item[data-name="yuzu"],
+.char-item[data-name="lily"] {
+  transform: translateY(10px);
+}
 @media (max-width: 768px) {
-
   .speech-box {
     width: 280px;
     height: 160px;
   }
 
-  .char-img {
-    height: 160px;
+  .char-item {
+    transform: scale(0.85);
   }
-
-  .waka { top: 10px; right: 10px; }
-  .yuzu { top: 100px; left: 10px; }
-  .lily { top: 180px; right: 10px; }
-  .toru { bottom: 10px; left: 10px; }
 }
-</style>
-</head>
-
-<body class="bg-cafe-home">
-
-<div class="char-container">
-
-  <div class="char-item waka">
-    <div class="speech-box"></div>
-    <img src="images/waka.png" class="char-img">
-  </div>
-
-  <div class="char-item yuzu">
-    <div class="speech-box"></div>
-    <img src="images/yuzu.png" class="char-img">
-  </div>
-
-  <div class="char-item lily">
-    <div class="speech-box"></div>
-    <img src="images/lily.png" class="char-img">
-  </div>
-
-  <div class="char-item toru">
-    <div class="speech-box"></div>
-    <img src="images/toru.png" class="char-img">
-  </div>
-
-</div>
-
-</body>
 
 </head>
 <body class="bg-cafe-home h-[100dvh] overflow-hidden">
