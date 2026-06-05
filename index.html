@@ -49,9 +49,7 @@
   transform: scale(1.1);
   transform-origin: bottom center;
 }
-  .char-item {
-  gap: 0px;
-}
+
 /* waka 右上 */
 .char-item[data-name="waka"]{
   top: 10px;
@@ -77,8 +75,8 @@
 }
     /* 吹き出しサイズ */
 .speech-box {
-  width: 660px;
-  height: 360px;
+  width: 1320px;
+  height: 720px;
 
   background-size: contain;
   background-repeat: no-repeat;
@@ -88,6 +86,7 @@
 }
 
 .char-item {
+  position: absolute;
   display: flex;
   align-items: flex-start;
   gap: -20px;
