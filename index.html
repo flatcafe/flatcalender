@@ -102,43 +102,63 @@
   z-index: 10;
 }
 
+/* 吹き出し */
 .speech-box {
   width: 660px;
   height: 360px;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  background-color: rgba(255,0,0,0.2);
 }
-    
+
+/* 吹き出し画像 */
 .char-item[data-name="waka"] .speech-box {
   background-image: url('images/wakacom.png');
 }
-
 .char-item[data-name="yuzu"] .speech-box {
   background-image: url('images/yuzucom.png');
 }
-
 .char-item[data-name="lily"] .speech-box {
   background-image: url('images/lilycom.png');
 }
-
 .char-item[data-name="toru"] .speech-box {
   background-image: url('images/torucom.png');
 }
+
+/* 位置 */
+.char-item[data-name="waka"]{
+  top: 10px;
+  right: 20px;
+}
+.char-item[data-name="yuzu"]{
+  top: 100px;
+  left: 20px;
+}
+.char-item[data-name="lily"]{
+  top: 250px;
+  right: 40px;
+}
+.char-item[data-name="toru"]{
+  bottom: 20px;
+  left: 40px;
+  transform: translateY(40%);
+}
+
 /* 微調整 */
 .char-item[data-name="yuzu"],
-.char-item[data-name="lily"] {
+.char-item[data-name="lily"]{
   transform: translateY(10px);
 }
+
+/* スマホ */
 @media (max-width: 768px) {
+  .char-item {
+    transform: scale(0.8);
+  }
+
   .speech-box {
     width: 280px;
     height: 160px;
-  }
-
-  .char-item {
-    transform: scale(0.85);
   }
 }
   </style>
