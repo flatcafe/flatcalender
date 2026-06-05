@@ -41,7 +41,7 @@
   position: absolute;
   display: flex;
   align-items: flex-start;
-  gap: 0px;
+  gap: -20px;
 }  
     /* キャラ画像サイズ */
 .char-img {
@@ -90,13 +90,10 @@
   background-repeat: no-repeat;
   background-position: center;
 
-  transform: scale(2);
-  transform-origin: center;
-
   border: 2px solid red;
 }
     
-  .char-item[data-name="waka"] .speech-box {
+.char-item[data-name="waka"] .speech-box {
   background-image: url('images/wakacom.png');
 }
 
