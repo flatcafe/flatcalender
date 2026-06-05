@@ -71,27 +71,31 @@
 
 /* toru 左下 */
 .char-item[data-name="toru"]{
-  bottom: -80px;
+  bottom: -40px;
   left: 40px;
 }
     /* 吹き出しサイズ */
-    .speech-box { 
-      height: 100%;
-      max-height: 120px; /* スマホ時の最大高さ */
-      width: 100%;
-      max-width: 220px; /* スマホ時の最大横幅 */
-      display: flex; 
-      align-items: center; 
-      justify-content: center;
-      text-align: center; 
-      padding: 10px 25px; /* はみ出し防止の余白 */
-      font-weight: bold;
-      background-size: contain; 
-      background-repeat: no-repeat; 
-      background-position: center;
-      line-height: 1.3;
-      overflow-wrap: break-word;
-    }
+ .speech-box {
+  height: 100%;
+  max-height: 240px;
+  width: 100%;
+  max-width: 440px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+  padding: 20px 40px;
+
+  font-weight: bold;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  line-height: 1.3;
+  overflow-wrap: break-word;
+}
 
     /* PC表示時のサイズアップ */
     @media (min-width: 768px) {
