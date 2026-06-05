@@ -37,12 +37,6 @@
       }
     }
     
-.char-item {
-  position: absolute;
-  display: flex;
-  align-items: flex-start;
-  gap: -20px;
-}  
     /* キャラ画像サイズ */
 .char-img {
   height: 100%;
@@ -90,7 +84,16 @@
   background-repeat: no-repeat;
   background-position: center;
 
+  transform: scale(2);
+  transform-origin: center;
+
   border: 2px solid red;
+}
+    /* キャラに近づける*/ 
+.char-item {
+  display: flex;
+  align-items: flex-start;
+  gap: -20px;
 }
     
 .char-item[data-name="waka"] .speech-box {
