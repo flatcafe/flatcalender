@@ -19,11 +19,11 @@
       background-position: center; 
     }
     
-    /* ベース（スマホ向け）：1列4行 */.char-container {
+    /* ベース（スマホ向け）：1列4行 */
+.char-container {
   position: relative;
-  width: 100%;
-  height: 100dvh;
-  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
 }
     
     /* PC・タブレット向け：2列2行 */
@@ -76,9 +76,9 @@
 }
     /* 吹き出しサイズ */
 .speech-box {
- width: 660px;
-height: 360px;
-  
+  width: 660px;
+  height: 360px;
+
   background-image: url('images/wakacom.png');
   background-size: contain;
   background-repeat: no-repeat;
@@ -89,6 +89,9 @@ height: 360px;
   line-height: 1.3;
 
   border: 2px solid red;
+
+  display: block;
+  flex-shrink: 0;
 }
     
 
