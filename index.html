@@ -131,7 +131,16 @@
 .char-item[data-name="lily"] {
   transform: translateY(10px);
 }
+@media (max-width: 768px) {
+  .speech-box {
+    width: 280px;
+    height: 160px;
+  }
 
+  .char-item {
+    transform: scale(0.85);
+  }
+}
   </style>
 </head>
 <body class="bg-cafe-home h-[100dvh] overflow-hidden">
