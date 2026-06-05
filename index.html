@@ -1,25 +1,81 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ふらっとCafe</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>☕ふらっとCafe - Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700&display=swap" rel="stylesheet">
+  
+  <script type="module" src="auth.js" defer></script>
 
-<style>
-body {
-  margin: 0;
-  font-family: 'M PLUS Rounded 1c', sans-serif;
+  <style>
+    body { 
+      font-family: 'M PLUS Rounded 1c', sans-serif; 
+    }
+    .bg-cafe-home { 
+      background-image: url('images/back.png'); 
+      background-size: cover; 
+      background-position: center; 
+    }
+    
+    /* ベース（スマホ向け）：1列4行 */
+.char-container {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  display: grid; /* ←これ必須 */
+}
+    
+    /* PC・タブレット向け：2列2行 */
+    @media (min-width: 768px) {
+      .char-container {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        padding: 80px 40px 100px 40px;
+        gap: 0px;
+      }
+    }
+    
+    /* キャラ画像サイズ */
+.char-img {
+  height: 100%;
+  max-height: 270px;
+  width: auto;
+  max-width: none;
+  object-fit: contain;
+}
+    .char-img {
+  transform: scale(1.1);
+  transform-origin: bottom center;
 }
 
-.bg-cafe-home {
-  background-image: url('images/back.png');
-  background-size: cover;
-  background-position: center;
+/* waka 右上 */
+.char-item[data-name="waka"]{
+  top: 10px;
+  right: 20px;
 }
 
-/* =========================
-   コンテナ
-========================= */
+/* yuzu 左上 */
+.char-item[data-name="yuzu"]{
+  top: 100px;
+  left: 20px;
+}
+
+/* lily 右側・yuzuの少し下 */
+.char-item[data-name="lily"]{
+  top: 250px;
+  right: 40px;
+}
+
+/* toru 左下 */
+.char-item[data-name="toru"]{
+  bottom: 60px !important;
+  left: 40px !important;
+  top: auto !important;
+}
+    /* 吹き出しサイズ */
 .char-container {
   position: relative;
   width: 100%;
@@ -27,252 +83,49 @@ body {
   overflow: hidden;
 }
 
-/* =========================
-   キャラ全体
-========================= */
 .char-item {
   position: absolute;
   display: flex;
-  align-items: flex-end;
-  gap: 10px;
+  z-index: 10;
 }
 
-/* キャラ画像 */
-.char-img {
-  height: 260px;
-  width: auto;
-  object-fit: contain;
-}
-
-/* =========================
-   吹き出し
-========================= */
 .speech-box {
   width: 660px;
   height: 360px;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
+  background-color: rgba(255,0,0,0.2);
 }
-
-/* 吹き出し画像 */
-.waka .speech-box {
+    
+.char-item[data-name="waka"] .speech-box {
   background-image: url('images/wakacom.png');
 }
-.yuzu .speech-box {
+
+.char-item[data-name="yuzu"] .speech-box {
   background-image: url('images/yuzucom.png');
 }
-.lily .speech-box {
+
+.char-item[data-name="lily"] .speech-box {
   background-image: url('images/lilycom.png');
 }
-.toru .speech-box {
+
+.char-item[data-name="toru"] .speech-box {
   background-image: url('images/torucom.png');
 }
-
-/* =========================
-   位置（PC）
-========================= */
-.waka { top: 10px; right: 20px; }
-.yuzu { top: 120px; left: 20px; }
-.lily { top: 260px; right: 40px; }
-.toru { bottom: 0px; left: 40px; }
-
-/* =========================
-   スマホ対応
-========================= */
-@media (max-width: 768px) {
-
-  .speech-box {
-    width: 280px;
-    height: 160px;
-  }
-
-  .char-img {
-    height: 160px;
-  }
-
-  .waka { top: 10px; right: 10px; }
-  .yuzu { top: 100px; left: 10px; }
-  .lily { top: 180px; right: 10px; }
-  .toru { bottom: 10px; left: 10px; }
+    .char-item[data-name="yuzu"] .speech-box,
+.char-item[data-name="lily"] .speech-box {
+  transform: translateY(10px);
 }
-</style>
-</head>
-
-<body class="bg-cafe-home">
-
-<div class="char-container">
-
-  <div class="char-item waka">
-    <div class="speech-box"></div>
-    <img src="images/waka.png" class="char-img">
-  </div>
-
-  <div class="char-item yuzu">
-    <div class="speech-box"></div>
-    <img src="images/yuzu.png" class="char-img">
-  </div>
-
-  <div class="char-item lily">
-    <div class="speech-box"></div>
-    <img src="images/lily.png" class="char-img">
-  </div>
-
-  <div class="char-item toru">
-    <div class="speech-box"></div>
-    <img src="images/toru.png" class="char-img">
-  </div>
-
-</div>
-
-</body>
-</html>
-</head>
-<body class="bg-cafe-home h-[100dvh] overflow-hidden">
-
-  <div id="login-info" class="fixed top-4 right-4 z-40 bg-white/70 px-4 py-2 rounded-xl text-sm font-bold text-gray-700 shadow-sm cursor-pointer" onclick="document.getElementById('logout-modal').classList.remove('hidden')">
-    <span id="display-user-name">ゲスト</span>でログイン中
-  </div>
-
-  <div id="logout-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
-    <div class="bg-white p-6 rounded-2xl shadow-xl w-64 text-center">
-      <p class="mb-6 font-bold text-gray-700">ログアウトしますか？</p>
-      <div class="flex gap-4">
-        <button id="cancel-logout" class="flex-1 py-2 bg-gray-100 rounded-lg text-gray-600 font-bold">キャンセル</button>
-        <button id="confirm-logout" class="flex-1 py-2 bg-red-500 text-white rounded-lg font-bold">はい</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="char-container">
-    <div class="char-item" data-name="waka">
-      <div class="speech-box bg-[url('images/wakacom.png')]"></div>
-      <img src="images/waka.png" class="char-img">
-    </div>
-    <div class="char-item" data-name="yuzu">
-      <img src="images/yuzu.png" class="char-img">
-      <div class="speech-box bg-[url('images/yuzucom.png')]"></div>
-    </div>
-    <div class="char-item" data-name="lily">
-      <div class="speech-box bg-[url('images/lilycom.png')]"></div>
-      <img src="images/lily.png" class="char-img">
-    </div>
-    <div class="char-item" data-name="toru">
-      <img src="images/toru.png" class="char-img">
-      <div class="speech-box bg-[url('images/torucom.png')]"></div>
-    </div>
-  </div>
-
-  <div class="fixed bottom-0 w-full z-50 pointer-events-none">
-    <div class="pointer-events-auto">
-      <cafe-nav></cafe-nav>
-    </div>
-  </div>
-  
-  <script src="components/navbar.js" defer></script>
-
-  <script type="module">
-    import { auth, db } from './firebase-config.js';
-    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-    import { doc, getDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-
-    document.getElementById('cancel-logout').addEventListener('click', () => {
-      document.getElementById('logout-modal').classList.add('hidden');
-    });
-    
-    document.getElementById('confirm-logout').addEventListener('click', async () => {
-      try {
-        await signOut(auth); 
-        window.location.href = 'welcome.html';
-      } catch (error) {
-        console.error("ログアウトエラー:", error);
-      }
-    });
-
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        try {
-          const docRef = doc(db, "users", user.uid);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            const userData = docSnap.data();
-            document.getElementById('display-user-name').textContent = userData.name || "ゲスト";
-          }
-        } catch (error) {
-          console.error("ユーザー情報取得エラー:", error);
-        }
-
-        updateBubbles();
-      }
-    });
-
-    const shiftMessages = {
-      "日勤": "お昼間はお仕事だよ",
-      "休み": "お休みだー！！遊ぶぞ！！",
-      "夜勤": "朝も昼もお仕事・・・",
-      "明け": "明け！！やっとゲームできる！！",
-      "当直": "当直だよ"
-    };
-
-    // スマホ・PC共通で安全なフォントサイズを計算
-    function getDynamicFontSize(textLength) {
-      if (textLength > 50) return "clamp(10px, 1.5vw + 8px, 14px)";
-      if (textLength > 30) return "clamp(12px, 1.8vw + 8px, 16px)";
-      if (textLength > 15) return "clamp(14px, 2.0vw + 8px, 20px)";
-      return "clamp(16px, 2.5vw + 8px, 24px)";
-    }
-
-    async function updateBubbles() {
-      const today = new Date();
-      const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-      
-      let todaysSchedules = [];
-
-      try {
-        const q = query(collection(db, "schedules"), where("date", "==", dateStr));
-        const querySnapshot = await getDocs(q);
-        
-        querySnapshot.forEach((doc) => {
-          todaysSchedules.push(doc.data());
-        });
-      } catch (error) {
-        console.error("スケジュールの取得エラー:", error);
-      }
-
-      document.querySelectorAll('.char-item').forEach(item => {
-        const name = item.getAttribute('data-name');
-        const bubble = item.querySelector('.speech-box');
-        
-        const charSchedules = todaysSchedules.filter(s => 
-          s.characterName === name || (s.members && s.members.includes(name))
-        );
-        
-        let msg = "今日は何の日？";
-
-        if (charSchedules.length > 0) {
-          charSchedules.sort((a, b) => {
-            const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
-            const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
-            return dateB - dateA;
-          });
-          
-          const latestSched = charSchedules[0];
-          
-          if (latestSched.detail && latestSched.detail.trim() !== "") {
-            msg = latestSched.detail;
-          } else {
-            msg = shiftMessages[latestSched.text] || latestSched.text;
-          }
-        }
-        
-        bubble.style.fontSize = getDynamicFontSize(msg.length);
-        bubble.textContent = msg;
-      });
-    }
-  </script>
-</body>
-</html>
-
+    .char-item {
+  align-items: flex-start;
+}
+.char-item {
+  position: absolute;
+  display: flex;
+  align-items: flex-start;
+  z-index: 10;
+}
 
   </style>
 </head>
