@@ -22,8 +22,9 @@
     /* ベース（スマホ向け）：1列4行 */
 .char-container {
   position: relative;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
 }
     
     /* PC・タブレット向け：2列2行 */
@@ -36,13 +37,12 @@
       }
     }
     
-   .char-item {
+.char-item {
   position: absolute;
   display: flex;
   align-items: center;
   gap: 10px;
-}
-    
+}  
     /* キャラ画像サイズ */
 .char-img {
   height: 100%;
@@ -89,12 +89,7 @@
   line-height: 1.3;
 
   border: 2px solid red;
-
-  display: block;
-  flex-shrink: 0;
 }
-    
-
     
     /* PC表示時のサイズアップ */
     @media (min-width: 768px) {
