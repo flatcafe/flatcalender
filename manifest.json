@@ -1,7 +1,8 @@
 {
   "name": "ふらっとCafe",
   "short_name": "ふらっとCafe",
-  "start_url": "/index.html",
+  "start_url": "/flatcalender/index.html",
+  "scope": "/flatcalender/",
   "display": "standalone",
   "background_color": "#DFC6B0",
   "theme_color": "#DFC6B0"
