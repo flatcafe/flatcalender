@@ -94,18 +94,15 @@
   z-index: 10;
 }
 
-.speech-box {
-  width: 660px;
-  height: 360px;
-
-  transform: scale(2.2);
-  transform-origin: top left;
-  flex-shrink: 0;
-
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-color: unset;
+.char-item .speech-box {
+  transform: none;
+  width: 1200px;
+  height: 650px;
+}
+  .char-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
 }
     
 .char-item[data-name="waka"] .speech-box {
