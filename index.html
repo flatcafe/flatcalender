@@ -93,16 +93,17 @@
   align-items: flex-start;
   z-index: 10;
 }
-
-.char-item .speech-box {
+.speech-box {
   width: 660px;
   height: 360px;
-  transform: none;
+
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  display: block;
 }
-.char-container {
-  overflow: hidden;
-}
-    
+
 .char-item[data-name="waka"] .speech-box {
   background-image: url('images/wakacom.png');
 }
