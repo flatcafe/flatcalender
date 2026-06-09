@@ -1,0 +1,8 @@
+{
+  "name": "ふらっとCafe",
+  "short_name": "ふらっとCafe",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#DFC6B0",
+  "theme_color": "#DFC6B0"
+}
