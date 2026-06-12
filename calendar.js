@@ -302,13 +302,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const type = btn.getAttribute('data-type');
     const text = btn.getAttribute('data-text');
-    const detail = prompt("コメントを入力してね");
+   
 
     await addDoc(collection(db, "schedules"), {
       date: selectedDateStr,
       type: type,
       text: text,
-      detail: detail || "",
+      detail: "",
       author: userName,
       characterName: charName,
       authorColor: charColor,
