@@ -294,26 +294,31 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    document.querySelectorAll('.stamp-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        if (!selectedDateStr) {
-          alert("入力したい枠を選択してください！");
-          return;
-        }
-        const type = btn.getAttribute('data-type');
-        const text = btn.getAttribute('data-text');
-        const detail = prompt("コメントを入力してね");
+     document.querySelectorAll('.stamp-btn').forEach(btn => {
+       btn.addEventListener('click', async () => {
+         if (!selectedDateStr) {
+           alert("入力したい枠を選択してください！");
+           return;
+         }
+         const type = btn.getAttribute('data-type');
+         const text = btn.getAttribute('data-text');
+         const detail = prompt("コメントを入力してね");
         
-       await addDoc(collection(db, "schedules"), {
-  date: selectedDateStr,
-  type: type,
-  text: text,
-  detail: detail || "",
-  author: userName,
-  characterName: charName,
-  authorColor: charColor,
-  createdAt: new Date().toISOString()
+        await addDoc(collection(db, "schedules"), {
+   date: selectedDateStr,
+   type: type,
+   text: text,
+   detail: detail || "",
+   author: userName,
+   characterName: charName,
+   authorColor: charColor,
+   createdAt: new Date().toISOString()
+ });
+         await loadSchedules();
+    renderCalendar();
+  });
 });
+      
           
           // 日付を進めた後、手動でカレンダーを再描画してカーソル位置を反映させる
           advanceSelectedDate();
