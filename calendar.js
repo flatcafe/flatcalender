@@ -317,6 +317,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     await loadSchedules();
     renderCalendar();
+
+    advanceSelectedDate();
+    renderCalendar();
   });
 });
 
