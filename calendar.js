@@ -304,22 +304,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const text = btn.getAttribute('data-text');
    
 
-    await addDoc(collection(db, "schedules"), {
-      date: selectedDateStr,
-      type: type,
-      text: text,
-      detail: "",
-      author: userName,
-      characterName: charName,
-      authorColor: charColor,
-      createdAt: new Date().toISOString()
-    });
+await addDoc(collection(db, "schedules"), {
+  date: selectedDateStr,
+  type: type,
+  text: text,
+  detail: "",
+  author: userName,
+  characterName: charName,
+  authorColor: charColor,
+  createdAt: new Date().toISOString()
+});
 
-    await loadSchedules();
-    renderCalendar();
+await loadSchedules();
 
-    advanceSelectedDate();
-    renderCalendar();
+advanceSelectedDate();
+
+updatePopupPosition(); // ←追加
+
+renderCalendar();
   });
 });
 
