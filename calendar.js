@@ -289,6 +289,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const [y, m, d] = selectedDateStr.split('-').map(Number);
       const nextDay = new Date(y, m - 1, d + 1);
       selectedDateStr = getFormatDate(nextDay.getFullYear(), nextDay.getMonth(), nextDay.getDate());
+
+      console.log("移動後", selectedDateStr);
+      
       if (nextDay.getMonth() !== currentDate.getMonth()) {
         currentDate = new Date(nextDay.getFullYear(), nextDay.getMonth(), 1);
       }
