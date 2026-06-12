@@ -302,18 +302,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         const type = btn.getAttribute('data-type');
         const text = btn.getAttribute('data-text');
+        const detail = prompt("コメントを入力してね");
         
-        try {
-          // Firestoreに新スケジュールを追加
-          await addDoc(collection(db, "schedules"), {
-            date: selectedDateStr,
-            type: type,
-            text: text,
-            author: userName,
-            characterName: charName,
-            authorColor: charColor,
-            createdAt: new Date().toISOString()
-          });
+       await addDoc(collection(db, "schedules"), {
+  date: selectedDateStr,
+  type: type,
+  text: text,
+  detail: detail || "",
+  author: userName,
+  characterName: charName,
+  authorColor: charColor,
+  createdAt: new Date().toISOString()
+});
           
           // 日付を進めた後、手動でカレンダーを再描画してカーソル位置を反映させる
           advanceSelectedDate();
