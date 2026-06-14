@@ -169,8 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       for (let i = 0; i < totalCells; i++) {
         const cell = document.createElement("div");
-        cell.className = "border-r border-b border-black relative overflow-hidden flex flex-col items-center cursor-pointer min-h-[3rem]";
-        
+        cell.className = "border-r border-b border-black relative flex flex-col items-center cursor-pointer min-h-[3rem]";
         if (i >= startDay && i < startDay + daysInMonth) {
           const dayNum = i - startDay + 1;
           const dateStr = getFormatDate(year, month, dayNum);
