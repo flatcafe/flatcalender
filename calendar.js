@@ -215,10 +215,12 @@ document.addEventListener("DOMContentLoaded", () => {
           let daySchedules = allSchedules.filter(s => s.date === dateStr);
           daySchedules.sort((a, b) => getSortScore(a) - getSortScore(b));
 
+          const visibleSchedules = daySchedules.slice(0, 3);
+
           const schedContainer = document.createElement("div");
           schedContainer.className = "mt-6 flex flex-col gap-[2px] px-0.5 w-full items-center z-20 pointer-events-none";
 
-          daySchedules.forEach(sched => {
+          visibleSchedules.forEach(sched => {
             const pill = document.createElement("div");
             pill.className = "pointer-events-auto w-full rounded-full leading-tight font-bold text-black py-[2px] px-1 text-center shadow-sm cursor-pointer flex flex-col items-center justify-center";
             
@@ -276,9 +278,19 @@ document.addEventListener("DOMContentLoaded", () => {
               }
             });
 
-            schedContainer.appendChild(pill);
-          });
-          cell.appendChild(schedContainer);
+           schedContainer.appendChild(pill);
+});
+
+if (daySchedules.length > 3) {
+  const more = document.createElement("div");
+  more.className = "text-[9px] font-bold text-gray-700";
+
+  more.textContent = `+${daySchedules.length - 3}件`;
+
+  schedContainer.appendChild(more);
+}
+
+cell.appendChild(schedContainer);
         }
         calendarDays.appendChild(cell);
       }
