@@ -309,9 +309,9 @@ if (daySchedules.length > 3) {
 }
 
 cell.appendChild(schedContainer);
-
+}
 calendarDays.appendChild(cell);
-
+}
 
 }
     function advanceSelectedDate() {
@@ -439,3 +439,7 @@ renderCalendar();
         console.error("カレンダーエラー:", error);
       }
     });
+} catch (error) {  // ← 【ここから3行追加】
+    console.error(error);
+  }
+});
