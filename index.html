@@ -281,7 +281,7 @@
             return dateB - dateA;
           });
           
-         latestSched = charSchedules[0];
+         const latestSched = charSchedules[0];
           
           if (latestSched.detail && latestSched.detail.trim() !== "") {
             msg = latestSched.detail;
@@ -318,8 +318,9 @@ bubble.onclick = async () => {
   } catch (error) {
     console.error(error);
     alert("保存失敗");
-  }
+  }    
 };
+      });
     }
   </script>
 </body>
