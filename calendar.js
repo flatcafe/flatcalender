@@ -285,30 +285,30 @@ const schedContainer = document.createElement("div");
 });
 
 if (daySchedules.length > 3) {
-const more = document.createElement("div");
+  const more = document.createElement("div");
 
-more.className =
-  "text-[9px] font-bold text-blue-700 cursor-pointer pointer-events-auto";
+  more.className =
+    "text-[9px] font-bold text-blue-700 cursor-pointer pointer-events-auto";
 
-if (isExpanded) {
-  more.textContent = "▲ 閉じる";
-} else {
-  more.textContent = `+${daySchedules.length - 3}件`;
+  if (isExpanded) {
+    more.textContent = "▲ 閉じる";
+  } else {
+    more.textContent = `+${daySchedules.length - 3}件`;
+  }
+
+  more.addEventListener("click", (e) => {
+    e.stopPropagation();
+
+    expandedDateStr =
+      expandedDateStr === dateStr ? null : dateStr;
+
+    renderCalendar();
+  });
+
+  schedContainer.appendChild(more);
 }
-
-more.addEventListener("click", (e) => {
-  e.stopPropagation();
-
-  expandedDateStr =
-    expandedDateStr === dateStr ? null : dateStr;
-
-  renderCalendar();
-});
-
-schedContainer.appendChild(more);
 
 cell.appendChild(schedContainer);
-}
 
 calendarDays.appendChild(cell);
 }
