@@ -212,12 +212,16 @@ document.addEventListener("DOMContentLoaded", () => {
           wrapper.appendChild(span);
           cell.appendChild(wrapper);
 
-          let daySchedules = allSchedules.filter(s => s.date === dateStr);
-          daySchedules.sort((a, b) => getSortScore(a) - getSortScore(b));
+         let daySchedules = allSchedules.filter(s => s.date === dateStr);
+daySchedules.sort((a, b) => getSortScore(a) - getSortScore(b));
 
-          const visibleSchedules = daySchedules.slice(0, 3);
+const isExpanded = expandedDateStr === dateStr;
 
-          const schedContainer = document.createElement("div");
+const visibleSchedules = isExpanded
+  ? daySchedules
+  : daySchedules.slice(0, 3);
+
+const schedContainer = document.createElement("div");
           schedContainer.className = "mt-6 flex flex-col gap-[2px] px-0.5 w-full items-center z-20 pointer-events-none";
 
           visibleSchedules.forEach(sched => {
