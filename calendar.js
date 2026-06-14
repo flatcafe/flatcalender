@@ -283,9 +283,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
 if (daySchedules.length > 3) {
   const more = document.createElement("div");
-  more.className = "text-[9px] font-bold text-gray-700";
+
+  more.className =
+    "text-[9px] font-bold text-blue-700 cursor-pointer pointer-events-auto";
 
   more.textContent = `+${daySchedules.length - 3}件`;
+
+  more.addEventListener("click", (e) => {
+    e.stopPropagation();
+
+    const list = daySchedules
+      .map(s => `・${s.text}`)
+      .join("<br>");
+
+    detailContentArea.innerHTML = `
+      <div class="font-bold text-lg border-b border-gray-600 pb-2 mb-2 text-center">
+        ${dateStr} の予定
+      </div>
+      <div class="text-sm">
+        ${list}
+      </div>
+    `;
+
+    detailModal.classList.remove("hidden");
+  });
 
   schedContainer.appendChild(more);
 }
