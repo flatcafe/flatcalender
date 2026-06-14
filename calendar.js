@@ -292,30 +292,14 @@ if (daySchedules.length > 3) {
   more.addEventListener("click", (e) => {
     e.stopPropagation();
 
-    const list = daySchedules
-      .map(s => `・${s.text}`)
-      .join("<br>");
+    expandedDateStr =
+      expandedDateStr === dateStr ? null : dateStr;
 
-    detailContentArea.innerHTML = `
-      <div class="font-bold text-lg border-b border-gray-600 pb-2 mb-2 text-center">
-        ${dateStr} の予定
-      </div>
-      <div class="text-sm">
-        ${list}
-      </div>
-    `;
-
-    detailModal.classList.remove("hidden");
+    renderCalendar();
   });
 
   schedContainer.appendChild(more);
 }
-
-cell.appendChild(schedContainer);
-        }
-        calendarDays.appendChild(cell);
-      }
-    }
 
     function advanceSelectedDate() {
       if (!selectedDateStr) return;
@@ -362,6 +346,7 @@ renderCalendar();
 
 
     let activeScheduleId = null;
+    let expandedDateStr = null;
     const deleteBtn = document.getElementById("sched-delete-btn");
     const editBtn = document.getElementById("sched-edit-btn");
     const cancelBtn = document.getElementById("sched-cancel-btn");
