@@ -196,7 +196,7 @@
   <script type="module">
     import { auth, db } from './firebase-config.js';
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-    import { doc, getDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+    import { doc, getDoc, collection, getDocs, query, where, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
     document.getElementById('cancel-logout').addEventListener('click', () => {
       document.getElementById('logout-modal').classList.add('hidden');
@@ -254,9 +254,12 @@
         const q = query(collection(db, "schedules"), where("date", "==", dateStr));
         const querySnapshot = await getDocs(q);
         
-        querySnapshot.forEach((doc) => {
-          todaysSchedules.push(doc.data());
-        });
+        querySnapshot.forEach((docSnap) => {
+         todaysSchedules.push({
+          id: docSnap.id,
+          ...docSnap.data()
+      });
+     });
       } catch (error) {
         console.error("スケジュールの取得エラー:", error);
       }
@@ -278,7 +281,7 @@
             return dateB - dateA;
           });
           
-          const latestSched = charSchedules[0];
+         latestSched = charSchedules[0];
           
           if (latestSched.detail && latestSched.detail.trim() !== "") {
             msg = latestSched.detail;
@@ -288,8 +291,35 @@
         }
         
         bubble.style.fontSize = getDynamicFontSize(msg.length);
-        bubble.textContent = msg;
-      });
+bubble.textContent = msg;
+
+bubble.style.cursor = "pointer";
+
+bubble.onclick = async () => {
+  if (charSchedules.length === 0) {
+    alert("今日の予定がありません");
+    return;
+  }
+
+  const newComment = prompt("吹き出しコメントを入力", msg);
+
+  if (newComment === null) return;
+
+  try {
+    await updateDoc(
+      doc(db, "schedules", latestSched.id),
+      {
+        detail: newComment
+      }
+    );
+
+    bubble.textContent = newComment;
+
+  } catch (error) {
+    console.error(error);
+    alert("保存失敗");
+  }
+};
     }
   </script>
 </body>
