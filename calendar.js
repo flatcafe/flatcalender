@@ -311,7 +311,7 @@ if (daySchedules.length > 3) {
 cell.appendChild(schedContainer);
 
 calendarDays.appendChild(cell);
-}
+
 
 }
     function advanceSelectedDate() {
