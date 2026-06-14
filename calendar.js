@@ -421,21 +421,21 @@ renderCalendar();
     }
 
     document.addEventListener("DOMContentLoaded", () => {
- 　 try {
+      try { // 全角スペースを半角スペースに修正
 
-    // カレンダー描画・ボタン処理すべてここ    
+        // カレンダー描画・ボタン処理すべてここ  
 
-    if(editBtn) {
-      editBtn.addEventListener('click', () => {
-        window.location.href = `schedule-edit.html?id=${activeScheduleId}`;
-      });
-    }
+        if(editBtn) {
+          editBtn.addEventListener('click', () => {
+            window.location.href = `schedule-edit.html?id=${activeScheduleId}`;
+          });
+        }
 
-    if(prevBtn) prevBtn.addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
-    if(nextBtn) nextBtn.addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
+        if(prevBtn) prevBtn.addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(); });
+        if(nextBtn) nextBtn.addEventListener("click", () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(); });
 
-  } catch (error) {
-    alert("カレンダーの描画中にエラーが発生しました！\n" + error.message);
-    console.error("カレンダーエラー:", error);
-  }
-});
+      } catch (error) {
+        alert("カレンダーの描画中にエラーが発生しました！\n" + error.message);
+        console.error("カレンダーエラー:", error);
+      }
+    });
