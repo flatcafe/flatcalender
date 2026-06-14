@@ -420,6 +420,11 @@ renderCalendar();
       });
     }
 
+    document.addEventListener("DOMContentLoaded", () => {
+ 　 try {
+
+    // カレンダー描画・ボタン処理すべてここ    
+
     if(editBtn) {
       editBtn.addEventListener('click', () => {
         window.location.href = `schedule-edit.html?id=${activeScheduleId}`;
