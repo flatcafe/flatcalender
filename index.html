@@ -273,22 +273,26 @@
         );
         
         let msg = "今日は何の日？";
+        
+　　　
+        
+       let latestSched = null;
 
-        if (charSchedules.length > 0) {
-          charSchedules.sort((a, b) => {
-            const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
-            const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
-            return dateB - dateA;
-          });
-          
-         const latestSched = charSchedules[0];
-          
-          if (latestSched.detail && latestSched.detail.trim() !== "") {
-            msg = latestSched.detail;
-          } else {
-            msg = shiftMessages[latestSched.text] || latestSched.text;
-          }
-        }
+if (charSchedules.length > 0) {
+  charSchedules.sort((a, b) => {
+    const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
+    const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
+    return dateB - dateA;
+  });
+
+  latestSched = charSchedules[0];
+
+  if (latestSched.detail && latestSched.detail.trim() !== "") {
+    msg = latestSched.detail;
+  } else {
+    msg = shiftMessages[latestSched.text] || latestSched.text;
+  }
+}
         
         bubble.style.fontSize = getDynamicFontSize(msg.length);
 bubble.textContent = msg;
