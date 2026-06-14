@@ -285,7 +285,7 @@ const schedContainer = document.createElement("div");
            schedContainer.appendChild(pill);
 });
 
-if (daySchedules.length > 3) {
+if (daySchedules.length > 3 && !isExpanded) {
   const more = document.createElement("div");
 
   more.className =
