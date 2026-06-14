@@ -304,6 +304,13 @@ if (daySchedules.length > 3 && !isExpanded) {
   schedContainer.appendChild(more);
 }
 
+cell.appendChild(schedContainer);
+}
+
+calendarDays.appendChild(cell);
+}
+
+}
     function advanceSelectedDate() {
       if (!selectedDateStr) return;
       const [y, m, d] = selectedDateStr.split('-').map(Number);
