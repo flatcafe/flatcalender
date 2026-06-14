@@ -318,7 +318,6 @@ await addDoc(collection(db, "schedules"), {
   createdAt: new Date().toISOString()
 });
 
-await loadSchedules();
 
 advanceSelectedDate();
 
