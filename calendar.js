@@ -439,7 +439,3 @@ renderCalendar();
         console.error("カレンダーエラー:", error);
       }
     });
-} catch (error) {  // ← 【ここから3行追加】
-    console.error(error);
-  }
-});
