@@ -431,8 +431,13 @@ if(prevBtn) prevBtn.addEventListener("click", () => {
   renderCalendar();
 });
 
-if(nextBtn) nextBtn.addEventListener("click", () => {
+    if(nextBtn) nextBtn.addEventListener("click", () => {
   currentDate.setMonth(currentDate.getMonth() + 1);
   renderCalendar();
-   });
+});
+
+} catch (error) {
+  console.error("カレンダーエラー:", error);
+}
+
 });
