@@ -435,3 +435,8 @@ if(nextBtn) nextBtn.addEventListener("click", () => {
   currentDate.setMonth(currentDate.getMonth() + 1);
   renderCalendar();
 });
+} catch (error) {
+  alert("カレンダーの描画中にエラーが発生しました！\n" + error.message);
+  console.error("カレンダーエラー:", error);
+}
+});
