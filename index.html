@@ -200,6 +200,7 @@
     import {
   doc,
   getDoc,
+  setDoc,
   collection,
   getDocs,
   query,
@@ -207,7 +208,6 @@
   updateDoc,
   addDoc
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-
     document.getElementById('cancel-logout').addEventListener('click', () => {
       document.getElementById('logout-modal').classList.add('hidden');
     });
@@ -317,9 +317,21 @@ bubble.onclick = async () => {
 
   try {
 
-   if (!latestSched) {
+  if (!latestSched) {
+
+  await setDoc(
+    doc(db, "bubbleComments", `${dateStr}_${name}`),
+    {
+      date: dateStr,
+      characterName: name,
+      comment: newComment,
+      updatedAt: new Date().toISOString()
+    }
+  );
+
   bubble.textContent = newComment;
   return;
+}
 } else {
   await updateDoc(
     doc(db, "schedules", latestSched.id),
