@@ -301,29 +301,40 @@ bubble.textContent = msg;
 bubble.style.cursor = "pointer";
 
 bubble.onclick = async () => {
-  if (charSchedules.length === 0) {
-    alert("今日の予定がありません");
-    return;
-  }
 
   const newComment = prompt("吹き出しコメントを入力", msg);
 
   if (newComment === null) return;
 
   try {
-    await updateDoc(
-      doc(db, "schedules", latestSched.id),
-      {
-        detail: newComment
-      }
-    );
+
+    if (!latestSched) {
+      await addDoc(collection(db, "schedules"), {
+        date: dateStr,
+        characterName: name,
+        text: "吹き出し",
+        detail: newComment,
+        createdAt: new Date().toISOString()
+      });
+
+    } else {
+
+      await updateDoc(
+        doc(db, "schedules", latestSched.id),
+        {
+          detail: newComment
+        }
+      );
+
+    }
 
     bubble.textContent = newComment;
 
   } catch (error) {
     console.error(error);
     alert("保存失敗");
-  }    
+  }
+
 };
       });
     }
