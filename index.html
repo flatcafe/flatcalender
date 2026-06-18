@@ -317,26 +317,17 @@ bubble.onclick = async () => {
 
   try {
 
-    if (!latestSched) {
-      await addDoc(collection(db, "schedules"), {
-        date: dateStr,
-        characterName: name,
-        text: "吹き出し",
-        detail: newComment,
-        createdAt: new Date().toISOString()
-      });
-
-    } else {
-
-      await updateDoc(
-        doc(db, "schedules", latestSched.id),
-        {
-          detail: newComment
-        }
-      );
-
+   if (!latestSched) {
+  bubble.textContent = newComment;
+  return;
+} else {
+  await updateDoc(
+    doc(db, "schedules", latestSched.id),
+    {
+      detail: newComment
     }
-
+  );
+}
     bubble.textContent = newComment;
 
   } catch (error) {
