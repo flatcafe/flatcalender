@@ -47,21 +47,42 @@
   
   <script src="components/navbar.js" defer></script>
 
-  <script>
-    // ユーザー名表示
-    const userData = JSON.parse(localStorage.getItem('cafe_user'));
-    if (userData && userData.name) {
-      document.getElementById('display-user-name').textContent = userData.name;
-    }
+ <script type="module">
+import { auth, db } from './firebase-config.js';
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-    // ログアウト処理
-    document.getElementById('cancel-logout').addEventListener('click', () => {
-      document.getElementById('logout-modal').classList.add('hidden');
-    });
-    document.getElementById('confirm-logout').addEventListener('click', () => {
-      localStorage.removeItem('cafe_user');
-      window.location.href = 'welcome.html';
-    });
-  </script>
+// ユーザー名表示
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return;
+
+  try {
+    const userSnap = await getDoc(
+      doc(db, "users", user.uid)
+    );
+
+    if (userSnap.exists()) {
+      document.getElementById('display-user-name').textContent =
+        userSnap.data().name;
+    }
+  } catch (error) {
+    console.error("ユーザー取得エラー:", error);
+  }
+});
+
+// ログアウト処理
+document.getElementById('cancel-logout').addEventListener('click', () => {
+  document.getElementById('logout-modal').classList.add('hidden');
+});
+
+document.getElementById('confirm-logout').addEventListener('click', async () => {
+  try {
+    await signOut(auth);
+    window.location.href = 'welcome.html';
+  } catch (error) {
+    console.error("ログアウトエラー:", error);
+  }
+});
+</script>
 </body>
 </html>
