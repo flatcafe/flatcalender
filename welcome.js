@@ -3,6 +3,12 @@ import { signInAnonymously } from "https://www.gstatic.com/firebasejs/9.23.0/fir
 import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 let selectedChar = { name: null, color: null, img: null };
+const charNames = {
+  waka: "若凪",
+  yuzu: "柚茶",
+  lily: "Lily00",
+  toru: "とるま"
+};
 
 // キャラクタ選択ロジック
 document.querySelectorAll('.char-btn').forEach(btn => {
@@ -20,18 +26,17 @@ document.querySelectorAll('.char-btn').forEach(btn => {
     target.classList.add('jump', 'ring-4', 'ring-amber-400', 'rounded-2xl');
     
     selectedChar = {
-      name: target.getAttribute('data-name'),
-      color: target.getAttribute('data-color'),
-      img: target.getAttribute('data-img')
-    };
+  name: target.getAttribute('data-name'),
+  displayName: charNames[target.getAttribute('data-name')],
+  color: target.getAttribute('data-color'),
+  img: target.getAttribute('data-img')
+};
   });
 });
 
 // 入店ボタンの処理
 document.getElementById('enterBtn').addEventListener('click', async () => {
-  const username = document.getElementById('username').value.trim();
   
-  if (!username) { alert("名前を入力してね！"); return; }
   if (!selectedChar.name) { alert("キャラを選んでね！"); return; }
 
   try {
@@ -39,7 +44,7 @@ document.getElementById('enterBtn').addEventListener('click', async () => {
     
     // Firestoreへ保存
     await setDoc(doc(db, "users", userCredential.user.uid), {
-      name: username,
+      name: selectedChar.displayName,
       characterName: selectedChar.name,
       characterColor: selectedChar.color,
       characterImg: selectedChar.img,
