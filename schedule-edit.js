@@ -177,14 +177,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // 通知ログ保存
   await addDoc(
-    collection(db, "notifications"),
-    {
-      type: "edit",
-      scheduleId: scheduleId,
-      title: schedule.title || schedule.text,
-      createdAt: new Date().toISOString()
-    }
-  );
+  collection(db, "notifications"),
+  {
+    type: "edit",
+    scheduleId: scheduleId,
+    title: schedule.title || schedule.text,
+    createdAt: new Date().toISOString()
+  }
+);
+
+console.log("notifications保存成功");
 
   window.location.href = 'calendar.html';
 
