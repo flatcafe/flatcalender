@@ -104,6 +104,7 @@ onAuthStateChanged(auth, async (user) => {
   const saveNotificationSettings = async () => {
 
   console.log("保存開始");
+  alert("保存処理実行");
 
   const user = auth.currentUser;
   if (!user) return;
