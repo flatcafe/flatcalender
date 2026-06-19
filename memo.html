@@ -8,9 +8,18 @@
 
 <script src="https://cdn.tailwindcss.com"></script>
 
+<style>
+body {
+  background-image: url('images/back.png');
+  background-size: cover;
+  background-position: center;
+}
+</style>
+
 </head>
 
-<body class="bg-[#DFC6B0] min-h-screen">
+<body class="min-h-screen overflow-hidden">
+
 
 <div class="p-6">
 
@@ -18,13 +27,25 @@
 📝 メモ
 </h1>
 
-<div class="mt-8 bg-white rounded-2xl p-6 shadow">
+<div class="mt-8 bg-white/80 rounded-2xl p-6 shadow">
 <p class="text-[#5a4a42]">
 メモ機能準備中です☕
 </p>
 </div>
 
 </div>
+
+
+<!-- メニューバー -->
+<div class="fixed bottom-0 w-full z-50 pointer-events-none">
+  <div class="pointer-events-auto">
+    <cafe-nav></cafe-nav>
+  </div>
+</div>
+
+
+<script src="components/navbar.js" defer></script>
+
 
 </body>
 </html>
