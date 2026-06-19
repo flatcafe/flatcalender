@@ -103,6 +103,8 @@ onAuthStateChanged(auth, async (user) => {
   }
   const saveNotificationSettings = async () => {
 
+  console.log("保存開始");
+
   const user = auth.currentUser;
   if (!user) return;
 
