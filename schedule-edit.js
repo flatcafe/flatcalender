@@ -157,6 +157,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   document.getElementById('save-btn').addEventListener('click', async () => {
+
+    console.log("保存ボタン押された");
+    
     if (document.getElementById('input-title')) schedule.title = document.getElementById('input-title').value;
     if (document.getElementById('input-partner')) schedule.partner = document.getElementById('input-partner').value;
     if (document.getElementById('input-time')) schedule.time = document.getElementById('input-time').value;
