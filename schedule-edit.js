@@ -1,5 +1,11 @@
 import { db } from './firebase-config.js';
-import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  addDoc,
+  collection
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -166,13 +172,26 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-      // Firestoreのデータを更新
-      await updateDoc(doc(db, "schedules", scheduleId), schedule);
-      window.location.href = 'calendar.html';
-    } catch (error) {
-      console.error("更新エラー:", error);
-      alert("保存に失敗しました。");
+  // Firestoreのデータを更新
+  await updateDoc(doc(db, "schedules", scheduleId), schedule);
+
+  // 通知ログ保存
+  await addDoc(
+    collection(db, "notifications"),
+    {
+      type: "edit",
+      scheduleId: scheduleId,
+      title: schedule.title || schedule.text,
+      createdAt: new Date().toISOString()
     }
+  );
+
+  window.location.href = 'calendar.html';
+
+} catch (error) {
+  console.error("更新エラー:", error);
+  alert("保存に失敗しました。");
+}
   });
 
   document.getElementById('back-btn').addEventListener('click', () => {
