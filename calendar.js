@@ -348,6 +348,16 @@ await addDoc(collection(db, "schedules"), {
   createdAt: new Date().toISOString()
 });
 
+await addDoc(
+  collection(db, "notifications"),
+  {
+    type: "add",
+    author: userName,
+    characterName: charName,
+    title: text,
+    createdAt: new Date().toISOString()
+  }
+);
 
 advanceSelectedDate();
 
