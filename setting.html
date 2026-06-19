@@ -67,7 +67,11 @@
  <script type="module">
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import {
+  doc,
+  getDoc,
+  updateDoc
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 // ユーザー名表示
 onAuthStateChanged(auth, async (user) => {
@@ -79,12 +83,51 @@ onAuthStateChanged(auth, async (user) => {
     );
 
     if (userSnap.exists()) {
-      document.getElementById('display-user-name').textContent =
-        userSnap.data().name;
-    }
+
+  const data = userSnap.data();
+
+  document.getElementById('display-user-name').textContent =
+    data.name;
+
+  document.getElementById('notify-add').checked =
+    data.notifyAdd ?? true;
+
+  document.getElementById('notify-edit').checked =
+    data.notifyEdit ?? true;
+
+  document.getElementById('notify-bubble').checked =
+    data.notifyBubble ?? true;
+}
   } catch (error) {
     console.error("ユーザー取得エラー:", error);
   }
+  const saveNotificationSettings = async () => {
+
+  const user = auth.currentUser;
+  if (!user) return;
+
+  try {
+    await updateDoc(
+      doc(db, "users", user.uid),
+      {
+        notifyAdd: document.getElementById('notify-add').checked,
+        notifyEdit: document.getElementById('notify-edit').checked,
+        notifyBubble: document.getElementById('notify-bubble').checked
+      }
+    );
+  } catch (error) {
+    console.error("通知設定保存エラー:", error);
+  }
+};
+
+document.getElementById('notify-add')
+  .addEventListener('change', saveNotificationSettings);
+
+document.getElementById('notify-edit')
+  .addEventListener('change', saveNotificationSettings);
+
+document.getElementById('notify-bubble')
+  .addEventListener('change', saveNotificationSettings);
 });
 
 // ログアウト処理
