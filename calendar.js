@@ -154,6 +154,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function renderCalendar() {
       calendarDays.innerHTML = "";
+
+      const schedulesByDate = {};
+
+　　　allSchedules.forEach(s => {
+ 　　 if (!schedulesByDate[s.date]) {
+   　 schedulesByDate[s.date] = [];
+ 　　 }
+  　　schedulesByDate[s.date].push(s);
+　　　});
       
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth();
@@ -211,14 +220,6 @@ document.addEventListener("DOMContentLoaded", () => {
           wrapper.appendChild(span);
           cell.appendChild(wrapper);
 
-          const schedulesByDate = {};
-
-　　　　　allSchedules.forEach(s => {
- 　　　　 if (!schedulesByDate[s.date]) {
-   　　　 schedulesByDate[s.date] = [];
- 　　　　 }
- 　　　　 schedulesByDate[s.date].push(s);
-　　　　　});
 
          let daySchedules =
  　　　　　　 schedulesByDate[dateStr] || [];
