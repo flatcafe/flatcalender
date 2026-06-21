@@ -211,7 +211,17 @@ document.addEventListener("DOMContentLoaded", () => {
           wrapper.appendChild(span);
           cell.appendChild(wrapper);
 
-         let daySchedules = allSchedules.filter(s => s.date === dateStr);
+          const schedulesByDate = {};
+
+　　　　　allSchedules.forEach(s => {
+ 　　　　 if (!schedulesByDate[s.date]) {
+   　　　 schedulesByDate[s.date] = [];
+ 　　　　 }
+ 　　　　 schedulesByDate[s.date].push(s);
+　　　　　});
+
+         let daySchedules =
+ 　　　　　　 schedulesByDate[dateStr] || [];
 daySchedules.sort((a, b) => getSortScore(a) - getSortScore(b));
 
 const isExpanded = expandedDateStr === dateStr;
