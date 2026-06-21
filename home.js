@@ -168,3 +168,4 @@ bubble.onclick = async () => {
 
 };
       }
+}
