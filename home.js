@@ -56,7 +56,7 @@ import {
       return "clamp(16px, 2.5vw + 8px, 24px)";
     }
 
-    async function updateBubbles() {
+       async function updateBubbles() {
       const today = new Date();
       const dateStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
       
@@ -74,4 +74,97 @@ import {
      });
       } catch (error) {
         console.error("スケジュールの取得エラー:", error);
+      }
+
+      const bubblePromises = {};
+
+　　　["waka", "yuzu", "lily", "toru"].forEach(name => {
+ 　　　 bubblePromises[name] = getDoc(
+    　　doc(db, "bubbleComments", `${dateStr}_${name}`)
+ 　　　　 );
+　　　});
+      
+      for (const item of document.querySelectorAll('.char-item')) {
+        const name = item.getAttribute('data-name');
+        const bubble = item.querySelector('.speech-box');
+        
+        const charSchedules = todaysSchedules.filter(s => 
+          s.characterName === name || (s.members && s.members.includes(name))
+        );
+        
+        let msg = "今日は何の日？";
+
+let hasCustomBubble = false;
+
+const bubbleDoc = await bubblePromises[name];
+
+if (bubbleDoc.exists()) {
+  msg = bubbleDoc.data().comment;
+  hasCustomBubble = true;
+}
+        
+　　　
+        
+       let latestSched = null;
+
+if (charSchedules.length > 0 && !hasCustomBubble) {
+  charSchedules.sort((a, b) => {
+    const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
+    const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
+    return dateB - dateA;
+  });
+
+  latestSched = charSchedules[0];
+
+  if (latestSched.detail && latestSched.detail.trim() !== "") {
+    msg = latestSched.detail;
+  } else {
+    msg = shiftMessages[latestSched.text] || latestSched.text;
+  }
+}
+        
+        bubble.style.fontSize = getDynamicFontSize(msg.length);
+bubble.textContent = msg;
+
+bubble.style.cursor = "pointer";
+
+bubble.onclick = async () => {
+
+  const newComment = prompt("吹き出しコメントを入力", msg);
+
+  if (newComment === null) return;
+
+  try {
+
+  if (!latestSched) {
+
+  await setDoc(
+    doc(db, "bubbleComments", `${dateStr}_${name}`),
+    {
+      date: dateStr,
+      characterName: name,
+      comment: newComment,
+      updatedAt: new Date().toISOString()
+    }
+  );
+
+  bubble.textContent = newComment;
+  return;
+
+} else {
+  await updateDoc(
+    doc(db, "schedules", latestSched.id),
+    {
+      detail: newComment
+    }
+  );
+}
+    bubble.textContent = newComment;
+
+  } catch (error) {
+    console.error(error);
+    alert("保存失敗");
+  }
+
+};
       }
