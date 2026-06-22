@@ -84,9 +84,10 @@ import {
   onSnapshot,
   doc,
   updateDoc,
-  arrayUnion
+  arrayUnion,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-
+    
 const badge =
   document.getElementById('notification-badge');
 
@@ -117,6 +118,45 @@ onSnapshot(q, (snapshot) => {
 
     const notificationId = docSnap.id;
     notificationIds.push(notificationId);
+
+    const user = auth.currentUser;
+
+
+// 自分の通知は出さない
+if(
+  user &&
+  data.authorUid === user.uid
+){
+  return;
+}
+
+
+// 通知設定チェック
+if(user){
+
+  const userSnap = await getDoc(
+    doc(db,"users",user.uid)
+  );
+
+  if(userSnap.exists()){
+
+    const setting = userSnap.data();
+
+    if(data.type === "add" && setting.notifyAdd === false){
+      return;
+    }
+
+    if(data.type === "edit" && setting.notifyEdit === false){
+      return;
+    }
+
+    if(data.type === "bubble" && setting.notifyBubble === false){
+      return;
+    }
+
+  }
+
+}
 
     const data = docSnap.data();
 
