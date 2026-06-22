@@ -182,12 +182,11 @@ if(user){
         `${author}さんが吹き出しを変更しました`;
     }
 
-    html += `
-      <div class="border-b py-2">
-        ${icon} ${message}
-      </div>
-    `;
-
+   html += `
+  <div class="border-b py-2">
+    ${icon} ${message}
+  </div>
+`;
 
 
 const isRead =
@@ -196,12 +195,11 @@ const isRead =
   data.readBy.includes(user.uid);
 
 
-if (!isMine && !isRead) {
+if (!isRead) {
   count++;
 }
 
-  });
-
+}
   
   
   notificationList.innerHTML =
