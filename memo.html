@@ -64,7 +64,6 @@ body {
 
 </div>
   
-<!-- メニューバー -->
 <div class="fixed bottom-0 w-full z-50 pointer-events-none">
   <div class="pointer-events-auto">
     <cafe-nav></cafe-nav>
@@ -145,15 +144,15 @@ if(user){
     const setting = userSnap.data();
 
     if(data.type === "add" && setting.notifyAdd === false){
-      return;
+      continue;
     }
 
     if(data.type === "edit" && setting.notifyEdit === false){
-      return;
+      continue;
     }
 
     if(data.type === "bubble" && setting.notifyBubble === false){
-      return;
+      continue;
     }
 
   }
@@ -195,8 +194,13 @@ const isRead =
   data.readBy &&
   data.readBy.includes(user.uid);
 
+const isMyPost = 
+  user && 
+  data.authorUid && 
+  data.authorUid === user.uid;
 
-if (!isRead) {
+
+if (!isRead && !isMyPost) {
   count++;
 }
 
