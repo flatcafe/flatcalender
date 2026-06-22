@@ -100,7 +100,10 @@ import {
   query,
   orderBy,
   limit,
-  onSnapshot
+  onSnapshot,
+  doc,
+  updateDoc,
+  arrayUnion
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 const notificationList =
@@ -121,6 +124,7 @@ onSnapshot(q, (snapshot) => {
 
   count++;
 
+  const notificationId = doc.id;
   const data = doc.data();
 
   const author = data.author || 'だれか';
