@@ -95,7 +95,9 @@ const panel =
 
 const notificationBtn =
   document.getElementById('notification-btn');
-    
+
+const notificationList =
+  document.getElementById('notification-list');
 let notificationIds = [];
 
 const q = query(
@@ -110,54 +112,67 @@ onSnapshot(q, (snapshot) => {
 
   let html = '';
   let count = 0;
-  
-const user = auth.currentUser;
 
-const isRead =
-  user &&
-  data.readBy &&
-  data.readBy.includes(user.uid);
+  snapshot.forEach((docSnap) => {
 
-if (!isRead) {
-  count++;
-}
- 
-  const notificationId = doc.id;
-  notificationIds.push(notificationId);
-    
-  const data = doc.data();
+    const notificationId = docSnap.id;
+    notificationIds.push(notificationId);
 
-  const author = data.author || 'だれか';
+    const data = docSnap.data();
 
-  let icon = '☕';
-  let message = data.title;
+    const author = data.author || 'だれか';
 
-  if (data.type === 'add') {
-    icon = '☕';
-    message =
-      `${authorr}さんが「${data.title}」を追加しました`;
+    let icon = '☕';
+    let message = data.title;
+
+    if (data.type === 'add') {
+      icon = '☕';
+      message =
+        `${author}さんが「${data.title}」を追加しました`;
+    }
+
+    if (data.type === 'edit') {
+      icon = '📝';
+      message =
+        `${author}さんが「${data.title}」を編集しました`;
+    }
+
+    if (data.type === 'bubble') {
+      icon = '💬';
+      message =
+        `${author}さんが吹き出しを変更しました`;
+    }
+
+    html += `
+      <div class="border-b py-2">
+        ${icon} ${message}
+      </div>
+    `;
+
+    const user = auth.currentUser;
+
+    const isRead =
+      user &&
+      data.readBy &&
+      data.readBy.includes(user.uid);
+
+    if (!isRead) {
+      count++;
+    }
+
+  });
+
+  notificationList.innerHTML =
+    html || '通知はありません';
+
+  if (count > 0) {
+    badge.textContent = count;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
   }
-
-  if (data.type === 'edit') {
-    icon = '📝';
-    message =
-      `${author}さんが「${data.title}」を編集しました`;
-  }
-
-  if (data.type === 'bubble') {
-    icon = '💬';
-    message =
-      `${author}さんが吹き出しを変更しました`;
-  }
-
-  html += `
-    <div class="border-b py-2">
-      ${icon} ${message}
-    </div>
-  `;
 
 });
-
  
   
   notificationList.innerHTML =
