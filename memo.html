@@ -71,22 +71,13 @@ body {
   </div>
 </div>
 
+<script>
 
 const badge =
   document.getElementById('notification-badge');
 
-// テスト用
 badge.textContent = '3';
 badge.classList.remove('hidden');
-
-document
-  .getElementById('notification-btn')
-  .addEventListener('click', () => {
-
-    alert('通知一覧はこれから作るよ☕');
-
-  });
-
 
 const panel =
   document.getElementById('notification-panel');
@@ -100,7 +91,7 @@ document
   });
 
 </script>
-
+  
 <script src="components/navbar.js" defer></script>
 
 
