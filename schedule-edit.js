@@ -188,17 +188,21 @@ document.addEventListener("DOMContentLoaded", async () => {
   await updateDoc(doc(db, "schedules", scheduleId), schedule);
 
   // 通知ログ保存
+// 通知ログ保存
 await addDoc(
   collection(db, "notifications"),
   {
     type: "edit",
     scheduleId: scheduleId,
     title: schedule.title || schedule.text,
+
+    author: document.getElementById('display-user-name')?.textContent || "だれか",
+
     createdAt: new Date().toISOString(),
-    authorUid: currentUid || (auth.currentUser ? auth.currentUser.uid : "") // 👈 変更
+
+    authorUid: currentUid || (auth.currentUser ? auth.currentUser.uid : "")
   }
 );
-
 console.log("notifications保存成功");
 
   window.location.href = 'calendar.html';
