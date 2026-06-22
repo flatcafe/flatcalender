@@ -91,6 +91,54 @@ document
   });
 
 </script>
+
+  <script type="module">
+
+import { db } from './firebase-config.js';
+
+import {
+  collection,
+  query,
+  orderBy,
+  limit,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+const notificationList =
+  document.getElementById('notification-list');
+
+const q = query(
+  collection(db, "notifications"),
+  orderBy("createdAt", "desc"),
+  limit(10)
+);
+
+onSnapshot(q, (snapshot) => {
+
+  let html = '';
+
+  snapshot.forEach((doc) => {
+
+    const data = doc.data();
+
+    const icon =
+      data.type === 'edit'
+        ? '📝'
+        : '☕';
+
+    html += `
+      <div class="border-b py-2">
+        ${icon} ${data.title}
+      </div>
+    `;
+  });
+
+  notificationList.innerHTML =
+    html || '通知はありません';
+
+});
+
+</script>
   
 <script src="components/navbar.js" defer></script>
 
