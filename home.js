@@ -134,9 +134,7 @@ bubble.onclick = async () => {
 
   if (newComment === null) return;
 
-  try {
-
-  if (!latestSched) {
+if (!latestSched) {
 
   await setDoc(
     doc(db, "bubbleComments", `${dateStr}_${name}`),
@@ -148,18 +146,19 @@ bubble.onclick = async () => {
     }
   );
 
-  bubble.textContent = newComment;
-  return;
-
 } else {
+
   await updateDoc(
     doc(db, "schedules", latestSched.id),
     {
       detail: newComment
     }
   );
+
 }
 
+
+// 🔔 通知
 await addDoc(
   collection(db, "notifications"),
   {
@@ -171,13 +170,11 @@ await addDoc(
   }
 );
 
+
 bubble.textContent = newComment;
 
-  } catch (error) {
-    console.error(error);
-    alert("保存失敗");
-  }
 
+}
 };
       }
 }
