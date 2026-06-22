@@ -78,12 +78,11 @@ import {
 
       const bubblePromises = {};
 
-　　　["waka", "yuzu", "lily", "toru"].forEach(name => {
- 　　　 bubblePromises[name] = getDoc(
-    　　doc(db, "bubbleComments", `${dateStr}_${name}`)
- 　　　　 );
-　　　});
-      
+["waka", "yuzu", "lily", "toru"].forEach(name => {
+  bubblePromises[name] = getDoc(
+    doc(db, "bubbleComments", `${dateStr}_${name}`)
+  );
+});  
       for (const item of document.querySelectorAll('.char-item')) {
         const name = item.getAttribute('data-name');
         const bubble = item.querySelector('.speech-box');
