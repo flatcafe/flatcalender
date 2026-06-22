@@ -114,7 +114,7 @@ onSnapshot(q, (snapshot) => {
   let html = '';
   let count = 0;
 
-  snapshot.forEach((docSnap) => {
+ snapshot.forEach(async (docSnap) => {
 
     const notificationId = docSnap.id;
     notificationIds.push(notificationId);
