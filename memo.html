@@ -107,7 +107,7 @@ const q = query(
   limit(10)
 );
 
-onSnapshot(q, (snapshot) => {
+onSnapshot(q, async (snapshot) => {
 
   notificationIds = [];
 
