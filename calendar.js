@@ -373,6 +373,7 @@ await addDoc(
   {
     type: "add",
     author: userName,
+    authorUid: auth.currentUser.uid,
     characterName: charName,
     title: text,
     createdAt: new Date().toISOString()
