@@ -126,11 +126,11 @@ onSnapshot(q, (snapshot) => {
 // 自分の通知は出さない
 if(
   user &&
+  data.authorUid &&
   data.authorUid === user.uid
 ){
   return;
 }
-
 
 // 通知設定チェック
 if(user){
