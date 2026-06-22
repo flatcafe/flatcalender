@@ -1,4 +1,4 @@
-import { db } from './firebase-config.js';
+import { db, auth } from './firebase-config.js';
 import {
   doc,
   getDoc,
@@ -179,13 +179,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   await updateDoc(doc(db, "schedules", scheduleId), schedule);
 
   // 通知ログ保存
-  await addDoc(
+ await addDoc(
   collection(db, "notifications"),
   {
     type: "edit",
     scheduleId: scheduleId,
     title: schedule.title || schedule.text,
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
+    authorUid: auth.currentUser.uid // 
   }
 );
 
