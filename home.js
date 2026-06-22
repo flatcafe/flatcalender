@@ -174,7 +174,7 @@ await addDoc(
 bubble.textContent = newComment;
 
 
-}
+
 };
       }
 }
