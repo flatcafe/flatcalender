@@ -119,32 +119,40 @@ onSnapshot(q, (snapshot) => {
 
   snapshot.forEach((doc) => {
 
-    count++;
+  count++;
 
-    const data = doc.data();
+  const data = doc.data();
 
-   let icon = '☕';
-let message = data.title;
+  const author = data.author || 'だれか';
 
-if (data.type === 'add') {
-  icon = '☕';
-  message =
-    `${data.author}さんが「${data.title}」を追加しました`;
-}
+  let icon = '☕';
+  let message = data.title;
 
-if (data.type === 'edit') {
-  icon = '📝';
-  message =
-    `${data.author}さんが「${data.title}」を編集しました`;
-}
+  if (data.type === 'add') {
+    icon = '☕';
+    message =
+      `${data.author}さんが「${data.title}」を追加しました`;
+  }
 
-if (data.type === 'bubble') {
-  icon = '💬';
-  message =
-    `${data.author}さんが吹き出しを変更しました`;
-}
-  });
+  if (data.type === 'edit') {
+    icon = '📝';
+    message =
+      `${data.author}さんが「${data.title}」を編集しました`;
+  }
 
+  if (data.type === 'bubble') {
+    icon = '💬';
+    message =
+      `${data.author}さんが吹き出しを変更しました`;
+  }
+
+  html += `
+    <div class="border-b py-2">
+      ${icon} ${message}
+    </div>
+  `;
+
+});
   notificationList.innerHTML =
     html || '通知はありません';
 
