@@ -86,8 +86,9 @@ document
 
     panel.classList.toggle('hidden');
 
-  });
+    badge.classList.add('hidden');
 
+  });
 </script>
 
   <script type="module">
@@ -122,16 +123,26 @@ onSnapshot(q, (snapshot) => {
 
     const data = doc.data();
 
-    const icon =
-      data.type === 'edit'
-        ? '📝'
-        : '☕';
+   let icon = '☕';
+let message = data.title;
 
-    html += `
-      <div class="border-b py-2">
-        ${icon} ${data.title}
-      </div>
-    `;
+if (data.type === 'add') {
+  icon = '☕';
+  message =
+    `${data.author}さんが「${data.title}」を追加しました`;
+}
+
+if (data.type === 'edit') {
+  icon = '📝';
+  message =
+    `${data.author}さんが「${data.title}」を編集しました`;
+}
+
+if (data.type === 'bubble') {
+  icon = '💬';
+  message =
+    `${data.author}さんが吹き出しを変更しました`;
+}
   });
 
   notificationList.innerHTML =
