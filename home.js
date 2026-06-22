@@ -132,8 +132,9 @@ bubble.onclick = async () => {
 
   const newComment = prompt("吹き出しコメントを入力", msg);
 
-  if (newComment === null) return;
-
+ if (newComment === null) {
+  return;
+}
 if (!latestSched) {
 
   await setDoc(
