@@ -6,6 +6,7 @@ import {
   addDoc,
   collection
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -18,6 +19,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   let schedule = null;
+  let currentUid = null; // 👈 追加
+
+  // 👈 追加：ログイン状態を監視して確実にUIDを取得
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      currentUid = user.uid;
+    }
+  });
 
   try {
     // Firestoreから対象の予定データを取得
@@ -179,14 +188,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   await updateDoc(doc(db, "schedules", scheduleId), schedule);
 
   // 通知ログ保存
- await addDoc(
+await addDoc(
   collection(db, "notifications"),
   {
     type: "edit",
     scheduleId: scheduleId,
     title: schedule.title || schedule.text,
     createdAt: new Date().toISOString(),
-    authorUid: auth.currentUser.uid // 
+    authorUid: currentUid || (auth.currentUser ? auth.currentUser.uid : "") // 👈 変更
   }
 );
 
