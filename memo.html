@@ -110,11 +110,18 @@ onSnapshot(q, (snapshot) => {
 
   let html = '';
   let count = 0;
+  
+const user = auth.currentUser;
 
-  snapshot.forEach((doc) => {
+const isRead =
+  user &&
+  data.readBy &&
+  data.readBy.includes(user.uid);
 
+if (!isRead) {
   count++;
-
+}
+ 
   const notificationId = doc.id;
   notificationIds.push(notificationId);
     
