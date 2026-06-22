@@ -118,9 +118,9 @@ onSnapshot(q, (snapshot) => {
 
     const notificationId = docSnap.id;
     notificationIds.push(notificationId);
-    const data = docSnap.data();
 
     const user = auth.currentUser;
+   const data = docSnap.data();
 
 
 // 自分の通知は出さない
@@ -188,11 +188,7 @@ if(user){
       </div>
     `;
 
-    const user = auth.currentUser;
-
-const isMine =
-  user &&
-  data.authorUid === user.uid;
+    
 
 const isRead =
   user &&
