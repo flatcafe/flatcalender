@@ -159,7 +159,19 @@ bubble.onclick = async () => {
     }
   );
 }
-    bubble.textContent = newComment;
+
+await addDoc(
+  collection(db, "notifications"),
+  {
+    type: "bubble",
+    author: document.getElementById('display-user-name').textContent,
+    authorUid: auth.currentUser.uid,
+    title: "吹き出しを変更しました",
+    createdAt: new Date().toISOString()
+  }
+);
+
+bubble.textContent = newComment;
 
   } catch (error) {
     console.error(error);
