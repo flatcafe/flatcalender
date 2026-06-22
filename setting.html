@@ -101,7 +101,45 @@ onAuthStateChanged(auth, async (user) => {
   } catch (error) {
     console.error("ユーザー取得エラー:", error);
   }
+
+
+  async function requestNotificationPermission() {
+
+  if (!("Notification" in window)) {
+    alert("この端末は通知に対応していません");
+    return false;
+  }
+
+  if (Notification.permission === "granted") {
+    return true;
+  }
+
+  const permission =
+    await Notification.requestPermission();
+
+  return permission === "granted";
+}
   const saveNotificationSettings = async () => {
+
+  const addChecked =
+    document.getElementById('notify-add').checked;
+
+  const editChecked =
+    document.getElementById('notify-edit').checked;
+
+  const bubbleChecked =
+    document.getElementById('notify-bubble').checked;
+
+  if (addChecked || editChecked || bubbleChecked) {
+
+    const granted =
+      await requestNotificationPermission();
+
+    if (!granted) {
+      alert("通知が許可されていません");
+      return;
+    }
+  }
 
   const user = auth.currentUser;
   if (!user) return;
