@@ -128,19 +128,19 @@ onSnapshot(q, (snapshot) => {
   if (data.type === 'add') {
     icon = '☕';
     message =
-      `${data.author}さんが「${data.title}」を追加しました`;
+      `${authorr}さんが「${data.title}」を追加しました`;
   }
 
   if (data.type === 'edit') {
     icon = '📝';
     message =
-      `${data.author}さんが「${data.title}」を編集しました`;
+      `${author}さんが「${data.title}」を編集しました`;
   }
 
   if (data.type === 'bubble') {
     icon = '💬';
     message =
-      `${data.author}さんが吹き出しを変更しました`;
+      `${author}さんが吹き出しを変更しました`;
   }
 
   html += `
@@ -151,7 +151,21 @@ onSnapshot(q, (snapshot) => {
 
 });
 
-  notificationBtn.addEventListener('click', async () => {
+ 
+  
+  notificationList.innerHTML =
+    html || '通知はありません';
+
+  if (count > 0) {
+    badge.textContent = count;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
+
+});
+    
+ notificationBtn.addEventListener('click', async () => {
 
   panel.classList.toggle('hidden');
 
@@ -173,19 +187,7 @@ onSnapshot(q, (snapshot) => {
   }
 
 });
-  
-  notificationList.innerHTML =
-    html || '通知はありません';
-
-  if (count > 0) {
-    badge.textContent = count;
-    badge.classList.remove('hidden');
-  } else {
-    badge.classList.add('hidden');
-  }
-
-});
-
+    
 </script>
   
 <script src="components/navbar.js" defer></script>
