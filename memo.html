@@ -118,6 +118,7 @@ onSnapshot(q, (snapshot) => {
 
     const notificationId = docSnap.id;
     notificationIds.push(notificationId);
+    const data = docSnap.data();
 
     const user = auth.currentUser;
 
@@ -157,8 +158,6 @@ if(user){
   }
 
 }
-
-    const data = docSnap.data();
 
     const author = data.author || 'だれか';
 
