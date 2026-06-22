@@ -151,14 +151,18 @@ onSnapshot(q, (snapshot) => {
 
     const user = auth.currentUser;
 
-    const isRead =
-      user &&
-      data.readBy &&
-      data.readBy.includes(user.uid);
+const isMine =
+  user &&
+  data.authorUid === user.uid;
 
-    if (!isRead) {
-      count++;
-    }
+const isRead =
+  user &&
+  data.readBy &&
+  data.readBy.includes(user.uid);
+
+if (!isMine && !isRead) {
+  count++;
+}
 
   });
 
