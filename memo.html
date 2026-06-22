@@ -71,25 +71,6 @@ body {
   </div>
 </div>
 
-<script>
-
-const badge =
-  document.getElementById('notification-badge');
-
-
-const panel =
-  document.getElementById('notification-panel');
-
-document
-  .getElementById('notification-btn')
-  .addEventListener('click', () => {
-
-    panel.classList.toggle('hidden');
-
-    badge.classList.add('hidden');
-
-  });
-</script>
 
   <script type="module">
 
@@ -106,9 +87,15 @@ import {
   arrayUnion
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-const notificationList =
-  document.getElementById('notification-list');
+const badge =
+  document.getElementById('notification-badge');
 
+const panel =
+  document.getElementById('notification-panel');
+
+const notificationBtn =
+  document.getElementById('notification-btn');
+    
 let notificationIds = [];
 
 const q = query(
@@ -163,6 +150,30 @@ onSnapshot(q, (snapshot) => {
   `;
 
 });
+
+  notificationBtn.addEventListener('click', async () => {
+
+  panel.classList.toggle('hidden');
+
+  badge.classList.add('hidden');
+
+  const user = auth.currentUser;
+
+  if (!user) return;
+
+  for (const id of notificationIds) {
+
+    await updateDoc(
+      doc(db, "notifications", id),
+      {
+        readBy: arrayUnion(user.uid)
+      }
+    );
+
+  }
+
+});
+  
   notificationList.innerHTML =
     html || '通知はありません';
 
