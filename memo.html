@@ -109,6 +109,8 @@ import {
 const notificationList =
   document.getElementById('notification-list');
 
+let notificationIds = [];
+
 const q = query(
   collection(db, "notifications"),
   orderBy("createdAt", "desc"),
@@ -116,6 +118,8 @@ const q = query(
 );
 
 onSnapshot(q, (snapshot) => {
+
+  notificationIds = [];
 
   let html = '';
   let count = 0;
@@ -125,6 +129,8 @@ onSnapshot(q, (snapshot) => {
   count++;
 
   const notificationId = doc.id;
+  notificationIds.push(notificationId);
+    
   const data = doc.data();
 
   const author = data.author || 'だれか';
