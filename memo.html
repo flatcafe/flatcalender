@@ -189,11 +189,15 @@ if(user){
     `;
 
     
+const isMine =
+  user &&
+  data.authorUid === user.uid;
 
 const isRead =
   user &&
   data.readBy &&
   data.readBy.includes(user.uid);
+
 
 if (!isMine && !isRead) {
   count++;
