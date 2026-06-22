@@ -76,8 +76,6 @@ body {
 const badge =
   document.getElementById('notification-badge');
 
-badge.textContent = '3';
-badge.classList.remove('hidden');
 
 const panel =
   document.getElementById('notification-panel');
@@ -116,8 +114,11 @@ const q = query(
 onSnapshot(q, (snapshot) => {
 
   let html = '';
+  let count = 0;
 
   snapshot.forEach((doc) => {
+
+    count++;
 
     const data = doc.data();
 
@@ -135,6 +136,13 @@ onSnapshot(q, (snapshot) => {
 
   notificationList.innerHTML =
     html || '通知はありません';
+
+  if (count > 0) {
+    badge.textContent = count;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
 
 });
 
