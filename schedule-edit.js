@@ -218,14 +218,7 @@ try {
     }
   );
 
-  console.log("notifications保存成功");
-
-  window.location.href = 'calendar.html';
-
-} catch (error) {
-  console.error("更新エラー:", error);
-  alert("保存に失敗しました。");
-}
+ 
 console.log("notifications保存成功");
 
   window.location.href = 'calendar.html';
