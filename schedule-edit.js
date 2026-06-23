@@ -189,6 +189,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // 通知ログ保存
 // 通知ログ保存
+      console.log(
+  "display-user-name =",
+  document.getElementById('display-user-name')
+);
+
+console.log(
+  "text =",
+  document.getElementById('display-user-name')?.textContent
+);
+      
 await addDoc(
   collection(db, "notifications"),
   {
