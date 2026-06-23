@@ -199,6 +199,20 @@ console.log(
   document.getElementById('display-user-name')?.textContent
 );
       
+
+
+      let authorName = "だれか";
+
+if (auth.currentUser) {
+  const userSnap = await getDoc(
+    doc(db, "users", auth.currentUser.uid)
+  );
+
+  if (userSnap.exists()) {
+    authorName = userSnap.data().name || "だれか";
+  }
+}
+
 await addDoc(
   collection(db, "notifications"),
   {
@@ -206,7 +220,7 @@ await addDoc(
     scheduleId: scheduleId,
     title: schedule.title || schedule.text,
 
-    author: document.getElementById('display-user-name')?.textContent || "だれか",
+    author: authorName,
 
     createdAt: new Date().toISOString(),
 
