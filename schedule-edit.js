@@ -182,43 +182,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (document.querySelector('input[name="customColor"]:checked')) {
       schedule.customColor = document.querySelector('input[name="customColor"]:checked').value;
     }
-try {
+
+    try {
   // Firestoreのデータを更新
   await updateDoc(doc(db, "schedules", scheduleId), schedule);
 
-  // 名前取得
-  let authorName = "だれか";
-
-  if (auth.currentUser) {
-
-    const userSnap = await getDoc(
-      doc(db, "users", auth.currentUser.uid)
-    );
-
-    if (userSnap.exists()) {
-      authorName = userSnap.data().name || "だれか";
-    }
-  }
-
-  console.log("通知者:", authorName);
-
   // 通知ログ保存
-  await addDoc(
-    collection(db, "notifications"),
-    {
-      type: "edit",
-      scheduleId: scheduleId,
-      title: schedule.title || schedule.text,
+// 通知ログ保存
+await addDoc(
+  collection(db, "notifications"),
+  {
+    type: "edit",
+    scheduleId: scheduleId,
+    title: schedule.title || schedule.text,
 
-      author: authorName,
+    author: document.getElementById('display-user-name')?.textContent || "だれか",
 
-      createdAt: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
 
-      authorUid: currentUid || auth.currentUser.uid
-    }
-  );
-
- 
+    authorUid: currentUid || (auth.currentUser ? auth.currentUser.uid : "")
+  }
+);
 console.log("notifications保存成功");
 
   window.location.href = 'calendar.html';
