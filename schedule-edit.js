@@ -182,27 +182,50 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (document.querySelector('input[name="customColor"]:checked')) {
       schedule.customColor = document.querySelector('input[name="customColor"]:checked').value;
     }
-
-    try {
+try {
   // Firestoreのデータを更新
   await updateDoc(doc(db, "schedules", scheduleId), schedule);
 
-  // 通知ログ保存
-// 通知ログ保存
-await addDoc(
-  collection(db, "notifications"),
-  {
-    type: "edit",
-    scheduleId: scheduleId,
-    title: schedule.title || schedule.text,
+  // 名前取得
+  let authorName = "だれか";
 
-    author: document.getElementById('display-user-name')?.textContent || "だれか",
+  if (auth.currentUser) {
 
-    createdAt: new Date().toISOString(),
+    const userSnap = await getDoc(
+      doc(db, "users", auth.currentUser.uid)
+    );
 
-    authorUid: currentUid || (auth.currentUser ? auth.currentUser.uid : "")
+    if (userSnap.exists()) {
+      authorName = userSnap.data().name || "だれか";
+    }
   }
-);
+
+  console.log("通知者:", authorName);
+
+  // 通知ログ保存
+  await addDoc(
+    collection(db, "notifications"),
+    {
+      type: "edit",
+      scheduleId: scheduleId,
+      title: schedule.title || schedule.text,
+
+      author: authorName,
+
+      createdAt: new Date().toISOString(),
+
+      authorUid: currentUid || auth.currentUser.uid
+    }
+  );
+
+  console.log("notifications保存成功");
+
+  window.location.href = 'calendar.html';
+
+} catch (error) {
+  console.error("更新エラー:", error);
+  alert("保存に失敗しました。");
+}
 console.log("notifications保存成功");
 
   window.location.href = 'calendar.html';
