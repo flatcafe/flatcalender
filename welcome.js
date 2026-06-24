@@ -1,5 +1,6 @@
-import { auth, db } from './firebase-config.js';
+import { auth, db, messaging } from './firebase-config.js';
 import { signInAnonymously } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging.js";
 import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 let selectedChar = { name: null, color: null, img: null };
