@@ -101,10 +101,16 @@ await setDoc(doc(db, "users", userCredential.user.uid), {
 });
 
 // ←ここ追加
-   
 await setupPushNotification(userCredential.user.uid);
 
-alert("通知登録処理が終わった");
+    if (Notification.permission === "denied") {
+  return;
+}
+
+const permission =
+  Notification.permission === "granted"
+    ? "granted"
+    : await Notification.requestPermission();
 
 window.location.href = 'index.html';
   } catch (error) {
