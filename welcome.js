@@ -47,8 +47,9 @@ console.log("permission:", permission);
     }
 
     const token = await getToken(messaging, {
-      vapidKey: "BI0NWmFfhDG88Q3d45rVdr5evUDbeAIVikwuDBwfirQyxEcGmRl82a5-3JdONjZTEq7oSyFVvzQgf5RpG5WNdms"
-    });
+  vapidKey: "BI0NWmFfhDG88Q3d45rVdr5evUDbeAIVikwuDBwfirQyxEcGmRl82a5-3JdONjZTEq7oSyFVvzQgf5RpG5WNdms",
+  serviceWorkerRegistration: registration
+});
 
     if (!token) {
   console.log("FCMトークン取得できませんでした");
@@ -95,6 +96,9 @@ await setDoc(doc(db, "users", userCredential.user.uid), {
 });
 
 // ←ここ追加
+    const registration = await navigator.serviceWorker.register(
+  '/flatcalender/firebase-messaging-sw.js'
+);
 await setupPushNotification(userCredential.user.uid);
 
 alert("通知登録処理が終わった");
