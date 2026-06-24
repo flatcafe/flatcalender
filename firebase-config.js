@@ -15,5 +15,7 @@ const firebaseConfig ={
   measurementId: "G-QNDS60ZXX7"
 };
 const app = initializeApp(firebaseConfig);
+
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+export const messaging = getMessaging(app);
