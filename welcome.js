@@ -1,6 +1,6 @@
 import { auth, db, messaging } from './firebase-config.js';
 import { signInAnonymously } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging.js";
+import { getToken } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging.js";
 import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 let selectedChar = { name: null, color: null, img: null };
@@ -48,7 +48,12 @@ async function setupPushNotification(userId) {
       vapidKey: "BI0NWmFfhDG88Q3d45rVdr5evUDbeAIVikwuDBwfirQyxEcGmRl82a5-3JdONjZTEq7oSyFVvzQgf5RpG5WNdms"
     });
 
-    if (!token) return;
+    if (!token) {
+  console.log("FCMトークン取得できませんでした");
+  return;
+}
+
+console.log("取得したFCM token:", token);
 
     await setDoc(
       doc(db, "users", userId),
