@@ -35,24 +35,56 @@ document.querySelectorAll('.char-btn').forEach(btn => {
   });
 });
 
+async function setupPushNotification(userId) {
+  try {
+    const permission = await Notification.requestPermission();
+
+    if (permission !== "granted") {
+      console.log("通知拒否");
+      return;
+    }
+
+    const token = await getToken(messaging, {
+      vapidKey: "BI0NWmFfhDG88Q3d45rVdr5evUDbeAIVikwuDBwfirQyxEcGmRl82a5-3JdONjZTEq7oSyFVvzQgf5RpG5WNdms"
+    });
+
+    if (!token) return;
+
+    await setDoc(
+      doc(db, "users", userId),
+      {
+        fcmToken: token
+      },
+      { merge: true }
+    );
+
+    console.log("FCM登録成功");
+  } catch (err) {
+    console.error("FCMエラー:", err);
+  }
+}
+
 // 入店ボタンの処理
 document.getElementById('enterBtn').addEventListener('click', async () => {
   
   if (!selectedChar.name) { alert("キャラを選んでね！"); return; }
 
   try {
-    const userCredential = await signInAnonymously(auth);
-    
-    // Firestoreへ保存
-    await setDoc(doc(db, "users", userCredential.user.uid), {
-      name: selectedChar.displayName,
-      characterName: selectedChar.name,
-      characterColor: selectedChar.color,
-      characterImg: selectedChar.img,
-      updatedAt: new Date().toISOString()
-    });
+const userCredential = await signInAnonymously(auth);
 
-    window.location.href = 'index.html';
+// Firestoreへ保存
+await setDoc(doc(db, "users", userCredential.user.uid), {
+  name: selectedChar.displayName,
+  characterName: selectedChar.name,
+  characterColor: selectedChar.color,
+  characterImg: selectedChar.img,
+  updatedAt: new Date().toISOString()
+});
+
+// ←ここ追加
+await setupPushNotification(userCredential.user.uid);
+
+window.location.href = 'index.html';
   } catch (error) {
     console.error("入店エラー:", error);
     alert("入店に失敗しました。再試行してください。");
