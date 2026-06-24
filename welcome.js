@@ -37,19 +37,24 @@ document.querySelectorAll('.char-btn').forEach(btn => {
 
 async function setupPushNotification(userId) {
   try {
-    const permission = await Notification.requestPermission();
 
-console.log("permission:", permission);
+    const registration =
+      await navigator.serviceWorker.register(
+        '/flatcalender/firebase-messaging-sw.js'
+      );
+
+    const permission =
+      await Notification.requestPermission();
 
     if (permission !== "granted") {
-      console.log("通知拒否");
       return;
     }
 
     const token = await getToken(messaging, {
-  vapidKey: "BI0NWmFfhDG88Q3d45rVdr5evUDbeAIVikwuDBwfirQyxEcGmRl82a5-3JdONjZTEq7oSyFVvzQgf5RpG5WNdms",
-  serviceWorkerRegistration: registration
-});
+      vapidKey: "BI0NWmFfhDG88Q3d45rVdr5evUDbeAIVikwuDBwfirQyxEcGmRl82a5-3JdONjZTEq7oSyFVvzQgf5RpG5WNdms",
+      serviceWorkerRegistration: registration
+    });
+
 
     if (!token) {
   console.log("FCMトークン取得できませんでした");
@@ -96,9 +101,7 @@ await setDoc(doc(db, "users", userCredential.user.uid), {
 });
 
 // ←ここ追加
-    const registration = await navigator.serviceWorker.register(
-  '/flatcalender/firebase-messaging-sw.js'
-);
+   
 await setupPushNotification(userCredential.user.uid);
 
 alert("通知登録処理が終わった");
