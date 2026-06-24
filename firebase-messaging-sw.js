@@ -11,3 +11,27 @@ firebase.initializeApp({
 });
 
 const messaging = firebase.messaging();
+
+
+messaging.onBackgroundMessage((payload) => {
+
+  console.log(
+    "バックグラウンド通知:",
+    payload
+  );
+
+  const notificationTitle =
+    payload.notification?.title || "ふらっとCafe";
+
+  const notificationOptions = {
+    body:
+      payload.notification?.body || "新しい通知があります",
+    icon: "/flatcalender/images/logo.png"
+  };
+
+  self.registration.showNotification(
+    notificationTitle,
+    notificationOptions
+  );
+
+});
