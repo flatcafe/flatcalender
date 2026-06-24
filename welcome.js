@@ -78,6 +78,12 @@ await setDoc(doc(db, "users", userCredential.user.uid), {
   characterName: selectedChar.name,
   characterColor: selectedChar.color,
   characterImg: selectedChar.img,
+
+  // 通知設定 初期ON
+  notifyAdd: true,
+  notifyEdit: true,
+  notifyBubble: true,
+
   updatedAt: new Date().toISOString()
 });
 
