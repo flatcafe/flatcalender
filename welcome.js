@@ -39,6 +39,8 @@ async function setupPushNotification(userId) {
   try {
     const permission = await Notification.requestPermission();
 
+console.log("permission:", permission);
+
     if (permission !== "granted") {
       console.log("通知拒否");
       return;
@@ -94,6 +96,8 @@ await setDoc(doc(db, "users", userCredential.user.uid), {
 
 // ←ここ追加
 await setupPushNotification(userCredential.user.uid);
+
+alert("通知登録処理が終わった");
 
 window.location.href = 'index.html';
   } catch (error) {
