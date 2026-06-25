@@ -55,16 +55,24 @@ async function setupPushNotification(userId) {
 
     alert("③ permission=" + permission);
 
-    if (permission !== "granted") {
-      return;
-    }
+   if (permission !== "granted") {
+  return;
+}
 
-    alert("④ getToken開始");
+alert("④ getToken開始");
 
-    const token = await getToken(messaging, {
-      vapidKey: "あなたのVAPIDキー",
-      serviceWorkerRegistration: registration
-    });
+alert(
+  "isSecureContext=" + isSecureContext +
+  "\n" +
+  "Notification=" + Notification.permission +
+  "\n" +
+  "SW=" + !!registration
+);
+
+const token = await getToken(messaging, {
+  vapidKey: "BI0NWmFfhDG88Q3d45rVdr5evUDbeAIVikwuDBwfirQyxEcGmRl82a5-3JdONjZTEq7oSyFVvzQgf5RpG5WNdms",
+  serviceWorkerRegistration: registration
+});
 
     alert("⑤ getToken成功");
 
@@ -83,13 +91,14 @@ async function setupPushNotification(userId) {
   } catch (err) {
 
   alert(
-    "FCMエラー\n\n" +
-    err.message +
+    "name=" + err.name +
     "\n\n" +
-    JSON.stringify(err)
+    "message=" + err.message +
+    "\n\n" +
+    "stack=" + err.stack
   );
 
-  console.error("FCMエラー:", err);
+  console.error(err);
 }
 }
 // 入店ボタンの処理
