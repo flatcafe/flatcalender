@@ -41,30 +41,34 @@ document.querySelectorAll('.char-btn').forEach(btn => {
 async function setupPushNotification(userId) {
   try {
 
+    alert("① SW登録開始");
+
     const registration =
       await navigator.serviceWorker.register(
         '/flatcalender/firebase-messaging-sw.js'
       );
 
+    alert("② SW登録成功");
+
     const permission =
       await Notification.requestPermission();
+
+    alert("③ permission=" + permission);
 
     if (permission !== "granted") {
       return;
     }
 
+    alert("④ getToken開始");
+
     const token = await getToken(messaging, {
-      vapidKey: "BI0NWmFfhDG88Q3d45rVdr5evUDbeAIVikwuDBwfirQyxEcGmRl82a5-3JdONjZTEq7oSyFVvzQgf5RpG5WNdms",
+      vapidKey: "あなたのVAPIDキー",
       serviceWorkerRegistration: registration
     });
 
+    alert("⑤ getToken成功");
 
-    if (!token) {
-  console.log("FCMトークン取得できませんでした");
-  return;
-}
-
-console.log("取得したFCM token:", token);
+    console.log(token);
 
     await setDoc(
       doc(db, "users", userId),
@@ -74,12 +78,17 @@ console.log("取得したFCM token:", token);
       { merge: true }
     );
 
-    console.log("FCM登録成功");
+    alert("⑥ Firestore保存成功");
+
   } catch (err) {
-    console.error("FCMエラー:", err);
+    alert(
+      "FCMエラー\n\n" +
+      err.message
+    );
+
+    console.error(err);
   }
 }
-
 // 入店ボタンの処理
 document.getElementById('enterBtn').addEventListener('click', async () => {
   
