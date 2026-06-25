@@ -113,8 +113,11 @@ const permission =
     : await Notification.requestPermission();
 
 window.location.href = 'index.html';
-  } catch (error) {
-    console.error("入店エラー:", error);
-    alert("入店に失敗しました。再試行してください。");
-  }
-});
+ } catch (error) {
+  console.error("入店エラー:", error);
+
+  alert(
+    "入店エラー\n\n" +
+    error.message
+  );
+}
