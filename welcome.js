@@ -81,13 +81,16 @@ async function setupPushNotification(userId) {
     alert("⑥ Firestore保存成功");
 
   } catch (err) {
-    alert(
-      "FCMエラー\n\n" +
-      err.message
-    );
 
-    console.error(err);
-  }
+  alert(
+    "FCMエラー\n\n" +
+    err.message +
+    "\n\n" +
+    JSON.stringify(err)
+  );
+
+  console.error("FCMエラー:", err);
+}
 }
 // 入店ボタンの処理
 document.getElementById('enterBtn').addEventListener('click', async () => {
