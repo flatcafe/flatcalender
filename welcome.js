@@ -3,6 +3,14 @@ import { signInAnonymously } from "https://www.gstatic.com/firebasejs/9.23.0/fir
 import { getToken } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging.js";
 import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
+window.onerror = function(message, source, line, col, error) {
+  alert(
+    "JSエラー\n\n" +
+    message +
+    "\n行:" + line
+  );
+};
+
 let selectedChar = { name: null, color: null, img: null };
 const charNames = {
   waka: "若凪",
