@@ -35,3 +35,22 @@ messaging.onBackgroundMessage((payload) => {
   );
 
 });
+// 既存のコードは一切消さずに、ファイルの最下部にこれを追加してください
+
+self.addEventListener('push', function(event) {
+  if (!event.data) return;
+  try {
+    const data = event.data.json();
+    // すでに動いている場合は重複表示を防ぐため、onBackgroundMessage側と共通の処理を走らせます
+    const notificationTitle = data.notification?.title || "ふらっとCafe";
+    const notificationOptions = {
+      body: data.notification?.body || "新しい通知があります",
+      icon: "/flatcalender/images/logo.png"
+    };
+    event.waitUntil(
+      self.registration.showNotification(notificationTitle, notificationOptions)
+    );
+  } catch (e) {
+    console.error('Push parse error:', e);
+  }
+});
