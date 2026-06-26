@@ -14,27 +14,11 @@ const messaging = firebase.messaging();
 
 
 messaging.onBackgroundMessage((payload) => {
-
-  console.log(
-    "バックグラウンド通知:",
-    payload
-  );
-
-  const notificationTitle =
-    payload.notification?.title || "ふらっとCafe";
-
-  const notificationOptions = {
-    body:
-      payload.notification?.body || "新しい通知があります",
-    icon: "/flatcalender/images/logo.png"
-  };
-
-  self.registration.showNotification(
-    notificationTitle,
-    notificationOptions
-  );
-
+  console.log("バックグラウンド通知:", payload);
+  // 表示命令（showNotification）をここでは実行しないようにします
 });
+
+
 // 既存のコードは一切消さずに、ファイルの最下部にこれを追加してください
 
 self.addEventListener('push', function(event) {
@@ -42,11 +26,11 @@ self.addEventListener('push', function(event) {
   try {
     const data = event.data.json();
     // すでに動いている場合は重複表示を防ぐため、onBackgroundMessage側と共通の処理を走らせます
-    const notificationTitle = data.notification?.title || "ふらっとCafe";
-    const notificationOptions = {
-      body: data.notification?.body || "新しい通知があります",
-      icon: "/flatcalender/images/logo.png"
-    };
+    const notificationTitle = data.notification?.title || data.data?.title || "ふらっとCafe";
+const notificationOptions = {
+  body: data.notification?.body || data.data?.body || "新しい通知があります",
+  icon: "/flatcalender/images/logo.png"
+};
     event.waitUntil(
       self.registration.showNotification(notificationTitle, notificationOptions)
     );
