@@ -229,7 +229,29 @@ await addDoc(
 );
 console.log("notifications保存成功");
 
-  window.location.href = 'calendar.html';
+
+// ★ここから追加
+await addDoc(
+  collection(db, "notificationQueue"),
+  {
+    type: "edit",
+    count: 1,
+
+    author: authorName,
+
+    sent: false,
+
+    createdAt: new Date().toISOString(),
+
+    sendAt: new Date(Date.now() + 60 * 1000)
+  }
+);
+
+console.log("notificationQueue保存成功");
+// ★ここまで追加
+
+
+window.location.href = 'calendar.html';
 
 } catch (error) {
   console.error("更新エラー:", error);
