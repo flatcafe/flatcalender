@@ -368,6 +368,21 @@ await addDoc(collection(db, "schedules"), {
   createdAt: new Date().toISOString()
 });
 
+
+// ★まとめ通知用
+await addDoc(
+  collection(db, "notificationQueue"),
+  {
+    type: "add",
+    count: 1,
+    author: userName,
+    icon: charName,
+    sent: false,
+    createdAt: new Date().toISOString(),
+    sendAt: new Date(Date.now() + 60 * 1000)
+  }
+);
+
 await addDoc(
   collection(db, "notifications"),
   {
