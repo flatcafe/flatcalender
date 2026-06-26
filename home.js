@@ -170,7 +170,18 @@ await addDoc(
   }
 );
 
-
+await addDoc(
+  collection(db, "notificationQueue"),
+  {
+    type: "bubble",
+    count: 1,
+    author: document.getElementById('display-user-name').textContent,
+    sent: false,
+    createdAt: new Date().toISOString(),
+    sendAt: new Date(Date.now() + 60 * 1000)
+  }
+);
+  
 bubble.textContent = newComment;
 
 
