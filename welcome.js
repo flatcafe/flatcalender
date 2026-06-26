@@ -41,42 +41,29 @@ document.querySelectorAll('.char-btn').forEach(btn => {
 async function setupPushNotification(userId) {
   try {
 
-    alert("① SW登録開始");
-
     const registration =
       await navigator.serviceWorker.register(
         '/flatcalender/firebase-messaging-sw.js'
       );
 
-    alert("② SW登録成功");
-
     const permission =
       await Notification.requestPermission();
 
-    alert("③ permission=" + permission);
+    if (permission !== "granted") {
+      return;
+    }
 
-   if (permission !== "granted") {
-  return;
-}
+    const token = await getToken(messaging, {
+      vapidKey: "BI0NWmFfhDG88Q3d45rVdr5evUDbeAIVikwuDBwfirQyxEcGmRl82a5-3JdONjZTEq7oSyFVvzQgf5RpG5WNdms",
+      serviceWorkerRegistration: registration
+    });
 
-alert("④ getToken開始");
+    if (!token) {
+      console.log("FCMトークン取得できませんでした");
+      return;
+    }
 
-alert(
-  "isSecureContext=" + isSecureContext +
-  "\n" +
-  "Notification=" + Notification.permission +
-  "\n" +
-  "SW=" + !!registration
-);
-
-const token = await getToken(messaging, {
-  vapidKey: "BI0NWmFfhDG88Q3d45rVdr5evUDbeAIVikwuDBwfirQyxEcGmRl82a5-3JdONjZTEq7oSyFVvzQgf5RpG5WNdms",
-  serviceWorkerRegistration: registration
-});
-
-    alert("⑤ getToken成功");
-
-    console.log(token);
+    console.log("取得したFCM token:", token);
 
     await setDoc(
       doc(db, "users", userId),
@@ -86,20 +73,11 @@ const token = await getToken(messaging, {
       { merge: true }
     );
 
-    alert("⑥ Firestore保存成功");
+    console.log("FCM登録成功");
 
   } catch (err) {
-
-  alert(
-    "name=" + err.name +
-    "\n\n" +
-    "message=" + err.message +
-    "\n\n" +
-    "stack=" + err.stack
-  );
-
-  console.error(err);
-}
+    console.error("FCMエラー:", err);
+  }
 }
 // 入店ボタンの処理
 document.getElementById('enterBtn').addEventListener('click', async () => {
@@ -126,24 +104,10 @@ await setDoc(doc(db, "users", userCredential.user.uid), {
 
 // ←ここ追加
 await setupPushNotification(userCredential.user.uid);
-
-    if (Notification.permission === "denied") {
-  return;
-}
-
-const permission =
-  Notification.permission === "granted"
-    ? "granted"
-    : await Notification.requestPermission();
-
 window.location.href = 'index.html';
- } catch (error) {
+} catch (error) {
   console.error("入店エラー:", error);
-
-  alert(
-    "入店エラー\n\n" +
-    error.message
-  );
+  alert("入店に失敗しました。再試行してください。");
 }
 
   });
