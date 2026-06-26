@@ -1,11 +1,11 @@
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
+const { onSchedule } = require("firebase-functions/v2/scheduler");
+const admin = require("firebase-admin");
 
 admin.initializeApp();
 
-exports.sendQueuedNotifications = functions.pubsub
-  .schedule('every 1 minutes')
-  .onRun(async () => {
+exports.sendQueuedNotifications = onSchedule(
+  "every 1 minutes",
+  async () => {
 
     const now = new Date();
     // 1分前の未送信キューを取得
