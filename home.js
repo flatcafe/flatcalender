@@ -1,5 +1,8 @@
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+// home.js の一番上の import 文の列に追加
+import { getToken } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging.js";
+import { messaging } from './firebase-config.js';
 import {
   doc,
   getDoc,
@@ -33,6 +36,20 @@ import {
             const userData = docSnap.data();
             document.getElementById('display-user-name').textContent = userData.name || "ゲスト";
           }
+          // （ホーム画面でのFCMトークン最新化）
+      if ('serviceWorker' in navigator && Notification.permission === "granted") {
+        const registration = await navigator.serviceWorker.getRegistration();
+        if (registration) {
+          const token = await getToken(messaging, {
+            vapidKey: "BI0NWmFfhDG88Q3d45rVdr5evUDbeAIVikwuDBwfirQyxEcGmRl82a5-3JdONjZTEq7oSyFVvzQgf5RpG5WNdms",
+            serviceWorkerRegistration: registration
+          });
+          if (token) {
+            await setDoc(doc(db, "users", user.uid), { fcmToken: token }, { merge: true });
+          }
+        }
+      }
+      
         } catch (error) {
           console.error("ユーザー情報取得エラー:", error);
         }
