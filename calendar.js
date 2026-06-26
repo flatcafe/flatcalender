@@ -8,7 +8,9 @@ import {
   deleteDoc,
   onSnapshot,
   query,
-  where
+  where,
+  getDocs,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -370,18 +372,44 @@ await addDoc(collection(db, "schedules"), {
 
 
 // ★まとめ通知用
-await addDoc(
+const q = query(
   collection(db, "notificationQueue"),
-  {
-    type: "add",
-    count: 1,
-    author: userName,
-    icon: charName,
-    sent: false,
-    createdAt: new Date().toISOString(),
-    sendAt: new Date(Date.now() + 60 * 1000)
-  }
+  where("author", "==", userName),
+  where("type", "==", "add"),
+  where("sent", "==", false)
 );
+
+const queueSnap = await getDocs(q);
+
+
+if (!queueSnap.empty) {
+
+  const old = queueSnap.docs[0];
+
+  await updateDoc(
+    doc(db, "notificationQueue", old.id),
+    {
+      count: old.data().count + 1,
+      sendAt: new Date(Date.now() + 60 * 1000)
+    }
+  );
+
+} else {
+
+  await addDoc(
+    collection(db, "notificationQueue"),
+    {
+      type: "add",
+      count: 1,
+      author: userName,
+      icon: charName,
+      sent: false,
+      createdAt: new Date().toISOString(),
+      sendAt: new Date(Date.now() + 60 * 1000)
+    }
+  );
+
+}
 
 await addDoc(
   collection(db, "notifications"),
