@@ -372,6 +372,7 @@ await addDoc(collection(db, "schedules"), {
 
 
 // ★まとめ通知用
+// ★まとめ通知用
 const q = query(
   collection(db, "notificationQueue"),
   where("author", "==", userName),
@@ -381,21 +382,19 @@ const q = query(
 
 const queueSnap = await getDocs(q);
 
-
 if (!queueSnap.empty) {
-
   const old = queueSnap.docs[0];
-
+  // 修正箇所：既存ドキュメントが見つかったら、確実にカウントを +1 して時間を更新
   await updateDoc(
     doc(db, "notificationQueue", old.id),
     {
-      count: old.data().count + 1,
-      sendAt: new Date(Date.now() + 60 * 1000)
+      count: Number(old.data().count || 0) + 1, // 確実に数値として加算
+      sendAt: new Date(Date.now() + 60 * 1000)   // 1分後にタイマーを伸ばす
     }
   );
-
+  console.log("既存のキューを更新しました。カウント:", old.data().count + 1);
 } else {
-
+  // 新規作成
   await addDoc(
     collection(db, "notificationQueue"),
     {
@@ -408,7 +407,7 @@ if (!queueSnap.empty) {
       sendAt: new Date(Date.now() + 60 * 1000)
     }
   );
-
+  console.log("新規キューを作成しました。");
 }
 
 await addDoc(
