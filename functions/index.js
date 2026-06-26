@@ -29,7 +29,32 @@ exports.sendQueuedNotifications = onSchedule(
       console.log(
         `${data.count}件処理`
       );
+// 全ユーザーのFCMトークン取得
+const usersSnapshot = await admin.firestore().collection("users").get();
 
+const tokens = [];
+
+usersSnapshot.forEach(userDoc => {
+  const userData = userDoc.data();
+
+  if (userData.fcmToken) {
+    tokens.push(userData.fcmToken);
+  }
+});
+
+console.log(`送信先 ${tokens.length} 台`);
+      if (tokens.length > 0) {
+
+  await admin.messaging().sendEachForMulticast({
+    notification: {
+      title: "ふらっとCafe",
+      body: `${data.author}さんが予定を${data.count}件追加しました`
+    },
+    tokens
+  });
+
+  console.log("通知送信成功");
+}
 
       await docSnap.ref.update({
         sent: true
