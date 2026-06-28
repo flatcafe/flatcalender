@@ -182,7 +182,8 @@ if(user){
         `${author}さんが吹き出しを変更しました`;
     }
 
-  const authorIcon = data.authorIcon || data.icon;
+  const charName = data.characterName;
+  const authorIcon = charName ? `images/${charName}.png` : (data.authorIcon || data.icon || '');
 
 html += `
   <div class="border-b py-2 flex items-center gap-2">
