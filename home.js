@@ -182,8 +182,9 @@ await addDoc(
     type: "bubble",
     author: document.getElementById('display-user-name').textContent,
     authorUid: auth.currentUser.uid,
-    characterName: name, // ⭕ 空文字から name に変更
+    characterName: name,
     title: "吹き出しを変更しました",
+    comment: newComment, // 👈 変更後のコメントも保存
     createdAt: new Date().toISOString()
   }
 );
@@ -194,7 +195,8 @@ await addDoc(
     type: "bubble",
     count: 1,
     author: document.getElementById('display-user-name').textContent,
-    icon: name ? `images/icons/${name}.png` : '', // ⭕ icons/ を追加
+    icon: name ? `images/icons/${name}.png` : '',
+    comment: newComment, // 👈 ここに追加！
     sent: false,
     createdAt: new Date().toISOString(),
     sendAt: new Date(Date.now() + 60 * 1000)
