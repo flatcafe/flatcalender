@@ -42,16 +42,18 @@ usersSnapshot.forEach(userDoc => {
   }
 });
 
-console.log(`送信先 ${tokens.length} 台`);
-      if (tokens.length > 0) {
+// 重複を削除
+const uniqueTokens = [...new Set(tokens)];
 
-  await admin.messaging().sendEachForMulticast({
-    notification: {
-      title: "ふらっとCafe",
-      body: `${data.author}さんが予定を${data.count}件追加しました`
-    },
-    tokens
-  });
+console.log(`送信先 ${uniqueTokens.length} 台`);
+
+await admin.messaging().sendEachForMulticast({
+  notification: {
+    title: "ふらっとCafe",
+    body: `${data.author}さんが予定を${data.count}件追加しました`
+  },
+  tokens: uniqueTokens
+});
 
   console.log("通知送信成功");
 }
