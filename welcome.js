@@ -29,11 +29,12 @@ document.querySelectorAll('.char-btn').forEach(btn => {
     target.classList.remove('dimmed');
     target.classList.add('jump', 'ring-4', 'ring-amber-400', 'rounded-2xl');
     
-    selectedChar = {
+    sselectedChar = {
   name: target.getAttribute('data-name'),
   displayName: charNames[target.getAttribute('data-name')],
   color: target.getAttribute('data-color'),
-  img: target.getAttribute('data-img')
+  img: target.getAttribute('data-img'),
+  icon: `images/icons/${target.getAttribute('data-name')}.png`
 };
   });
 });
@@ -93,6 +94,7 @@ await setDoc(doc(db, "users", userCredential.user.uid), {
   characterName: selectedChar.name,
   characterColor: selectedChar.color,
   characterImg: selectedChar.img,
+   characterIcon: selectedChar.icon,
 
   // 通知設定 初期ON
   notifyAdd: true,
