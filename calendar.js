@@ -401,7 +401,7 @@ if (!queueSnap.empty) {
       type: "add",
       count: 1,
       author: userName,
-      icon: selectedChar.img,
+      icon: charName ? `images/${charName}.png` : '', // ⭕ ここを修正
       sent: false,
       createdAt: new Date().toISOString(),
       sendAt: new Date(Date.now() + 60 * 1000)
@@ -417,7 +417,7 @@ await addDoc(
     author: userName,
     authorUid: auth.currentUser.uid,
     characterName: charName,
-    authorIcon: selectedChar.img,
+    authorIcon: charName ? `images/${charName}.png` : '', // ⭕ ここを修正
     title: text,
     createdAt: new Date().toISOString()
   }
