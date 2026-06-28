@@ -29,7 +29,7 @@ document.querySelectorAll('.char-btn').forEach(btn => {
     target.classList.remove('dimmed');
     target.classList.add('jump', 'ring-4', 'ring-amber-400', 'rounded-2xl');
     
-    sselectedChar = {
+    selectedChar = {
   name: target.getAttribute('data-name'),
   displayName: charNames[target.getAttribute('data-name')],
   color: target.getAttribute('data-color'),
