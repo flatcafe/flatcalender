@@ -46,12 +46,13 @@ exports.sendQueuedNotifications = onSchedule(
       console.log(`送信先 ${uniqueTokens.length} 台`);
 
       await admin.messaging().sendEachForMulticast({
-        notification: {
-          title: "ふらっとCafe",
-          body: `${data.author}さんが予定を${data.count}件追加しました`
-        },
-        tokens: uniqueTokens
-      });
+  notification: {
+    title: "ふらっとCafe",
+    body: `${data.author}さんが予定を${data.count}件追加しました`,
+    image: data.icon
+  },
+  tokens: uniqueTokens
+});
 
       console.log("通知送信成功");
 
