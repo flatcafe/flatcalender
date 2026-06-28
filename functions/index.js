@@ -56,7 +56,7 @@ await admin.messaging().sendEachForMulticast({
 });
 
   console.log("通知送信成功");
-}
+
 
       await docSnap.ref.update({
         sent: true
