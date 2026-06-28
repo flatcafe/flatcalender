@@ -401,7 +401,7 @@ if (!queueSnap.empty) {
       type: "add",
       count: 1,
       author: userName,
-      icon: charName,
+      icon: selectedChar.img,
       sent: false,
       createdAt: new Date().toISOString(),
       sendAt: new Date(Date.now() + 60 * 1000)
@@ -417,6 +417,7 @@ await addDoc(
     author: userName,
     authorUid: auth.currentUser.uid,
     characterName: charName,
+    authorIcon: selectedChar.img,
     title: text,
     createdAt: new Date().toISOString()
   }
