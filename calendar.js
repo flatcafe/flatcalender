@@ -397,11 +397,11 @@ if (!queueSnap.empty) {
   // 新規作成
   await addDoc(
     collection(db, "notificationQueue"),
-    {
+   {
       type: "add",
       count: 1,
       author: userName,
-      icon: charName ? `images/${charName}.png` : '', // ⭕ ここを修正
+      icon: charName ? `images/icons/${charName}.png` : '', // ⭕ icons/ を追加
       sent: false,
       createdAt: new Date().toISOString(),
       sendAt: new Date(Date.now() + 60 * 1000)
@@ -412,15 +412,15 @@ if (!queueSnap.empty) {
 
 await addDoc(
   collection(db, "notifications"),
-  {
-    type: "add",
-    author: userName,
-    authorUid: auth.currentUser.uid,
-    characterName: charName,
-    authorIcon: charName ? `images/${charName}.png` : '', // ⭕ ここを修正
-    title: text,
-    createdAt: new Date().toISOString()
-  }
+ {
+      type: "add",
+      author: userName,
+      authorUid: auth.currentUser.uid,
+      characterName: charName,
+      authorIcon: charName ? `images/icons/${charName}.png` : '', // ⭕ icons/ を追加
+      title: text,
+      createdAt: new Date().toISOString()
+    }
 );
 
 // 日付を次の日に進める処理
