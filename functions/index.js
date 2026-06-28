@@ -47,15 +47,16 @@ exports.sendQueuedNotifications = onSchedule(
 
       // ★ここから修正ブロック
       // メッセージの組み立て
+// 修正後の送信部分
 const bodyText = data.type === 'bubble' 
-  ? `${data.author}が吹き出しを【${data.comment}】に変更しました` // 👈 ここでコメントを表示！
+  ? `${data.author}が吹き出しを【${data.comment}】に変更しました` 
   : `${data.author}さんが予定を${data.count}件追加しました`;
 
 await admin.messaging().sendEachForMulticast({
   notification: {
     title: "ふらっとCafe",
-    body: bodyText,
-    imageUrl: data.icon ? `https://flatcafe.github.io/flatcalender/${data.icon}` : ""
+    body: bodyText
+    // imageUrl を削除しました
   },
   tokens: uniqueTokens
 });
