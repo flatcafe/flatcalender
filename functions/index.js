@@ -21,48 +21,44 @@ exports.sendQueuedNotifications = onSchedule(
       return null;
     }
 
-
     for (const docSnap of snapshot.docs) {
 
       const data = docSnap.data();
 
-      console.log(
-        `${data.count}件処理`
-      );
-// 全ユーザーのFCMトークン取得
-const usersSnapshot = await admin.firestore().collection("users").get();
+      console.log(`${data.count}件処理`);
 
-const tokens = [];
+      // 全ユーザーのFCMトークン取得
+      const usersSnapshot = await admin.firestore().collection("users").get();
 
-usersSnapshot.forEach(userDoc => {
-  const userData = userDoc.data();
+      const tokens = [];
 
-  if (userData.fcmToken) {
-    tokens.push(userData.fcmToken);
-  }
-});
+      usersSnapshot.forEach(userDoc => {
+        const userData = userDoc.data();
 
-// 重複を削除
-const uniqueTokens = [...new Set(tokens)];
+        if (userData.fcmToken) {
+          tokens.push(userData.fcmToken);
+        }
+      });
 
-console.log(`送信先 ${uniqueTokens.length} 台`);
+      // 重複を削除
+      const uniqueTokens = [...new Set(tokens)];
 
-await admin.messaging().sendEachForMulticast({
-  notification: {
-    title: "ふらっとCafe",
-    body: `${data.author}さんが予定を${data.count}件追加しました`
-  },
-  tokens: uniqueTokens
-});
+      console.log(`送信先 ${uniqueTokens.length} 台`);
 
-  console.log("通知送信成功");
+      await admin.messaging().sendEachForMulticast({
+        notification: {
+          title: "ふらっとCafe",
+          body: `${data.author}さんが予定を${data.count}件追加しました`
+        },
+        tokens: uniqueTokens
+      });
 
+      console.log("通知送信成功");
 
       await docSnap.ref.update({
         sent: true
       });
     }
-
 
     return null;
   }
