@@ -194,12 +194,13 @@ await addDoc(
     type: "bubble",
     count: 1,
     author: document.getElementById('display-user-name').textContent,
-    icon: name ? `images/${name}.png` : '', // ⭕ 空文字から画像パスに変更
+    icon: name ? `images/icons/${name}.png` : '', // ⭕ icons/ を追加
     sent: false,
     createdAt: new Date().toISOString(),
     sendAt: new Date(Date.now() + 60 * 1000)
   }
 );
+
   
 bubble.textContent = newComment;
 
