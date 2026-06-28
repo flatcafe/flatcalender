@@ -40,22 +40,27 @@ exports.sendQueuedNotifications = onSchedule(
         }
       });
 
-      // 重複を削除
+// 重複を削除
       const uniqueTokens = [...new Set(tokens)];
 
       console.log(`送信先 ${uniqueTokens.length} 台`);
 
+      // ★ここから修正ブロック
+      const bodyText = data.type === 'bubble' 
+        ? `${data.author}さんが吹き出しを変更しました` 
+        : `${data.author}さんが予定を${data.count}件追加しました`;
+
       await admin.messaging().sendEachForMulticast({
-  notification: {
-    title: "ふらっとCafe",
-    body: `${data.author}さんが予定を${data.count}件追加しました`,
-    image: data.icon
-  },
-  tokens: uniqueTokens
-});
+        notification: {
+          title: "ふらっとCafe",
+          body: bodyText,
+          imageUrl: data.icon ? `https://flatcafe.github.io/flatcalender/${data.icon}` : ""
+        },
+        tokens: uniqueTokens
+      });
+      // ★ここまで修正ブロック
 
       console.log("通知送信成功");
-
       await docSnap.ref.update({
         sent: true
       });
