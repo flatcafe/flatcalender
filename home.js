@@ -182,7 +182,7 @@ await addDoc(
     type: "bubble",
     author: document.getElementById('display-user-name').textContent,
     authorUid: auth.currentUser.uid,
-    authorIcon: selectedChar.img,
+    authorIcon: '',
     title: "吹き出しを変更しました",
     createdAt: new Date().toISOString()
   }
@@ -194,7 +194,7 @@ await addDoc(
     type: "bubble",
     count: 1,
     author: document.getElementById('display-user-name').textContent,
-    icon: selectedChar.img,
+    icon: '',
     sent: false,
     createdAt: new Date().toISOString(),
     sendAt: new Date(Date.now() + 60 * 1000)
