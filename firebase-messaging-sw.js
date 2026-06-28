@@ -20,7 +20,7 @@ messaging.onBackgroundMessage((payload) => {
 
 
 // 既存のコードは一切消さずに、ファイルの最下部にこれを追加してください
-
+/*
 self.addEventListener('push', function(event) {
   if (!event.data) return;
   try {
@@ -38,3 +38,4 @@ const notificationOptions = {
     console.error('Push parse error:', e);
   }
 });
+*/
