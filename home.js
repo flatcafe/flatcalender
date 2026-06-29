@@ -146,6 +146,14 @@ bubble.style.cursor = "pointer";
 
 bubble.onclick = async () => {
 
+  // ★ここから追加（自分以外の吹き出しなら処理をストップ）
+  const myName = document.getElementById('display-user-name').textContent;
+  if (name !== myName) {
+    alert("他の人の吹き出しは編集できません");
+    return; // ここで処理を終了する
+  }
+  // ★ここまで追加
+
   const newComment = prompt("吹き出しコメントを入力", msg);
 
  if (newComment === null) {
