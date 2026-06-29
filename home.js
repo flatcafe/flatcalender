@@ -148,7 +148,7 @@ bubble.style.cursor = "pointer";
 bubble.onclick = async () => {
   // 1. 自分以外は編集不可にする（条件を有効化）
   const myName = document.getElementById('display-user-name').textContent;
-  if (name !== myName) {
+  if (name !== window.myCharacter) {
     alert("他の人の吹き出しは編集できません");
     return;
   }
