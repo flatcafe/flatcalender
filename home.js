@@ -145,24 +145,17 @@ bubble.textContent = msg;
 bubble.style.cursor = "pointer";
 
 bubble.onclick = async () => {
+  // 1. 自分以外は編集不可にする（条件を有効化）
   const myName = document.getElementById('display-user-name').textContent;
-
-  // ★何と何が比較されているか、画面に出して確認する
-  alert("吹き出しのname: " + name + "\n自分のmyName: " + myName);
-
-  // 一旦、他人のをブロックする機能はコメントアウト（無効化）して通すようにします
-  /* if (name !== myName) {
+  if (name !== myName) {
     alert("他の人の吹き出しは編集できません");
     return;
   }
-  */
 
   const newComment = prompt("吹き出しコメントを入力", msg);
+  if (newComment === null) return;
 
-  if (newComment === null) {
-    return;
-  }
-  
+  // 2. データベースの更新
   if (!latestSched) {
     await setDoc(
       doc(db, "bubbleComments", `${dateStr}_${name}`),
@@ -181,8 +174,33 @@ bubble.onclick = async () => {
       }
     );
   }
-};
 
+  // 3. 通知の保存（クリックされた時だけ実行されるように中に移動）
+  await addDoc(collection(db, "notifications"), {
+    type: "bubble",
+    author: myName,
+    authorUid: auth.currentUser.uid,
+    characterName: name,
+    title: "吹き出しを変更しました",
+    comment: newComment,
+    createdAt: new Date().toISOString()
+  });
+
+  await addDoc(collection(db, "notificationQueue"), {
+    type: "bubble",
+    count: 1,
+    author: myName,
+    icon: name ? `images/icons/${name}.png` : '',
+    comment: newComment,
+    sent: false,
+    createdAt: new Date().toISOString(),
+    sendAt: new Date(Date.now() + 60 * 1000)
+  });
+
+  // 4. 画面上の表示を更新
+  bubble.textContent = newComment;
+  bubble.style.fontSize = getDynamicFontSize(newComment.length);
+};
 
 // 🔔 通知
 await addDoc(
