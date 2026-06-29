@@ -146,6 +146,10 @@ bubble.textContent = msg;
 bubble.style.cursor = "pointer";
 
 bubble.onclick = async () => {
+  alert(
+  "クリックしたキャラ: " + name +
+  "\n自分のキャラ: " + window.myCharacter
+);
   // 1. 自分以外は編集不可にする（条件を有効化）
   const myName = document.getElementById('display-user-name').textContent;
   if (name !== window.myCharacter) {
