@@ -201,11 +201,5 @@ bubble.onclick = async () => {
   bubble.textContent = newComment;
   bubble.style.fontSize = getDynamicFontSize(newComment.length);
 };
-
-
-
-
-
-};
       }
 }
