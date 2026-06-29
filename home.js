@@ -145,42 +145,43 @@ bubble.textContent = msg;
 bubble.style.cursor = "pointer";
 
 bubble.onclick = async () => {
-
-  // ★ここから追加（自分以外の吹き出しなら処理をストップ）
   const myName = document.getElementById('display-user-name').textContent;
-  if (name !== myName) {
+
+  // ★何と何が比較されているか、画面に出して確認する
+  alert("吹き出しのname: " + name + "\n自分のmyName: " + myName);
+
+  // 一旦、他人のをブロックする機能はコメントアウト（無効化）して通すようにします
+  /* if (name !== myName) {
     alert("他の人の吹き出しは編集できません");
-    return; // ここで処理を終了する
+    return;
   }
-  // ★ここまで追加
+  */
 
   const newComment = prompt("吹き出しコメントを入力", msg);
 
- if (newComment === null) {
-  return;
-}
-if (!latestSched) {
-
-  await setDoc(
-    doc(db, "bubbleComments", `${dateStr}_${name}`),
-    {
-      date: dateStr,
-      characterName: name,
-      comment: newComment,
-      updatedAt: new Date().toISOString()
-    }
-  );
-
-} else {
-
-  await updateDoc(
-    doc(db, "schedules", latestSched.id),
-    {
-      detail: newComment
-    }
-  );
-
-}
+  if (newComment === null) {
+    return;
+  }
+  
+  if (!latestSched) {
+    await setDoc(
+      doc(db, "bubbleComments", `${dateStr}_${name}`),
+      {
+        date: dateStr,
+        characterName: name,
+        comment: newComment,
+        updatedAt: new Date().toISOString()
+      }
+    );
+  } else {
+    await updateDoc(
+      doc(db, "schedules", latestSched.id),
+      {
+        detail: newComment
+      }
+    );
+  }
+};
 
 
 // 🔔 通知
