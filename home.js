@@ -35,6 +35,7 @@ import {
           if (docSnap.exists()) {
             const userData = docSnap.data();
             document.getElementById('display-user-name').textContent = userData.name || "ゲスト";
+            window.myCharacter = userData.characterName;
           }
           // （ホーム画面でのFCMトークン最新化）
       if ('serviceWorker' in navigator && Notification.permission === "granted") {
