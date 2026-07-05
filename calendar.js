@@ -383,7 +383,7 @@ await addDoc(collection(db, "schedules"), {
 const q = query(
   collection(db, "notificationQueue"),
   where("author", "==", userName),
-  where("type", "==", "add"),
+  where("type", "==", notificationType),
   where("sent", "==", false)
 );
 
