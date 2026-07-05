@@ -369,7 +369,10 @@ cell.appendChild(schedContainer);
 fragment.appendChild(cell);
 }
 
+calendarDays.appendChild(fragment);
+
 }
+
     function advanceSelectedDate() {
       if (!selectedDateStr) return;
       const [y, m, d] = selectedDateStr.split('-').map(Number);
