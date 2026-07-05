@@ -198,7 +198,8 @@ function loadCurrentMonthSchedules() {
 
     function renderCalendar() {
       calendarDays.innerHTML = "";
-
+      
+      const fragment = document.createDocumentFragment();
       const schedulesByDate = {};
 
 　　　allSchedules.forEach(s => {
@@ -365,7 +366,7 @@ if (daySchedules.length > 3) {
 
 cell.appendChild(schedContainer);
 }
-calendarDays.appendChild(cell);
+fragment.appendChild(cell);
 }
 
 }
