@@ -466,8 +466,8 @@ await addDoc(
 // 日付を次の日に進める処理
 advanceSelectedDate();
 
-// ★画面を更新して新しい日付に枠を移動させる命令を追加
-renderCalendar();
+// 月が変わる可能性があるので、その月の予定を読み込み直す
+loadCurrentMonthSchedules();
   });
 });
 
