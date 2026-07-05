@@ -358,7 +358,7 @@ calendarDays.appendChild(cell);
     const type = btn.getAttribute('data-type');
     const text = btn.getAttribute('data-text');
 
-    let notificationType = "add";
+let notificationType = "add"; // デフォルト
 
 if (text === "〇") {
   notificationType = "circle";
