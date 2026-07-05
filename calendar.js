@@ -59,11 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         
         // スケジュールのリアルタイム監視（追加・変更・削除が自動反映される）
-        onSnapshot(collection(db, "schedules"), (snapshot) => {
-          allSchedules = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-          updatePopupPosition();
-          renderCalendar();
-        });
+     loadCurrentMonthSchedules();
       }
     });
 
