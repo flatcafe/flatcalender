@@ -213,10 +213,18 @@ if (auth.currentUser) {
   }
 }
 
+      let notificationType = "edit";
+
+if (schedule.text === "〇") {
+  notificationType = "circle";
+} else if (schedule.text === "×") {
+  notificationType = "cross";
+}
+
 await addDoc(
   collection(db, "notifications"),
   {
-    type: "edit",
+    type: notificationType,
     scheduleId: scheduleId,
     title: schedule.title || schedule.text,
 
