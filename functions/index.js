@@ -46,25 +46,33 @@ exports.sendQueuedNotifications = onSchedule(
       console.log(`送信先 ${uniqueTokens.length} 台`);
 
       // ★ここから修正ブロック
-      // メッセージの組み立て
 // 修正後の送信部分
+// Cloud Functions (sendQueuedNotifications) 内の送信処理部分
 let bodyText;
 
-if (data.type === "bubble") {
-  bodyText = `${data.author}が吹き出しを【${data.comment}】に変更しました`;
-} else if (data.type === "circle") {
-  bodyText = `${data.author}さんが〇スタンプを追加しました`;
-} else if (data.type === "cross") {
-  bodyText = `${data.author}さんが×スタンプを追加しました`;
-} else {
-  bodyText = `${data.author}さんが予定を${data.count}件追加しました`;
+// type に基づいてメッセージを決定
+switch (data.type) {
+  case "circle":
+    bodyText = `${data.author}さんが〇スタンプを追加しました`;
+    break;
+  case "cross":
+    bodyText = `${data.author}さんが×スタンプを追加しました`;
+    break;
+  case "bubble":
+    bodyText = `${data.author}が吹き出しを【${data.comment}】に変更しました`;
+    break;
+  case "edit":
+    bodyText = `${data.author}さんが予定を編集しました`;
+    break;
+  default:
+    bodyText = `${data.author}さんが予定を${data.count}件追加しました`;
+    break;
 }
 
 await admin.messaging().sendEachForMulticast({
   notification: {
     title: "ふらっとCafe",
     body: bodyText
-    // imageUrl を削除しました
   },
   tokens: uniqueTokens
 });
