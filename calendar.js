@@ -163,6 +163,43 @@ document.addEventListener("DOMContentLoaded", () => {
       return gradient + stops.join(", ") + ")";
     }
 
+    let unsubscribeSchedules = null;
+
+function loadCurrentMonthSchedules() {
+
+  if (unsubscribeSchedules) {
+    unsubscribeSchedules();
+  }
+
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+
+  const start = `${year}-${String(month + 1).padStart(2, "0")}-01`;
+
+  const lastDay = new Date(year, month + 1, 0).getDate();
+
+  const end = `${year}-${String(month + 1).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`;
+
+  const q = query(
+    collection(db, "schedules"),
+    where("date", ">=", start),
+    where("date", "<=", end)
+  );
+
+  unsubscribeSchedules = onSnapshot(q, (snapshot) => {
+
+    allSchedules = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    updatePopupPosition();
+    renderCalendar();
+
+  });
+
+}
+
     function renderCalendar() {
       calendarDays.innerHTML = "";
 
