@@ -48,9 +48,17 @@ exports.sendQueuedNotifications = onSchedule(
       // ★ここから修正ブロック
       // メッセージの組み立て
 // 修正後の送信部分
-const bodyText = data.type === 'bubble' 
-  ? `${data.author}が吹き出しを【${data.comment}】に変更しました` 
-  : `${data.author}さんが予定を${data.count}件追加しました`;
+let bodyText;
+
+if (data.type === "bubble") {
+  bodyText = `${data.author}が吹き出しを【${data.comment}】に変更しました`;
+} else if (data.type === "circle") {
+  bodyText = `${data.author}さんが〇スタンプを追加しました`;
+} else if (data.type === "cross") {
+  bodyText = `${data.author}さんが×スタンプを追加しました`;
+} else {
+  bodyText = `${data.author}さんが予定を${data.count}件追加しました`;
+}
 
 await admin.messaging().sendEachForMulticast({
   notification: {
