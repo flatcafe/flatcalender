@@ -540,14 +540,14 @@ renderCalendar();
   });
 }
 
-if(prevBtn) prevBtn.addEventListener("click", () => {
+if (prevBtn) prevBtn.addEventListener("click", () => {
   currentDate.setMonth(currentDate.getMonth() - 1);
-  renderCalendar();
+  loadCurrentMonthSchedules();
 });
 
-    if(nextBtn) nextBtn.addEventListener("click", () => {
+if (nextBtn) nextBtn.addEventListener("click", () => {
   currentDate.setMonth(currentDate.getMonth() + 1);
-  renderCalendar();
+  loadCurrentMonthSchedules();
 });
 
 } catch (error) {
