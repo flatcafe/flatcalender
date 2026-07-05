@@ -357,7 +357,14 @@ calendarDays.appendChild(cell);
 
     const type = btn.getAttribute('data-type');
     const text = btn.getAttribute('data-text');
-   
+
+    let notificationType = "add";
+
+if (text === "〇") {
+  notificationType = "circle";
+} else if (text === "×") {
+  notificationType = "cross";
+}
 
 await addDoc(collection(db, "schedules"), {
   date: selectedDateStr,
@@ -398,7 +405,7 @@ if (!queueSnap.empty) {
   await addDoc(
     collection(db, "notificationQueue"),
    {
-      type: "add",
+      type: notificationType,
       count: 1,
       author: userName,
       icon: charName ? `images/icons/${charName}.png` : '', // ⭕ icons/ を追加
@@ -413,7 +420,7 @@ if (!queueSnap.empty) {
 await addDoc(
   collection(db, "notifications"),
  {
-      type: "add",
+      type: notificationType,
       author: userName,
       authorUid: auth.currentUser.uid,
       characterName: charName,
