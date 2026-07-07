@@ -158,6 +158,10 @@ const notificationBtn =
 
 const notificationList =
   document.getElementById('notification-list');
+
+const addPlannedBtn =
+  document.getElementById("addPlannedBtn");
+    
 let notificationIds = [];
 
 const q = query(
@@ -355,6 +359,10 @@ setupAccordion(
   "doneContent",
   "済（0）"
 );
+
+  addPlannedBtn.addEventListener("click", () => {
+  alert("新規作成！");
+});
 </script>
   
 <script src="components/navbar.js" defer></script>
