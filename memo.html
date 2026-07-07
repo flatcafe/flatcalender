@@ -472,17 +472,14 @@ snapshot.forEach((docSnap) => {
 
    currentPlanId = docSnap.id;
 
-  detailTitle.textContent = plan.title;
+editTitle.value = plan.title || "";
 
-  detailDate.textContent =
-    `📅 ${plan.date || "未定"}`;
+editDate.value = plan.date || "";
 
-  detailCategory.textContent =
-    `📁 ${plan.category || "未設定"}`;
+editCategory.value = plan.category || "";
 
-  detailMemo.textContent =
-    plan.memo || "";
-
+editMemo.value = plan.memo || "";
+   
   detailModal.classList.remove("hidden");
 
 });
@@ -514,51 +511,13 @@ setupAccordion(
 
 addPlannedBtn.addEventListener("click", async () => {
   
- const title = prompt("タイトルを入力してください");
+ const title = editTitle.value;
 
-if (!title) return;
+const date = editDate.value;
 
-const date = prompt("日付（例：7/20・7月中・未定）", "未定");
+const category = editCategory.value;
 
-await addDoc(collection(db, "plans"), {
-  title,
-  date: date || "未定",
-  category: "",
-  memo: "",
-  status: "planned",
-  order: 0,
-  createdAt: serverTimestamp()
-});
-
-  
-  
-alert("作成しました！");
-});
-
-editPlanBtn.addEventListener("click", async () => {
-
-  if (!currentPlanId) return;
-
-  const deletePlanBtn =
-  document.getElementById("deletePlanBtn");
-
-  const title = prompt("タイトル", detailTitle.textContent);
-  if (!title) return;
-
-  const date = prompt(
-    "日付",
-    detailDate.textContent.replace("📅 ", "")
-  );
-
-  const category = prompt(
-    "カテゴリー",
-    detailCategory.textContent.replace("📁 ", "")
-  );
-
-  const memo = prompt(
-    "メモ",
-    detailMemo.textContent
-  );
+const memo = editMemo.value;
 
   await updateDoc(doc(db, "plans", currentPlanId), {
     title,
