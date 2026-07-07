@@ -135,21 +135,32 @@ body {
 
   <div class="bg-white rounded-2xl w-[90%] max-w-md p-5">
 
-    <h2 id="detailTitle"
-      class="text-xl font-bold text-[#5a4a42]">
-    </h2>
+   <input
+  id="editTitle"
+  class="w-full border rounded-xl p-2 font-bold"
+  placeholder="タイトル">
 
-    <p id="detailDate"
-      class="text-gray-500 mt-2">
-    </p>
+<input
+  id="editDate"
+  class="w-full border rounded-xl p-2 mt-3"
+  placeholder="日付">
 
-    <p id="detailCategory"
-  class="mt-2 text-gray-500">
-</p>
+<select
+  id="editCategory"
+  class="w-full border rounded-xl p-2 mt-3">
 
-    <p id="detailMemo"
-  class="mt-4 whitespace-pre-wrap text-[#5a4a42]">
-</p>
+  <option value="">カテゴリー選択</option>
+  <option>配信</option>
+  <option>コラボ</option>
+  <option>イベントのお誘い</option>
+  <option>裏遊び</option>
+
+</select>
+
+<textarea
+  id="editMemo"
+  class="w-full border rounded-xl p-2 mt-3 h-32"
+  placeholder="メモ"></textarea>
     
 <button
   id="editPlanBtn"
@@ -227,6 +238,18 @@ const closeDetailBtn =
 
 const detailMemo =
   document.getElementById("detailMemo");
+
+    const editTitle =
+  document.getElementById("editTitle");
+
+const editDate =
+  document.getElementById("editDate");
+
+const editCategory =
+  document.getElementById("editCategory");
+
+const editMemo =
+  document.getElementById("editMemo");
 
 let currentPlanId = null;
     
