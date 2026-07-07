@@ -366,12 +366,15 @@ snapshot.forEach((docSnap) => {
   div.className =
     "bg-white rounded-xl p-3 shadow cursor-pointer";
 
-  div.innerHTML = `
-    <div class="font-bold text-[#5a4a42]">
-      ${plan.title}
-    </div>
-  `;
+ div.innerHTML = `
+  <div class="text-xs text-gray-500">
+    📅 ${plan.date || "未定"}
+  </div>
 
+  <div class="font-bold text-[#5a4a42] mt-1">
+    ${plan.title}
+  </div>
+`;
   plannedList.appendChild(div);
 
 });
@@ -404,13 +407,16 @@ addPlannedBtn.addEventListener("click", async () => {
 
 if (!title) return;
 
+const date = prompt("日付（例：7/20・7月中・未定）", "未定");
+
 await addDoc(collection(db, "plans"), {
-  title: title,
+  title,
+  date: date || "未定",
   status: "planned",
   order: 0,
   createdAt: serverTimestamp()
 });
-
+  
 alert("作成しました！");
 });
 </script>
