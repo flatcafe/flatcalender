@@ -360,8 +360,12 @@ setupAccordion(
   "済（0）"
 );
 
-  addPlannedBtn.addEventListener("click", () => {
-  alert("新規作成！");
+ addPlannedBtn.addEventListener("click", () => {
+  const title = prompt("タイトルを入力してください");
+
+  if (!title) return;
+
+  alert(title);
 });
 </script>
   
