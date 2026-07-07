@@ -143,6 +143,14 @@ body {
       class="text-gray-500 mt-2">
     </p>
 
+    <p id="detailCategory"
+  class="mt-2 text-gray-500">
+</p>
+
+    <p id="detailMemo"
+  class="mt-4 whitespace-pre-wrap text-[#5a4a42]">
+</p>
+    
 <button
   id="editPlanBtn"
   class="mb-2 w-full rounded-xl bg-sky-100 py-2 font-bold">
@@ -206,6 +214,12 @@ const closeDetailBtn =
 
     const editPlanBtn =
   document.getElementById("editPlanBtn");
+
+  const detailCategory =
+  document.getElementById("detailCategory");
+
+const detailMemo =
+  document.getElementById("detailMemo");
 
 closeDetailBtn.addEventListener("click", () => {
   detailModal.classList.add("hidden");
@@ -422,18 +436,23 @@ snapshot.forEach((docSnap) => {
   </div>
 `;
 
-  div.addEventListener("click", () => {
+ div.addEventListener("click", () => {
 
   detailTitle.textContent = plan.title;
 
-  detailDate.textContent = `📅 ${plan.date || "未定"}`;
+  detailDate.textContent =
+    `📅 ${plan.date || "未定"}`;
+
+  detailCategory.textContent =
+    `📁 ${plan.category || "未設定"}`;
+
+  detailMemo.textContent =
+    plan.memo || "";
 
   detailModal.classList.remove("hidden");
 
 });
-  
   plannedList.appendChild(div);
-
 });
 
 });
@@ -469,6 +488,8 @@ const date = prompt("日付（例：7/20・7月中・未定）", "未定");
 await addDoc(collection(db, "plans"), {
   title,
   date: date || "未定",
+  category: "",
+  memo: "",
   status: "planned",
   order: 0,
   createdAt: serverTimestamp()
