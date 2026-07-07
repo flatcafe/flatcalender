@@ -146,7 +146,8 @@ import {
   arrayUnion,
   getDoc,
   addDoc,
-  serverTimestamp
+  serverTimestamp,
+  where
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
     
 const badge =
@@ -341,6 +342,35 @@ if (!isRead && !isMyPost) {
 
 }
 
+    const plannedList = document.getElementById("plannedList");
+
+const plansQuery = query(
+  collection(db, "plans"),
+  where("status", "==", "planned"),
+  orderBy("createdAt", "desc")
+);
+
+onSnapshot(plansQuery, (snapshot) => {
+
+  plannedList.innerHTML = "";
+
+  snapshot.forEach((docSnap) => {
+
+    const plan = docSnap.data();
+
+    const div = document.createElement("div");
+
+    div.className =
+      "bg-white rounded-xl p-3 shadow cursor-pointer";
+
+    div.textContent = plan.title;
+
+    plannedList.appendChild(div);
+
+  });
+
+});
+    
 setupAccordion(
   "plannedToggle",
   "plannedTitle",
