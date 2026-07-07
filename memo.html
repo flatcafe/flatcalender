@@ -156,6 +156,12 @@ body {
   class="mb-2 w-full rounded-xl bg-sky-100 py-2 font-bold">
   編集
 </button>
+
+    <button
+  id="deletePlanBtn"
+  class="mb-2 w-full rounded-xl bg-red-100 py-2 font-bold text-red-600">
+  削除
+</button>
     
     <button id="closeDetailBtn"
       class="mt-6 w-full rounded-xl bg-amber-100 py-2 font-bold">
@@ -508,6 +514,9 @@ alert("作成しました！");
 editPlanBtn.addEventListener("click", async () => {
 
   if (!currentPlanId) return;
+
+  const deletePlanBtn =
+  document.getElementById("deletePlanBtn");
 
   const title = prompt("タイトル", detailTitle.textContent);
   if (!title) return;
