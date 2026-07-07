@@ -483,6 +483,7 @@ setupAccordion(
 );
 
 addPlannedBtn.addEventListener("click", async () => {
+  
  const title = prompt("タイトルを入力してください");
 
 if (!title) return;
@@ -498,9 +499,45 @@ await addDoc(collection(db, "plans"), {
   order: 0,
   createdAt: serverTimestamp()
 });
+
+  
   
 alert("作成しました！");
 });
+
+editPlanBtn.addEventListener("click", async () => {
+
+  if (!currentPlanId) return;
+
+  const title = prompt("タイトル", detailTitle.textContent);
+  if (!title) return;
+
+  const date = prompt(
+    "日付",
+    detailDate.textContent.replace("📅 ", "")
+  );
+
+  const category = prompt(
+    "カテゴリー",
+    detailCategory.textContent.replace("📁 ", "")
+  );
+
+  const memo = prompt(
+    "メモ",
+    detailMemo.textContent
+  );
+
+  await updateDoc(doc(db, "plans", currentPlanId), {
+    title,
+    date,
+    category,
+    memo
+  });
+
+  detailModal.classList.add("hidden");
+
+});
+  
 </script>
   
 <script src="components/navbar.js" defer></script>
