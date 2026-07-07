@@ -184,6 +184,7 @@ import {
   onSnapshot,
   doc,
   updateDoc,
+  deleteDoc,
   arrayUnion,
   getDoc,
   addDoc,
@@ -542,6 +543,18 @@ editPlanBtn.addEventListener("click", async () => {
     category,
     memo
   });
+
+  detailModal.classList.add("hidden");
+
+});
+
+    deletePlanBtn.addEventListener("click", async () => {
+
+  if (!currentPlanId) return;
+
+  if (!confirm("この予定を削除しますか？")) return;
+
+  await deleteDoc(doc(db, "plans", currentPlanId));
 
   detailModal.classList.add("hidden");
 
