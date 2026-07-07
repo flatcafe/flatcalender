@@ -221,6 +221,8 @@ const closeDetailBtn =
 const detailMemo =
   document.getElementById("detailMemo");
 
+let currentPlanId = null;
+    
 closeDetailBtn.addEventListener("click", () => {
   detailModal.classList.add("hidden");
 });
@@ -437,6 +439,8 @@ snapshot.forEach((docSnap) => {
 `;
 
  div.addEventListener("click", () => {
+
+   currentPlanId = docSnap.id;
 
   detailTitle.textContent = plan.title;
 
