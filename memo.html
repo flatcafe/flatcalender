@@ -412,6 +412,17 @@ snapshot.forEach((docSnap) => {
     ${plan.title}
   </div>
 `;
+
+  div.addEventListener("click", () => {
+
+  detailTitle.textContent = plan.title;
+
+  detailDate.textContent = `📅 ${plan.date || "未定"}`;
+
+  detailModal.classList.remove("hidden");
+
+});
+  
   plannedList.appendChild(div);
 
 });
