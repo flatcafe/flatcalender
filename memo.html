@@ -362,12 +362,19 @@ setupAccordion(
   "済（0）"
 );
 
- addPlannedBtn.addEventListener("click", () => {
+addPlannedBtn.addEventListener("click", async () => {
  const title = prompt("タイトルを入力してください");
 
 if (!title) return;
 
-console.log(title);
+await addDoc(collection(db, "plans"), {
+  title: title,
+  status: "planned",
+  order: 0,
+  createdAt: serverTimestamp()
+});
+
+alert("作成しました！");
 });
 </script>
   
