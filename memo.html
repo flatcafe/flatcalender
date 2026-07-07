@@ -143,6 +143,12 @@ body {
       class="text-gray-500 mt-2">
     </p>
 
+<button
+  id="editPlanBtn"
+  class="mb-2 w-full rounded-xl bg-sky-100 py-2 font-bold">
+  編集
+</button>
+    
     <button id="closeDetailBtn"
       class="mt-6 w-full rounded-xl bg-amber-100 py-2 font-bold">
       閉じる
@@ -197,6 +203,9 @@ const detailDate =
 
 const closeDetailBtn =
   document.getElementById("closeDetailBtn");
+
+    const editPlanBtn =
+  document.getElementById("editPlanBtn");
 
 closeDetailBtn.addEventListener("click", () => {
   detailModal.classList.add("hidden");
