@@ -659,9 +659,15 @@ editPlanBtn.addEventListener("click", async () => {
   if (!currentPlanId) return;
 
   const title = editTitle.value;
-  const date = editDate.value;
   const category = editCategory.value;
   const memo = editMemo.value;
+
+  // ★ここを書き換え：上と同じように未定チェックの状態を見て日時を取得する
+  const isUndecided = document.getElementById("editDateUndecided").checked;
+  let date = "未定";
+  if (!isUndecided && editDate.value) {
+    date = editDate.value.replace("T", " ").replace(/-/g, "/");
+  }
 
   await updateDoc(doc(db, "plans", currentPlanId), {
     title,
