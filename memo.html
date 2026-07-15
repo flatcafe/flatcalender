@@ -631,6 +631,7 @@ setupAccordion(
   "doneContent",
   "済（0）"
 );
+
 // --- 「＋ 新規作成」ボタンを押したときの処理 ---
 addPlannedBtn.addEventListener("click", () => {
   // 1. 新規作成なので、前のデータが残らないように入力欄を空にする
@@ -640,29 +641,11 @@ addPlannedBtn.addEventListener("click", () => {
   editCategory.value = "";
   editMemo.value = "";
 
-  // 2. ボタンのテキストを「作成する」などに変更する
+  // 2. ボタンのテキストを「作成する」に変更する
   confirmPlanBtn.textContent = "作成する";
 
   // 3. 入力画面（モーダル）を表示する
   detailModal.classList.remove("hidden");
-});
-
-  // 新規ドキュメントとして追加（ステータスはデフォルトで 'planned'）
-  await addDoc(collection(db, "plans"), {
-    title,
-    date,
-    category,
-    status: "planned",
-    memo,
-    createdAt: serverTimestamp()
-  });
-
-  // フォームをクリアしてモーダルを閉じる
-  editTitle.value = "";
-  editDate.value = "";
-  editCategory.value = "";
-  editMemo.value = "";
-  detailModal.classList.add("hidden");
 });
 
 // --- 修正箇所 2: モーダル内の「編集」ボタン（editPlanBtn）で既存ドキュメントを更新する ---
@@ -684,32 +667,50 @@ editPlanBtn.addEventListener("click", async () => {
   detailModal.classList.add("hidden");
 });
 
-// --- 「確定にする / 済にする」ボタン（confirmPlanBtn）の処理 ---
+// --- モーダル内の「作成 / 確定 / 済」ボタン（confirmPlanBtn）の処理 ---
 confirmPlanBtn.addEventListener("click", async () => {
-  if (!currentPlanId) return;
+  const title = editTitle.value || "無題の予定";
+  const date = editDate.value || "";
+  const category = editCategory.value || "";
+  const memo = editMemo.value || "";
 
-  // 現在の予定のデータを一度取得して、今のステータスを確認する
-  const planDoc = await getDoc(doc(db, "plans", currentPlanId));
-  if (!planDoc.exists()) return;
+  // A. 新規作成の場合（ID が null のとき）
+  if (!currentPlanId) {
+    await addDoc(collection(db, "plans"), {
+      title,
+      date,
+      category,
+      status: "planned", // 最初は仮予定として追加
+      memo,
+      createdAt: serverTimestamp()
+    });
+  } 
+  // B. すでに存在する予定のステータスを更新する場合
+  else {
+    const planDoc = await getDoc(doc(db, "plans", currentPlanId));
+    if (!planDoc.exists()) return;
 
-  const currentStatus = planDoc.data().status;
-  let nextStatus = "confirmed";
+    const currentStatus = planDoc.data().status;
+    let nextStatus = "confirmed";
 
-  // すでに「確定済」なら、次は「済（done）」に移動させる
-  if (currentStatus === "confirmed") {
-    nextStatus = "done";
+    if (currentStatus === "confirmed") {
+      nextStatus = "done";
+    }
+
+    await updateDoc(doc(db, "plans", currentPlanId), {
+      status: nextStatus
+    });
   }
 
-  // ステータスを更新
-  await updateDoc(doc(db, "plans", currentPlanId), {
-    status: nextStatus
-  });
-
-  // モーダルを閉じる
+  // フォームをクリアしてモーダルを閉じる
+  editTitle.value = "";
+  editDate.value = "";
+  editCategory.value = "";
+  editMemo.value = "";
   detailModal.classList.add("hidden");
 });
     
-    deletePlanBtn.addEventListener("click", async () => {
+deletePlanBtn.addEventListener("click", async () => {
 
   if (!currentPlanId) return;
 
