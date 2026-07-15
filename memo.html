@@ -140,11 +140,17 @@ body {
   class="w-full border rounded-xl p-2 font-bold"
   placeholder="タイトル">
 
+<!-- 日付と時間を選択できる入力欄に変更（type="datetime-local" に変更） -->
 <input
   id="editDate"
-  class="w-full border rounded-xl p-2 mt-3"
-  placeholder="日付">
+  type="datetime-local"
+  class="w-full border rounded-xl p-2 mt-3 text-gray-700">
 
+<!-- 「未定」にするためのチェックボックスをすぐ下に追加 -->
+<div class="flex items-center gap-2 mt-2 px-1">
+  <input type="checkbox" id="editDateUndecided" class="w-4 h-4 accent-amber-500">
+  <label for="editDateUndecided" class="text-sm text-gray-600 font-bold cursor-pointer">日時は未定にする</label>
+</div>
 <select
   id="editCategory"
   class="w-full border rounded-xl p-2 mt-3">
