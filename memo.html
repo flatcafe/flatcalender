@@ -615,6 +615,19 @@ editPlanBtn.addEventListener("click", async () => {
   detailModal.classList.add("hidden");
 });
 
+// --- 「確定にする」ボタン（confirmPlanBtn）の処理を追加 ---
+confirmPlanBtn.addEventListener("click", async () => {
+  if (!currentPlanId) return;
+
+  // status を "confirmed"（確定済）に更新する
+  await updateDoc(doc(db, "plans", currentPlanId), {
+    status: "confirmed"
+  });
+
+  // モーダルを閉じる
+  detailModal.classList.add("hidden");
+});
+    
     deletePlanBtn.addEventListener("click", async () => {
 
   if (!currentPlanId) return;
