@@ -571,19 +571,40 @@ setupAccordion(
   "済（0）"
 );
 
+// --- 修正箇所 1: 「＋ 新規作成」ボタン（addPlannedBtn）は新規追加（addDoc）を行う ---
 addPlannedBtn.addEventListener("click", async () => {
-  
- const title = editTitle.value;
+  const title = editTitle.value || "無題の予定";
+  const date = editDate.value || "";
+  const category = editCategory.value || "";
+  const memo = editMemo.value || "";
 
-const date = editDate.value;
+  // 新規ドキュメントとして追加（ステータスはデフォルトで 'planned'）
+  await addDoc(collection(db, "plans"), {
+    title,
+    date,
+    category,
+    status: "planned",
+    memo,
+    createdAt: serverTimestamp()
+  });
 
-const category = editCategory.value;
+  // フォームをクリアしてモーダルを閉じる
+  editTitle.value = "";
+  editDate.value = "";
+  editCategory.value = "";
+  editMemo.value = "";
+  detailModal.classList.add("hidden");
+});
 
-const memo = editMemo.value;
+// --- 修正箇所 2: モーダル内の「編集」ボタン（editPlanBtn）で既存ドキュメントを更新する ---
+editPlanBtn.addEventListener("click", async () => {
+  if (!currentPlanId) return;
 
-const confirmedList =
-  document.getElementById("confirmedList");
-  
+  const title = editTitle.value;
+  const date = editDate.value;
+  const category = editCategory.value;
+  const memo = editMemo.value;
+
   await updateDoc(doc(db, "plans", currentPlanId), {
     title,
     date,
@@ -592,7 +613,6 @@ const confirmedList =
   });
 
   detailModal.classList.add("hidden");
-
 });
 
     deletePlanBtn.addEventListener("click", async () => {
