@@ -615,13 +615,25 @@ editPlanBtn.addEventListener("click", async () => {
   detailModal.classList.add("hidden");
 });
 
-// --- 「確定にする」ボタン（confirmPlanBtn）の処理を追加 ---
+// --- 「確定にする / 済にする」ボタン（confirmPlanBtn）の処理 ---
 confirmPlanBtn.addEventListener("click", async () => {
   if (!currentPlanId) return;
 
-  // status を "confirmed"（確定済）に更新する
+  // 現在の予定のデータを一度取得して、今のステータスを確認する
+  const planDoc = await getDoc(doc(db, "plans", currentPlanId));
+  if (!planDoc.exists()) return;
+
+  const currentStatus = planDoc.data().status;
+  let nextStatus = "confirmed";
+
+  // すでに「確定済」なら、次は「済（done）」に移動させる
+  if (currentStatus === "confirmed") {
+    nextStatus = "done";
+  }
+
+  // ステータスを更新
   await updateDoc(doc(db, "plans", currentPlanId), {
-    status: "confirmed"
+    status: nextStatus
   });
 
   // モーダルを閉じる
