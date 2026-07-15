@@ -490,6 +490,12 @@ editDate.value = plan.date || "";
 editCategory.value = plan.category || "";
 
 editMemo.value = plan.memo || "";
+
+   // （仮予定を開いたのでボタンを「確定にする」にする）
+confirmPlanBtn.textContent = "確定にする";
+
+detailModal.classList.remove("hidden");
+// 
    
   detailModal.classList.remove("hidden");
 
@@ -539,6 +545,12 @@ onSnapshot(confirmedQuery, (snapshot) => {
   editDate.value = plan.date || "";
   editCategory.value = plan.category || "";
   editMemo.value = plan.memo || "";
+
+      //（確定済を開いたのでボタンを「済にする」にする）
+confirmPlanBtn.textContent = "済にする";
+
+detailModal.classList.remove("hidden");
+// （略）
 
   detailModal.classList.remove("hidden");
 
