@@ -631,13 +631,21 @@ setupAccordion(
   "doneContent",
   "済（0）"
 );
+// --- 「＋ 新規作成」ボタンを押したときの処理 ---
+addPlannedBtn.addEventListener("click", () => {
+  // 1. 新規作成なので、前のデータが残らないように入力欄を空にする
+  currentPlanId = null; // 新規作成であることを表すために ID を null に
+  editTitle.value = "";
+  editDate.value = "";
+  editCategory.value = "";
+  editMemo.value = "";
 
-// --- 修正箇所 1: 「＋ 新規作成」ボタン（addPlannedBtn）は新規追加（addDoc）を行う ---
-addPlannedBtn.addEventListener("click", async () => {
-  const title = editTitle.value || "無題の予定";
-  const date = editDate.value || "";
-  const category = editCategory.value || "";
-  const memo = editMemo.value || "";
+  // 2. ボタンのテキストを「作成する」などに変更する
+  confirmPlanBtn.textContent = "作成する";
+
+  // 3. 入力画面（モーダル）を表示する
+  detailModal.classList.remove("hidden");
+});
 
   // 新規ドキュメントとして追加（ステータスはデフォルトで 'planned'）
   await addDoc(collection(db, "plans"), {
