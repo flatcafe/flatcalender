@@ -676,10 +676,16 @@ editPlanBtn.addEventListener("click", async () => {
 // --- モーダル内の「作成 / 確定 / 済」ボタン（confirmPlanBtn）の処理 ---
 confirmPlanBtn.addEventListener("click", async () => {
   const title = editTitle.value || "無題の予定";
-  const date = editDate.value || "";
   const category = editCategory.value || "";
   const memo = editMemo.value || "";
 
+  // ★ここを書き換え：未定チェックボックスがONなら「未定」にし、OFFなら選択した日時を「YYYY/MM/DD HH:mm」形式に変換する
+  const isUndecided = document.getElementById("editDateUndecided").checked;
+  let date = "未定";
+  if (!isUndecided && editDate.value) {
+    // datetime-localの値（YYYY-MM-DDTHH:mm）を「YYYY/MM/DD HH:mm」に読みやすく変換
+    date = editDate.value.replace("T", " ").replace(/-/g, "/");
+  }
   // A. 新規作成の場合（ID が null のとき）
   if (!currentPlanId) {
     await addDoc(collection(db, "plans"), {
