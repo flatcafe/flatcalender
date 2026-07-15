@@ -491,11 +491,20 @@ snapshot.forEach((docSnap) => {
 
 editTitle.value = plan.title || "";
 
-editDate.value = plan.date || "";
-
 editCategory.value = plan.category || "";
 
 editMemo.value = plan.memo || "";
+
+// ★予定データが開かれたときの「未定」チェック状態の連動処理
+const isUndecided = !plan.date || plan.date === "未定";
+document.getElementById("editDateUndecided").checked = isUndecided;
+editDate.disabled = isUndecided;
+if (!isUndecided) {
+  // 保存されている「YYYY/MM/DD HH:mm」を input(datetime-local)で使える形式に復元してセット
+  editDate.value = plan.date.replace(/ /g, "T").replace(/\//g, "-");
+} else {
+  editDate.value = "";
+}
 
    // （仮予定を開いたのでボタンを「確定にする」にする）
 confirmPlanBtn.textContent = "確定にする";
@@ -548,9 +557,18 @@ onSnapshot(confirmedQuery, (snapshot) => {
   currentPlanId = docSnap.id;
 
   editTitle.value = plan.title || "";
-  editDate.value = plan.date || "";
   editCategory.value = plan.category || "";
   editMemo.value = plan.memo || "";
+
+  // ★予定データが開かれたときの「未定」チェック状態の連動処理
+  const isUndecided = !plan.date || plan.date === "未定";
+  document.getElementById("editDateUndecided").checked = isUndecided;
+  editDate.disabled = isUndecided;
+  if (!isUndecided) {
+    editDate.value = plan.date.replace(/ /g, "T").replace(/\//g, "-");
+  } else {
+    editDate.value = "";
+  }
 
       //（確定済を開いたのでボタンを「済にする」にする）
 confirmPlanBtn.textContent = "済にする";
@@ -603,9 +621,18 @@ onSnapshot(doneQuery, (snapshot) => {
       currentPlanId = docSnap.id;
 
       editTitle.value = plan.title || "";
-      editDate.value = plan.date || "";
       editCategory.value = plan.category || "";
       editMemo.value = plan.memo || "";
+
+      // ★予定データが開かれたときの「未定」チェック状態の連動処理
+      const isUndecided = !plan.date || plan.date === "未定";
+      document.getElementById("editDateUndecided").checked = isUndecided;
+      editDate.disabled = isUndecided;
+      if (!isUndecided) {
+        editDate.value = plan.date.replace(/ /g, "T").replace(/\//g, "-");
+      } else {
+        editDate.value = "";
+      }
 
       // 済の予定を開いたときは、確定ボタンを非表示にするか、テキストを変更する
       confirmPlanBtn.textContent = "完了済"; 
@@ -646,6 +673,10 @@ addPlannedBtn.addEventListener("click", () => {
   editDate.value = "";
   editCategory.value = "";
   editMemo.value = "";
+
+  // ★チェックボックスを初期状態（OFF ＝ 未定にしない）に設定
+  document.getElementById("editDateUndecided").checked = false;
+  editDate.disabled = false;
 
   // 2. ボタンのテキストを「作成する」に変更する
   confirmPlanBtn.textContent = "作成する";
@@ -738,6 +769,15 @@ deletePlanBtn.addEventListener("click", async () => {
 
   detailModal.classList.add("hidden");
 
+});
+
+// ★「日時は未定にする」チェックボックスをクリックしたとき、日時入力欄を自動で使えなく（グレーアウト）する機能
+document.getElementById("editDateUndecided").addEventListener("change", (e) => {
+  const editDateInput = document.getElementById("editDate");
+  editDateInput.disabled = e.target.checked;
+  if (e.target.checked) {
+    editDateInput.value = ""; // 「未定」にチェックが入ったら日付の数値をリセット
+  }
 });
   
 </script>
