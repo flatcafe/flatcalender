@@ -528,6 +528,9 @@ const category = editCategory.value;
 
 const memo = editMemo.value;
 
+const confirmedList =
+  document.getElementById("confirmedList");
+  
   await updateDoc(doc(db, "plans", currentPlanId), {
     title,
     date,
