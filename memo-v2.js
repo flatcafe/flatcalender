@@ -21,5 +21,105 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 // ================================
-// DOM
+// Notification DOM
 // ================================
+
+const badge = document.getElementById("notification-badge");
+const panel = document.getElementById("notification-panel");
+const notificationBtn = document.getElementById("notification-btn");
+const notificationList = document.getElementById("notification-list");
+
+// ================================
+// List DOM
+// ================================
+
+const addPlannedBtn = document.getElementById("addPlannedBtn");
+const plannedList = document.getElementById("plannedList");
+const confirmedList = document.getElementById("confirmedList");
+const doneList = document.getElementById("doneList");
+
+// ================================
+// Modal DOM
+// ================================
+
+const detailModal = document.getElementById("detailModal");
+const closeDetailBtn = document.getElementById("closeDetailBtn");
+
+// ================================
+// Detail DOM
+// ================================
+
+const detailTitle = document.getElementById("detailTitle");
+// ↓ Memo v2で削除予定
+const detailDate = document.getElementById("detailDate");
+const detailCategory = document.getElementById("detailCategory");
+const detailMemo = document.getElementById("detailMemo");
+
+// ================================
+// Edit DOM
+// ================================
+
+const editTitle = document.getElementById("editTitle");
+// ↓ Memo v2で削除予定
+const editDate = document.getElementById("editDate");
+const editCategory = document.getElementById("editCategory");
+const editMemo = document.getElementById("editMemo");
+
+// ================================
+// Button DOM
+// ================================
+
+const editPlanBtn = document.getElementById("editPlanBtn");
+const confirmPlanBtn = document.getElementById("confirmPlanBtn");
+const deletePlanBtn = document.getElementById("deletePlanBtn");
+
+// ================================
+// Accordion DOM
+// ================================
+
+const plannedToggle = document.getElementById("plannedToggle");
+const plannedTitle = document.getElementById("plannedTitle");
+const plannedContent = document.getElementById("plannedContent");
+
+const confirmedToggle = document.getElementById("confirmedToggle");
+const confirmedTitle = document.getElementById("confirmedTitle");
+const confirmedContent = document.getElementById("confirmedContent");
+
+const doneToggle = document.getElementById("doneToggle");
+const doneTitle = document.getElementById("doneTitle");
+const doneContent = document.getElementById("doneContent");
+
+// ================================
+// State
+// ================================
+
+let currentPlanId = null;
+let notificationIds = [];
+
+
+
+// ================================
+// 初期化
+// ================================
+
+setupAccordion(
+  plannedToggle,
+  plannedTitle,
+  plannedContent,
+  "仮予定（0）"
+);
+
+setupAccordion(
+  confirmedToggle,
+  confirmedTitle,
+  confirmedContent,
+  "確定済（0）"
+);
+
+setupAccordion(
+  doneToggle,
+  doneTitle,
+  doneContent,
+  "済（0）"
+);
+
