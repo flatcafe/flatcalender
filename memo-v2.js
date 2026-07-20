@@ -123,3 +123,19 @@ setupAccordion(
   "済（0）"
 );
 
+function setupAccordion(toggle, title, content, text) {
+
+  let opened = true;
+
+  toggle.addEventListener("click", () => {
+
+    opened = !opened;
+
+    content.classList.toggle("hidden", !opened);
+
+    title.textContent =
+      `${opened ? "▼" : "▶"} ${text}`;
+
+  });
+
+}
