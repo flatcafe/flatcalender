@@ -141,16 +141,90 @@ body {
   placeholder="タイトル">
 
 <!-- 日付と時間を選択できる入力欄に変更（type="datetime-local" に変更） -->
-<input
-  id="editDate"
-  type="datetime-local"
-  class="w-full border rounded-xl p-2 mt-3 text-gray-700">
 
-<!-- 「未定」にするためのチェックボックスをすぐ下に追加 -->
-<div class="flex items-center gap-2 mt-2 px-1">
-  <input type="checkbox" id="editDateUndecided" class="w-4 h-4 accent-amber-500">
-  <label for="editDateUndecided" class="text-sm text-gray-600 font-bold cursor-pointer">日時は未定にする</label>
+<!-- 日時タイプ -->
+<select
+  id="dateType"
+  class="w-full border rounded-xl p-2 mt-3">
+
+  <option value="fixed">📅 確定日時</option>
+  <option value="candidate">🗓 候補日</option>
+  <option value="range">📆 期間</option>
+  <option value="unknown">❔ 未定</option>
+
+</select>
+
+<!-- 確定日時 -->
+<div id="fixedArea" class="mt-3 space-y-2">
+
+  <div class="grid grid-cols-5 gap-2">
+
+    <select id="fixedYear" class="border rounded-xl p-2"></select>
+    <select id="fixedMonth" class="border rounded-xl p-2"></select>
+    <select id="fixedDay" class="border rounded-xl p-2"></select>
+    <select id="fixedHour" class="border rounded-xl p-2"></select>
+    <select id="fixedMinute" class="border rounded-xl p-2"></select>
+
+  </div>
+
 </div>
+
+<!-- 候補日 -->
+<div id="candidateArea" class="hidden mt-3">
+
+  <div id="candidateList"></div>
+
+  <button
+    id="addCandidateBtn"
+    class="mt-2 w-full rounded-xl bg-sky-100 py-2 font-bold">
+
+    ＋候補を追加
+
+  </button>
+
+</div>
+
+<!-- 期間 -->
+<div id="rangeArea" class="hidden mt-3 space-y-3">
+
+  <div>
+
+    <div class="font-bold mb-2">
+      開始
+    </div>
+
+    <div class="grid grid-cols-5 gap-2">
+
+      <select id="startYear"></select>
+      <select id="startMonth"></select>
+      <select id="startDay"></select>
+      <select id="startHour"></select>
+      <select id="startMinute"></select>
+
+    </div>
+
+  </div>
+
+  <div>
+
+    <div class="font-bold mb-2">
+      終了
+    </div>
+
+    <div class="grid grid-cols-5 gap-2">
+
+      <select id="endYear"></select>
+      <select id="endMonth"></select>
+      <select id="endDay"></select>
+      <select id="endHour"></select>
+      <select id="endMinute"></select>
+
+    </div>
+
+  </div>
+
+</div>
+    
 <select
   id="editCategory"
   class="w-full border rounded-xl p-2 mt-3">
