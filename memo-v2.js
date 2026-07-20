@@ -1,1 +1,1 @@
-<script type="module" src="memo-v2.js"></script>
+import { auth, db } from "./firebase-config.js";
