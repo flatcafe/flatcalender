@@ -502,26 +502,6 @@ if (!isRead && !isMyPost) {
   }
 });
 
-    function setupAccordion(toggleId, titleId, contentId, text) {
-
-  const toggle = document.getElementById(toggleId);
-  const title = document.getElementById(titleId);
-  const content = document.getElementById(contentId);
-
-  let opened = true;
-
-  toggle.addEventListener("click", () => {
-
-    opened = !opened;
-
-    content.classList.toggle("hidden", !opened);
-
-    title.textContent =
-      `${opened ? "▼" : "▶"} ${text}`;
-
-  });
-
-}
 
     const plannedList = document.getElementById("plannedList");
 
