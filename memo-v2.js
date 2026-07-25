@@ -362,9 +362,58 @@ document
   .addEventListener("change", toggleUndecided);
 
 // ================================
-// Notification
-// ================================
-
-// ================================
 // Firestore
 // ================================
+
+
+function loadPlanned() {
+
+  const plansQuery = query(
+    collection(db, "plans"),
+    where("status", "==", "planned"),
+    orderBy("createdAt", "desc")
+  );
+
+  
+  onSnapshot(plansQuery, (snapshot) => {
+
+    plannedList.innerHTML = "";
+
+    plannedTitle.textContent =
+      `▼ 仮予定（${snapshot.size}）`;
+
+    snapshot.forEach((docSnap) => {
+
+      const plan = docSnap.data();
+
+      const div = document.createElement("div");
+
+      div.className =
+        "bg-white rounded-xl p-3 shadow cursor-pointer";
+
+      div.innerHTML = `
+        <div class="text-xs text-gray-500">
+          📅 ${plan.date || "未定"}
+        </div>
+
+        <div class="font-bold text-[#5a4a42] mt-1">
+          ${plan.title}
+        </div>
+      `;
+
+      div.addEventListener("click", () => {
+        openPlan(plan, docSnap.id, "planned");
+      });
+
+      plannedList.appendChild(div);
+
+    });
+
+  });
+
+}
+// ================================
+// Init
+// ================================
+
+loadPlanned();
