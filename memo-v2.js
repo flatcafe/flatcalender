@@ -139,3 +139,9 @@ function setupAccordion(toggle, title, content, text) {
   });
 
 }
+
+function closeDetail() {
+  detailModal.classList.add("hidden");
+}
+closeDetailBtn.addEventListener("click", closeDetail);
+
