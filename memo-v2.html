@@ -650,50 +650,8 @@ setupAccordion(
   "済（0）"
 );
 
-// --- 「＋ 新規作成」ボタンを押したときの処理 ---
-addPlannedBtn.addEventListener("click", () => {
-  // 1. 新規作成なので、前のデータが残らないように入力欄を空にする
-  currentPlanId = null; // 新規作成であることを表すために ID を null に
-  editTitle.value = "";
-  editDate.value = "";
-  editCategory.value = "";
-  editMemo.value = "";
 
-  // ★チェックボックスを初期状態（OFF ＝ 未定にしない）に設定
-  document.getElementById("editDateUndecided").checked = false;
-  editDate.disabled = false;
 
-  // 2. ボタンのテキストを「作成する」に変更する
-  confirmPlanBtn.textContent = "作成する";
-
-  // 3. 入力画面（モーダル）を表示する
-  detailModal.classList.remove("hidden");
-});
-
-// --- 修正箇所 2: モーダル内の「編集」ボタン（editPlanBtn）で既存ドキュメントを更新する ---
-editPlanBtn.addEventListener("click", async () => {
-  if (!currentPlanId) return;
-
-  const title = editTitle.value;
-  const category = editCategory.value;
-  const memo = editMemo.value;
-
-  // ★ここを書き換え：上と同じように未定チェックの状態を見て日時を取得する
-  const isUndecided = document.getElementById("editDateUndecided").checked;
-  let date = "未定";
-  if (!isUndecided && editDate.value) {
-    date = editDate.value.replace("T", " ").replace(/-/g, "/");
-  }
-
-  await updateDoc(doc(db, "plans", currentPlanId), {
-    title,
-    date,
-    category,
-    memo
-  });
-
-  detailModal.classList.add("hidden");
-});
 
 
     
