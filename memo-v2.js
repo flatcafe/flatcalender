@@ -123,6 +123,11 @@ setupAccordion(
   "済（0）"
 );
 
+// ================================
+// Utility
+// ================================
+
+
 function setupAccordion(toggle, title, content, text) {
 
   let opened = true;
@@ -180,3 +185,69 @@ function openPlan(plan, docId, mode) {
   detailModal.classList.remove("hidden");
 
 }
+
+async function savePlan() {
+
+  const title = editTitle.value || "無題の予定";
+  const category = editCategory.value || "";
+  const memo = editMemo.value || "";
+
+  const isUndecided =
+    document.getElementById("editDateUndecided").checked;
+
+  let date = "未定";
+
+  if (!isUndecided && editDate.value) {
+    date = editDate.value
+      .replace("T", " ")
+      .replace(/-/g, "/");
+  }
+
+  // 新規作成
+  if (!currentPlanId) {
+
+    await addDoc(collection(db, "plans"), {
+      title,
+      date,
+      category,
+      status: "planned",
+      memo,
+      createdAt: serverTimestamp()
+    });
+
+  } 
+  // 既存の予定
+  else {
+
+    const planDoc = await getDoc(doc(db, "plans", currentPlanId));
+
+    if (!planDoc.exists()) return;
+
+    const currentStatus = planDoc.data().status;
+
+    let nextStatus = "confirmed";
+
+    if (currentStatus === "confirmed") {
+      nextStatus = "done";
+    }
+
+    await updateDoc(doc(db, "plans", currentPlanId), {
+      status: nextStatus
+    });
+
+  }
+
+  // 初期化
+  editTitle.value = "";
+  editDate.value = "";
+  editCategory.value = "";
+  editMemo.value = "";
+
+  currentPlanId = null;
+
+  closeDetail();
+
+}
+
+confirmPlanBtn.addEventListener("click", savePlan);
+
