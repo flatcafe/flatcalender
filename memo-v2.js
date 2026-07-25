@@ -145,6 +145,10 @@ function setupAccordion(toggle, title, content, text) {
 
 }
 
+// ================================
+// Modal
+// ================================
+
 function openPlan(plan, docId, mode) {
 
   currentPlanId = docId;
@@ -192,7 +196,10 @@ function closeDetail() {
 
 }
 
-closeDetailBtn.addEventListener("click", closeDetail);
+
+// ================================
+// Save
+// ================================
 
 async function savePlan() {
 
@@ -257,7 +264,6 @@ async function savePlan() {
 
 }
 
-confirmPlanBtn.addEventListener("click", savePlan);
 
 async function deletePlan() {
 
@@ -273,7 +279,6 @@ async function deletePlan() {
 
 }
 
-deletePlanBtn.addEventListener("click", deletePlan);
 
 function toggleUndecided(e) {
 
@@ -285,6 +290,81 @@ function toggleUndecided(e) {
 
 }
 
+
+// ================================
+// Plan
+// ================================
+
+function newPlan() {
+
+  currentPlanId = null;
+
+  editTitle.value = "";
+  editDate.value = "";
+  editCategory.value = "";
+  editMemo.value = "";
+
+  document.getElementById("editDateUndecided").checked = false;
+  editDate.disabled = false;
+
+  confirmPlanBtn.textContent = "作成する";
+
+  detailModal.classList.remove("hidden");
+
+}
+
+
+async function editPlan() {
+
+  if (!currentPlanId) return;
+
+  const title = editTitle.value;
+  const category = editCategory.value;
+  const memo = editMemo.value;
+
+  const isUndecided =
+    document.getElementById("editDateUndecided").checked;
+
+  let date = "未定";
+
+  if (!isUndecided && editDate.value) {
+    date = editDate.value
+      .replace("T", " ")
+      .replace(/-/g, "/");
+  }
+
+  await updateDoc(doc(db, "plans", currentPlanId), {
+    title,
+    date,
+    category,
+    memo
+  });
+
+  closeDetail();
+
+}
+
+
+
+
+// ================================
+// Event
+// ================================
+
+addPlannedBtn.addEventListener("click", newPlan);
+editPlanBtn.addEventListener("click", editPlan);
+confirmPlanBtn.addEventListener("click", savePlan);
+deletePlanBtn.addEventListener("click", deletePlan);
+closeDetailBtn.addEventListener("click", closeDetail);
+
 document
   .getElementById("editDateUndecided")
   .addEventListener("change", toggleUndecided);
+
+// ================================
+// Notification
+// ================================
+
+// ================================
+// Firestore
+// ================================
