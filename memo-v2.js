@@ -186,6 +186,14 @@ function openPlan(plan, docId, mode) {
 
 }
 
+function closeDetail() {
+
+  detailModal.classList.add("hidden");
+
+}
+
+closeDetailBtn.addEventListener("click", closeDetail);
+
 async function savePlan() {
 
   const title = editTitle.value || "無題の予定";
@@ -251,3 +259,32 @@ async function savePlan() {
 
 confirmPlanBtn.addEventListener("click", savePlan);
 
+async function deletePlan() {
+
+  if (!currentPlanId) return;
+
+  if (!confirm("この予定を削除しますか？")) return;
+
+  await deleteDoc(doc(db, "plans", currentPlanId));
+
+  currentPlanId = null;
+
+  closeDetail();
+
+}
+
+deletePlanBtn.addEventListener("click", deletePlan);
+
+function toggleUndecided(e) {
+
+  editDate.disabled = e.target.checked;
+
+  if (e.target.checked) {
+    editDate.value = "";
+  }
+
+}
+
+document
+  .getElementById("editDateUndecided")
+  .addEventListener("change", toggleUndecided);
