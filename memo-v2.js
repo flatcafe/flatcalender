@@ -23,7 +23,6 @@ import {
 // ================================
 // Notification DOM
 // ================================
-
 const badge = document.getElementById("notification-badge");
 const panel = document.getElementById("notification-panel");
 const notificationBtn = document.getElementById("notification-btn");
@@ -32,7 +31,6 @@ const notificationList = document.getElementById("notification-list");
 // ================================
 // List DOM
 // ================================
-
 const addPlannedBtn = document.getElementById("addPlannedBtn");
 const plannedList = document.getElementById("plannedList");
 const confirmedList = document.getElementById("confirmedList");
@@ -41,7 +39,6 @@ const doneList = document.getElementById("doneList");
 // ================================
 // Modal DOM
 // ================================
-
 const detailModal = document.getElementById("detailModal");
 const closeDetailBtn = document.getElementById("closeDetailBtn");
 
@@ -412,7 +409,8 @@ function loadPlanned() {
   });
 
 }
-// ================================
+
+===============================
 // Init
 // ================================
 
