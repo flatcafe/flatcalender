@@ -695,75 +695,9 @@ editPlanBtn.addEventListener("click", async () => {
   detailModal.classList.add("hidden");
 });
 
-// --- モーダル内の「作成 / 確定 / 済」ボタン（confirmPlanBtn）の処理 ---
-confirmPlanBtn.addEventListener("click", async () => {
-  const title = editTitle.value || "無題の予定";
-  const category = editCategory.value || "";
-  const memo = editMemo.value || "";
 
-  // ★ここを書き換え：未定チェックボックスがONなら「未定」にし、OFFなら選択した日時を「YYYY/MM/DD HH:mm」形式に変換する
-  const isUndecided = document.getElementById("editDateUndecided").checked;
-  let date = "未定";
-  if (!isUndecided && editDate.value) {
-    // datetime-localの値（YYYY-MM-DDTHH:mm）を「YYYY/MM/DD HH:mm」に読みやすく変換
-    date = editDate.value.replace("T", " ").replace(/-/g, "/");
-  }
-  // A. 新規作成の場合（ID が null のとき）
-  if (!currentPlanId) {
-    await addDoc(collection(db, "plans"), {
-      title,
-      date,
-      category,
-      status: "planned", // 最初は仮予定として追加
-      memo,
-      createdAt: serverTimestamp()
-    });
-  } 
-  // B. すでに存在する予定のステータスを更新する場合
-  else {
-    const planDoc = await getDoc(doc(db, "plans", currentPlanId));
-    if (!planDoc.exists()) return;
-
-    const currentStatus = planDoc.data().status;
-    let nextStatus = "confirmed";
-
-    if (currentStatus === "confirmed") {
-      nextStatus = "done";
-    }
-
-    await updateDoc(doc(db, "plans", currentPlanId), {
-      status: nextStatus
-    });
-  }
-
-  // フォームをクリアしてモーダルを閉じる
-  editTitle.value = "";
-  editDate.value = "";
-  editCategory.value = "";
-  editMemo.value = "";
-  detailModal.classList.add("hidden");
-});
     
-deletePlanBtn.addEventListener("click", async () => {
 
-  if (!currentPlanId) return;
-
-  if (!confirm("この予定を削除しますか？")) return;
-
-  await deleteDoc(doc(db, "plans", currentPlanId));
-
-  detailModal.classList.add("hidden");
-
-});
-
-// ★「日時は未定にする」チェックボックスをクリックしたとき、日時入力欄を自動で使えなく（グレーアウト）する機能
-document.getElementById("editDateUndecided").addEventListener("change", (e) => {
-  const editDateInput = document.getElementById("editDate");
-  editDateInput.disabled = e.target.checked;
-  if (e.target.checked) {
-    editDateInput.value = ""; // 「未定」にチェックが入ったら日付の数値をリセット
-  }
-});
   
 </script>
   
