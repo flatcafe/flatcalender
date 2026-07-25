@@ -140,8 +140,43 @@ function setupAccordion(toggle, title, content, text) {
 
 }
 
-function closeDetail() {
-  detailModal.classList.add("hidden");
-}
-closeDetailBtn.addEventListener("click", closeDetail);
+function openPlan(plan, docId, mode) {
 
+  currentPlanId = docId;
+
+  editTitle.value = plan.title || "";
+  editCategory.value = plan.category || "";
+  editMemo.value = plan.memo || "";
+
+  // 後で新しい日時システムに置き換える
+  const isUndecided = !plan.date || plan.date === "未定";
+
+  document.getElementById("editDateUndecided").checked = isUndecided;
+  editDate.disabled = isUndecided;
+
+  if (!isUndecided) {
+    editDate.value =
+      plan.date.replace(/ /g, "T").replace(/\//g, "-");
+  } else {
+    editDate.value = "";
+  }
+
+  switch (mode) {
+
+    case "planned":
+      confirmPlanBtn.textContent = "確定にする";
+      break;
+
+    case "confirmed":
+      confirmPlanBtn.textContent = "済にする";
+      break;
+
+    case "done":
+      confirmPlanBtn.textContent = "完了済";
+      break;
+
+  }
+
+  detailModal.classList.remove("hidden");
+
+}
