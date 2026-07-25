@@ -537,35 +537,9 @@ snapshot.forEach((docSnap) => {
   </div>
 `;
 
- div.addEventListener("click", () => {
-
-   currentPlanId = docSnap.id;
-
-editTitle.value = plan.title || "";
-
-editCategory.value = plan.category || "";
-
-editMemo.value = plan.memo || "";
-
-// ★予定データが開かれたときの「未定」チェック状態の連動処理
-const isUndecided = !plan.date || plan.date === "未定";
-document.getElementById("editDateUndecided").checked = isUndecided;
-editDate.disabled = isUndecided;
-if (!isUndecided) {
-  // 保存されている「YYYY/MM/DD HH:mm」を input(datetime-local)で使える形式に復元してセット
-  editDate.value = plan.date.replace(/ /g, "T").replace(/\//g, "-");
-} else {
-  editDate.value = "";
-}
-
-   // （仮予定を開いたのでボタンを「確定にする」にする）
-confirmPlanBtn.textContent = "確定にする";
-
-detailModal.classList.remove("hidden");
-// 
-   
-  detailModal.classList.remove("hidden");
-
+  //仮予定
+div.addEventListener(() => {
+  openPlan(plan, docSnap.id, "planned");
 });
   plannedList.appendChild(div);
 });
@@ -604,32 +578,9 @@ onSnapshot(confirmedQuery, (snapshot) => {
       </div>
     `;
 
-    div.addEventListener("click", () => {
-
-  currentPlanId = docSnap.id;
-
-  editTitle.value = plan.title || "";
-  editCategory.value = plan.category || "";
-  editMemo.value = plan.memo || "";
-
-  // ★予定データが開かれたときの「未定」チェック状態の連動処理
-  const isUndecided = !plan.date || plan.date === "未定";
-  document.getElementById("editDateUndecided").checked = isUndecided;
-  editDate.disabled = isUndecided;
-  if (!isUndecided) {
-    editDate.value = plan.date.replace(/ /g, "T").replace(/\//g, "-");
-  } else {
-    editDate.value = "";
-  }
-
-      //（確定済を開いたのでボタンを「済にする」にする）
-confirmPlanBtn.textContent = "済にする";
-
-detailModal.classList.remove("hidden");
-// （略）
-
-  detailModal.classList.remove("hidden");
-
+    //確定
+div.addEventListener(() => {
+  openPlan(plan, docSnap.id, "confirmed");
 });
 
     confirmedList.appendChild(div);
@@ -669,28 +620,10 @@ onSnapshot(doneQuery, (snapshot) => {
       </div>
     `;
 
-    div.addEventListener("click", () => {
-      currentPlanId = docSnap.id;
-
-      editTitle.value = plan.title || "";
-      editCategory.value = plan.category || "";
-      editMemo.value = plan.memo || "";
-
-      // ★予定データが開かれたときの「未定」チェック状態の連動処理
-      const isUndecided = !plan.date || plan.date === "未定";
-      document.getElementById("editDateUndecided").checked = isUndecided;
-      editDate.disabled = isUndecided;
-      if (!isUndecided) {
-        editDate.value = plan.date.replace(/ /g, "T").replace(/\//g, "-");
-      } else {
-        editDate.value = "";
-      }
-
-      // 済の予定を開いたときは、確定ボタンを非表示にするか、テキストを変更する
-      confirmPlanBtn.textContent = "完了済"; 
-
-      detailModal.classList.remove("hidden");
-    });
+    //済
+div.addEventListener(() => {
+  openPlan(plan, docSnap.id, "done");
+});
 
     doneList.appendChild(div);
   });
