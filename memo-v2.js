@@ -178,6 +178,34 @@ function setupAccordion(toggle, title, content, text) {
 
 }
 
+function changeDateType() {
+
+  fixedArea.classList.add("hidden");
+  candidateArea.classList.add("hidden");
+  rangeArea.classList.add("hidden");
+
+  switch (dateType.value) {
+
+    case "fixed":
+      fixedArea.classList.remove("hidden");
+      break;
+
+    case "candidate":
+      candidateArea.classList.remove("hidden");
+      break;
+
+    case "range":
+      rangeArea.classList.remove("hidden");
+      break;
+
+    case "unknown":
+      // 全部隠したまま
+      break;
+
+  }
+
+}
+
 // ================================
 // Modal
 // ================================
@@ -365,8 +393,8 @@ editPlanBtn.addEventListener("click", editPlan);
 confirmPlanBtn.addEventListener("click", savePlan);
 deletePlanBtn.addEventListener("click", deletePlan);
 closeDetailBtn.addEventListener("click", closeDetail);
-dateType.addEventListener("change", changeDateType);
 
+dateType.addEventListener("change", changeDateType);
 
 // ================================
 // Firestore
@@ -521,3 +549,4 @@ changeDateType();
 loadPlanned();
 loadConfirmed();
 loadDone();
+changeDateType();
