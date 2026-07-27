@@ -183,7 +183,24 @@ function setupAccordion(toggle, title, content, text) {
   });
 
 }
+function fillSelect(select, start, end, pad = false) {
 
+  select.innerHTML = "";
+
+  for (let i = start; i <= end; i++) {
+
+    const option = document.createElement("option");
+
+    option.value = i;
+    option.textContent = pad
+      ? String(i).padStart(2, "0")
+      : i;
+
+    select.appendChild(option);
+
+  }
+
+}
 
 // ================================
 // Modal
@@ -535,8 +552,14 @@ changeDateType();
 //===============================
 // Init
 // ================================
+fillSelect(fixedYear, 2026, 2035);
+fillSelect(fixedMonth, 1, 12);
+fillSelect(fixedDay, 1, 31);
+fillSelect(fixedHour, 0, 23, true);
+fillSelect(fixedMinute, 0, 59, true);
+
+changeDateType();
 
 loadPlanned();
 loadConfirmed();
 loadDone();
-changeDateType();
