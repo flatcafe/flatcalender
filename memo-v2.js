@@ -95,6 +95,7 @@ const doneContent = document.getElementById("doneContent");
 
 let currentPlanId = null;
 let notificationIds = [];
+let currentStatus = "planned";
 
 
 
@@ -204,14 +205,13 @@ async function savePlan() {
   if (!currentPlanId) {
 
     await addDoc(collection(db, "plans"), {
-      title,
-      date,
-      category,
-     status: detailModal.dataset.status || "planned",
-      memo,
-      createdAt: serverTimestamp()
-    });
-
+  title,
+  date,
+  category,
+  status: currentStatus,
+  memo,
+  createdAt: serverTimestamp()
+});
   } 
   // 既存の予定
   else {
@@ -268,21 +268,20 @@ async function deletePlan() {
 // Plan
 // ================================
 
-function newPlan(status = "planned") {
+function newPlan(status) {
 
   currentPlanId = null;
+  currentStatus = status;
 
-detailModal.dataset.status = status;
-editTitle.value = "";
-editCategory.value = "";
-editMemo.value = "";
+
+  editTitle.value = "";
+  editCategory.value = "";
+  editMemo.value = "";
 
   confirmPlanBtn.textContent = "作成する";
 
   detailModal.classList.remove("hidden");
-
 }
-
 
 async function editPlan() {
 
