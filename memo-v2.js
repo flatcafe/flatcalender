@@ -37,8 +37,7 @@ const confirmedList = document.getElementById("confirmedList");
 const doneList = document.getElementById("doneList");
 const addConfirmedBtn =
   document.getElementById("addConfirmedBtn");
-const addPlannedBtn = document.getElementById("addPlannedBtn");
-const addConfirmedBtn = document.getElementById("addConfirmedBtn");
+
 
 // ================================
 // Modal DOM
