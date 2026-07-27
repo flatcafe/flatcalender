@@ -45,6 +45,18 @@ const addConfirmedBtn =
 const detailModal = document.getElementById("detailModal");
 const closeDetailBtn = document.getElementById("closeDetailBtn");
 
+const dateType = document.getElementById("dateType");
+
+const fixedYear = document.getElementById("fixedYear");
+const fixedMonth = document.getElementById("fixedMonth");
+const fixedDay = document.getElementById("fixedDay");
+const fixedHour = document.getElementById("fixedHour");
+const fixedMinute = document.getElementById("fixedMinute");
+
+const fixedArea = document.getElementById("fixedArea");
+const candidateArea = document.getElementById("candidateArea");
+const rangeArea = document.getElementById("rangeArea");
+
 // ================================
 // Detail DOM
 // ================================
@@ -333,20 +345,28 @@ async function deletePlan() {
 
 function newPlan(status) {
 
-  currentPlanId = null;
-  currentStatus = status;
+  ccurrentPlanId = null;
+currentStatus = status;
 
+editTitle.value = "";
+editCategory.value = "";
+editMemo.value = "";
 
-  editTitle.value = "";
-  editCategory.value = "";
-  editMemo.value = "";
+const now = new Date();
 
-  editPlanBtn.classList.add("hidden");
-deletePlanBtn.classList.add("hidden");
+fixedYear.value = now.getFullYear();
+fixedMonth.value = now.getMonth() + 1;
+fixedDay.value = now.getDate();
 
-  confirmPlanBtn.textContent = "作成する";
+fixedHour.value = 21;
+fixedMinute.value = 0;
 
-  detailModal.classList.remove("hidden");
+dateType.value = "fixed";
+changeDateType();
+
+confirmPlanBtn.textContent = "作成する";
+
+detailModal.classList.remove("hidden");
 }
 
 async function editPlan() {
