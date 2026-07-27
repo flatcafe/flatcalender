@@ -16,7 +16,7 @@ class CafeNav extends HTMLElement {
           <img src="images/logo.png" alt="Logo" class="w-16 h-16 object-contain">
         </a>
 
-        <a href="memo.html" class="flex flex-col items-center w-14">
+        <a href="memo-v2.html" class="flex flex-col items-center w-14">
           <img src="images/memo.png" alt="Memo" class="w-12 h-12 object-contain">
           <span class="text-[12px] font-bold text-[#5a4a42] mt-1">Memo</span>
         </a>
