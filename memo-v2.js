@@ -315,6 +315,9 @@ function newPlan(status) {
 currentPlanId = null;
 currentStatus = status;
 
+editPlanBtn.classList.add("hidden");
+deletePlanBtn.classList.add("hidden");
+
 editTitle.value = "";
 editCategory.value = "";
 editMemo.value = "";
