@@ -277,15 +277,7 @@ async function deletePlan() {
 }
 
 
-function toggleUndecided(e) {
 
-  editDate.disabled = e.target.checked;
-
-  if (e.target.checked) {
-    editDate.value = "";
-  }
-
-}
 
 
 // ================================
@@ -295,14 +287,10 @@ function toggleUndecided(e) {
 function newPlan() {
 
   currentPlanId = null;
-
-  editTitle.value = "";
-  editDate.value = "";
-  editCategory.value = "";
-  editMemo.value = "";
-
-  document.getElementById("editDateUndecided").checked = false;
-  editDate.disabled = false;
+  
+editTitle.value = "";
+editCategory.value = "";
+editMemo.value = "";
 
   confirmPlanBtn.textContent = "作成する";
 
@@ -354,9 +342,7 @@ confirmPlanBtn.addEventListener("click", savePlan);
 deletePlanBtn.addEventListener("click", deletePlan);
 closeDetailBtn.addEventListener("click", closeDetail);
 
-document
-  .getElementById("editDateUndecided")
-  .addEventListener("change", toggleUndecided);
+
 
 // ================================
 // Firestore
