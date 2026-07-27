@@ -61,9 +61,14 @@ const detailMemo = document.getElementById("detailMemo");
 
 const editTitle = document.getElementById("editTitle");
 // ↓ Memo v2で削除予定
-const editDate = document.getElementById("editDate");
 const editCategory = document.getElementById("editCategory");
 const editMemo = document.getElementById("editMemo");
+
+const dateType = document.getElementById("dateType");
+
+const fixedArea = document.getElementById("fixedArea");
+const candidateArea = document.getElementById("candidateArea");
+const rangeArea = document.getElementById("rangeArea");
 
 // ================================
 // Button DOM
@@ -123,6 +128,33 @@ setupAccordion(
   doneContent,
   "済（0）"
 );
+
+function changeDateType() {
+
+  fixedArea.classList.add("hidden");
+  candidateArea.classList.add("hidden");
+  rangeArea.classList.add("hidden");
+
+  switch (dateType.value) {
+
+    case "fixed":
+      fixedArea.classList.remove("hidden");
+      break;
+
+    case "candidate":
+      candidateArea.classList.remove("hidden");
+      break;
+
+    case "range":
+      rangeArea.classList.remove("hidden");
+      break;
+
+    case "unknown":
+      break;
+
+  }
+
+}
 
 // ================================
 // Utility
@@ -333,7 +365,7 @@ editPlanBtn.addEventListener("click", editPlan);
 confirmPlanBtn.addEventListener("click", savePlan);
 deletePlanBtn.addEventListener("click", deletePlan);
 closeDetailBtn.addEventListener("click", closeDetail);
-
+dateType.addEventListener("change", changeDateType);
 
 
 // ================================
@@ -479,6 +511,9 @@ function loadDone() {
   });
 
 }
+
+changeDateType();
+
 //===============================
 // Init
 // ================================
