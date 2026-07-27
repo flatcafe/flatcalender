@@ -154,6 +154,9 @@ function openPlan(plan, docId, mode) {
 
   currentPlanId = docId;
 
+editPlanBtn.classList.remove("hidden");
+deletePlanBtn.classList.remove("hidden");
+  
   editTitle.value = plan.title || "";
   editCategory.value = plan.category || "";
   editMemo.value = plan.memo || "";
@@ -277,6 +280,9 @@ function newPlan(status) {
   editTitle.value = "";
   editCategory.value = "";
   editMemo.value = "";
+
+  editPlanBtn.classList.add("hidden");
+deletePlanBtn.classList.add("hidden");
 
   confirmPlanBtn.textContent = "作成する";
 
