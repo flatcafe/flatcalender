@@ -322,14 +322,13 @@ async function editPlan() {
 // Event
 // ================================
 
-addPlannedBtn.addEventListener("click", newPlan);
-addConfirmedBtn.addEventListener("click", newPlan);
+addPlannedBtn.addEventListener("click", () => newPlan("planned"));
+addConfirmedBtn.addEventListener("click", () => newPlan("confirmed"));
+
 editPlanBtn.addEventListener("click", editPlan);
 confirmPlanBtn.addEventListener("click", savePlan);
 deletePlanBtn.addEventListener("click", deletePlan);
 closeDetailBtn.addEventListener("click", closeDetail);
-addPlannedBtn.addEventListener("click", () => newPlan("planned"));
-addConfirmedBtn.addEventListener("click", () => newPlan("confirmed"));
 
 
 
