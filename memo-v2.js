@@ -410,8 +410,101 @@ function loadPlanned() {
 
 }
 
-===============================
+function loadConfirmed() {
+
+  const confirmedQuery = query(
+    collection(db, "plans"),
+    where("status", "==", "confirmed"),
+    orderBy("createdAt", "desc")
+  );
+
+  onSnapshot(confirmedQuery, (snapshot) => {
+
+    confirmedList.innerHTML = "";
+
+    confirmedTitle.textContent =
+      `▼ 確定済（${snapshot.size}）`;
+
+    snapshot.forEach((docSnap) => {
+
+      const plan = docSnap.data();
+
+      const div = document.createElement("div");
+
+      div.className =
+        "bg-white rounded-xl p-3 shadow cursor-pointer";
+
+      div.innerHTML = `
+        <div class="text-xs text-gray-500">
+          📅 ${plan.date || "未定"}
+        </div>
+
+        <div class="font-bold text-[#5a4a42] mt-1">
+          ${plan.title}
+        </div>
+      `;
+
+      div.addEventListener("click", () => {
+        openPlan(plan, docSnap.id, "confirmed");
+      });
+
+      confirmedList.appendChild(div);
+
+    });
+
+  });
+
+}
+
+function loadDone() {
+
+  const doneQuery = query(
+    collection(db, "plans"),
+    where("status", "==", "done"),
+    orderBy("createdAt", "desc")
+  );
+
+  onSnapshot(doneQuery, (snapshot) => {
+
+    doneList.innerHTML = "";
+
+    doneTitle.textContent =
+      `▼ 済（${snapshot.size}）`;
+
+    snapshot.forEach((docSnap) => {
+
+      const plan = docSnap.data();
+
+      const div = document.createElement("div");
+
+      div.className =
+        "bg-white rounded-xl p-3 shadow cursor-pointer opacity-70";
+
+      div.innerHTML = `
+        <div class="text-xs text-gray-500">
+          📅 ${plan.date || "未定"}
+        </div>
+
+        <div class="font-bold text-[#5a4a42] mt-1 line-through">
+          ${plan.title}
+        </div>
+      `;
+
+      div.addEventListener("click", () => {
+        openPlan(plan, docSnap.id, "done");
+      });
+
+      doneList.appendChild(div);
+
+    });
+
+  });
+
+}
+//===============================
 // Init
 // ================================
 
 loadPlanned();
+loadConfirmed();
+loadDone();
