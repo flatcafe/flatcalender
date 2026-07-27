@@ -35,6 +35,10 @@ const addPlannedBtn = document.getElementById("addPlannedBtn");
 const plannedList = document.getElementById("plannedList");
 const confirmedList = document.getElementById("confirmedList");
 const doneList = document.getElementById("doneList");
+const addConfirmedBtn =
+  document.getElementById("addConfirmedBtn");
+const addPlannedBtn = document.getElementById("addPlannedBtn");
+const addConfirmedBtn = document.getElementById("addConfirmedBtn");
 
 // ================================
 // Modal DOM
@@ -204,7 +208,7 @@ async function savePlan() {
       title,
       date,
       category,
-      status: "planned",
+     status: detailModal.dataset.status || "planned",
       memo,
       createdAt: serverTimestamp()
     });
@@ -265,10 +269,11 @@ async function deletePlan() {
 // Plan
 // ================================
 
-function newPlan() {
+function newPlan(status = "planned") {
 
   currentPlanId = null;
-  
+
+detailModal.dataset.status = status;
 editTitle.value = "";
 editCategory.value = "";
 editMemo.value = "";
@@ -318,10 +323,13 @@ async function editPlan() {
 // ================================
 
 addPlannedBtn.addEventListener("click", newPlan);
+addConfirmedBtn.addEventListener("click", newPlan);
 editPlanBtn.addEventListener("click", editPlan);
 confirmPlanBtn.addEventListener("click", savePlan);
 deletePlanBtn.addEventListener("click", deletePlan);
 closeDetailBtn.addEventListener("click", closeDetail);
+addPlannedBtn.addEventListener("click", () => newPlan("planned"));
+addConfirmedBtn.addEventListener("click", () => newPlan("confirmed"));
 
 
 
