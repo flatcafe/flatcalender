@@ -76,12 +76,6 @@ const editTitle = document.getElementById("editTitle");
 const editCategory = document.getElementById("editCategory");
 const editMemo = document.getElementById("editMemo");
 
-const dateType = document.getElementById("dateType");
-
-const fixedArea = document.getElementById("fixedArea");
-const candidateArea = document.getElementById("candidateArea");
-const rangeArea = document.getElementById("rangeArea");
-
 // ================================
 // Button DOM
 // ================================
@@ -190,33 +184,6 @@ function setupAccordion(toggle, title, content, text) {
 
 }
 
-function changeDateType() {
-
-  fixedArea.classList.add("hidden");
-  candidateArea.classList.add("hidden");
-  rangeArea.classList.add("hidden");
-
-  switch (dateType.value) {
-
-    case "fixed":
-      fixedArea.classList.remove("hidden");
-      break;
-
-    case "candidate":
-      candidateArea.classList.remove("hidden");
-      break;
-
-    case "range":
-      rangeArea.classList.remove("hidden");
-      break;
-
-    case "unknown":
-      // 全部隠したまま
-      break;
-
-  }
-
-}
 
 // ================================
 // Modal
@@ -345,7 +312,7 @@ async function deletePlan() {
 
 function newPlan(status) {
 
-  ccurrentPlanId = null;
+currentPlanId = null;
 currentStatus = status;
 
 editTitle.value = "";
