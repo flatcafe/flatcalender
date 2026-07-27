@@ -155,17 +155,7 @@ function openPlan(plan, docId, mode) {
   editMemo.value = plan.memo || "";
 
   // 後で新しい日時システムに置き換える
-  const isUndecided = !plan.date || plan.date === "未定";
 
-  document.getElementById("editDateUndecided").checked = isUndecided;
-  editDate.disabled = isUndecided;
-
-  if (!isUndecided) {
-    editDate.value =
-      plan.date.replace(/ /g, "T").replace(/\//g, "-");
-  } else {
-    editDate.value = "";
-  }
 
   switch (mode) {
 
@@ -203,17 +193,9 @@ async function savePlan() {
   const title = editTitle.value || "無題の予定";
   const category = editCategory.value || "";
   const memo = editMemo.value || "";
+  const date = "未定";
 
-  const isUndecided =
-    document.getElementById("editDateUndecided").checked;
-
-  let date = "未定";
-
-  if (!isUndecided && editDate.value) {
-    date = editDate.value
-      .replace("T", " ")
-      .replace(/-/g, "/");
-  }
+ 
 
   // 新規作成
   if (!currentPlanId) {
@@ -251,7 +233,6 @@ async function savePlan() {
 
   // 初期化
   editTitle.value = "";
-  editDate.value = "";
   editCategory.value = "";
   editMemo.value = "";
 
