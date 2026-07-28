@@ -133,10 +133,12 @@ body {
   <div id="detailModal"
   class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50">
 
-  <div class="bg-white rounded-2xl w-[90%] max-w-md p-5">
+ <div class="bg-white rounded-2xl w-[90%] max-w-md max-h-[85vh] flex flex-col">
 
-   <input
-  id="editTitle"
+  <div class="overflow-y-auto p-5">
+
+    <input
+      id="editTitle"
   class="w-full border rounded-xl p-2 font-bold"
   placeholder="タイトル">
 
@@ -260,15 +262,16 @@ body {
   削除
 </button>
     
-    <button id="closeDetailBtn"
-      class="mt-6 w-full rounded-xl bg-amber-100 py-2 font-bold">
-      閉じる
-    </button>
+   <button id="closeDetailBtn"
+  class="mt-6 w-full rounded-xl bg-amber-100 py-2 font-bold">
+  閉じる
+</button>
 
-  </div>
+</div> <!-- overflow-y-auto -->
 
-</div>
+</div> <!-- 白いモーダル -->
 
+</div> <!-- 黒背景 -->
   
 <script type="module" src="memo-v2.js"></script>
 
