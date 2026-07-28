@@ -202,6 +202,23 @@ function fillSelect(select, start, end, pad = false) {
 
 }
 
+function fillMinuteSelect(select) {
+
+  select.innerHTML = "";
+
+  for (let i = 0; i < 60; i += 10) {
+
+    const option = document.createElement("option");
+
+    option.value = i;
+    option.textContent = String(i).padStart(2, "0");
+
+    select.appendChild(option);
+
+  }
+
+}
+
 // ================================
 // Modal
 // ================================
@@ -556,7 +573,8 @@ fillSelect(fixedYear, 2026, 2035);
 fillSelect(fixedMonth, 1, 12);
 fillSelect(fixedDay, 1, 31);
 fillSelect(fixedHour, 0, 23, true);
-fillSelect(fixedMinute, 0, 59, true);
+fillMinuteSelect(fixedMinute);
+
 
 changeDateType();
 
