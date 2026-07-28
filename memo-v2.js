@@ -333,11 +333,24 @@ async function savePlan() {
   // 新規作成
   if (!currentPlanId) {
 
+    const candidates = [];
+
+document
+  .querySelectorAll(".candidateInput")
+  .forEach(input => {
+
+    if (input.value) {
+      candidates.push(input.value);
+    }
+
+  });
+
     await addDoc(collection(db, "plans"), {
   title,
   date,
+  candidates,
   category,
-  status: currentStatus,
+  status: detailModal.dataset.status || "planned",
   memo,
   createdAt: serverTimestamp()
 });
