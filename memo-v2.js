@@ -242,11 +242,21 @@ function createCandidate() {
     </button>
   `;
 
+  // 今日21:00を初期値にする
+  const input = div.querySelector(".candidateInput");
+
+  const now = new Date();
+  now.setHours(21, 0, 0, 0);
+
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, "0");
+  const dd = String(now.getDate()).padStart(2, "0");
+
+  input.value = `${yyyy}-${mm}-${dd}T21:00`;
+
   div.querySelector(".deleteCandidate")
     .addEventListener("click", () => {
-
       div.remove();
-
     });
 
   candidateList.appendChild(div);
