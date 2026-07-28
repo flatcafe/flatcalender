@@ -44,6 +44,11 @@ const addConfirmedBtn =
 // ================================
 const detailModal = document.getElementById("detailModal");
 const closeDetailBtn = document.getElementById("closeDetailBtn");
+const candidateList =
+  document.getElementById("candidateList");
+
+const addCandidateBtn =
+  document.getElementById("addCandidateBtn");
 
 const dateType = document.getElementById("dateType");
 
@@ -219,6 +224,35 @@ function fillMinuteSelect(select) {
 
 }
 
+function createCandidate() {
+
+  const div = document.createElement("div");
+
+  div.className =
+    "border rounded-xl p-3 mb-2";
+
+  div.innerHTML = `
+    <input
+      type="datetime-local"
+      class="candidateInput border rounded-lg p-2 w-full">
+
+    <button
+      class="deleteCandidate mt-2 text-red-500">
+      削除
+    </button>
+  `;
+
+  div.querySelector(".deleteCandidate")
+    .addEventListener("click", () => {
+
+      div.remove();
+
+    });
+
+  candidateList.appendChild(div);
+
+}
+
 function updateDays() {
 
   const year = Number(fixedYear.value);
@@ -372,6 +406,7 @@ editPlanBtn.classList.add("hidden");
 deletePlanBtn.classList.add("hidden");
 
 editTitle.value = "";
+candidateList.innerHTML = "";
 editCategory.value = "";
 editMemo.value = "";
 
@@ -443,6 +478,11 @@ dateType.addEventListener("change", changeDateType);
 
 fixedYear.addEventListener("change", updateDays);
 fixedMonth.addEventListener("change", updateDays);
+
+addCandidateBtn.addEventListener(
+  "click",
+  createCandidate
+);
 
 // ================================
 // Firestore
