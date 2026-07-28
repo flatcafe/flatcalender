@@ -219,6 +219,25 @@ function fillMinuteSelect(select) {
 
 }
 
+function updateDays() {
+
+  const year = Number(fixedYear.value);
+  const month = Number(fixedMonth.value);
+
+  // その月の最終日を取得
+  const lastDay = new Date(year, month, 0).getDate();
+
+  // 今選択中の日を覚える
+  const currentDay = Number(fixedDay.value);
+
+  // 日のプルダウンを作り直す
+  fillSelect(fixedDay, 1, lastDay);
+
+  // 前の日付があれば戻す
+  fixedDay.value = Math.min(currentDay, lastDay);
+
+}
+
 // ================================
 // Modal
 // ================================
@@ -360,8 +379,10 @@ const now = new Date();
 
 fixedYear.value = now.getFullYear();
 fixedMonth.value = now.getMonth() + 1;
-fixedDay.value = now.getDate();
 
+updateDays();
+
+fixedDay.value = now.getDate();
 fixedHour.value = 21;
 fixedMinute.value = 0;
 
@@ -419,6 +440,9 @@ deletePlanBtn.addEventListener("click", deletePlan);
 closeDetailBtn.addEventListener("click", closeDetail);
 
 dateType.addEventListener("change", changeDateType);
+
+fixedYear.addEventListener("change", updateDays);
+fixedMonth.addEventListener("change", updateDays);
 
 // ================================
 // Firestore
