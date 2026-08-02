@@ -541,8 +541,7 @@ closeDetailBtn.addEventListener("click", closeDetail);
 
 dateType.addEventListener("change", changeDateType);
 
-fixedYear.addEventListener("change", updateDays);
-fixedMonth.addEventListener("change", updateDays);
+
 
 addCandidateBtn.addEventListener(
   "click",
@@ -698,12 +697,30 @@ changeDateType();
 //===============================
 // Init
 // ================================
-fillSelect(fixedYear, 2026, 2035);
-fillSelect(fixedMonth, 1, 12);
-fillSelect(fixedDay, 1, 31);
-fillSelect(fixedHour, 0, 23, true);
-fillMinuteSelect(fixedMinute);
 
+setupDateSelector(
+  fixedYear,
+  fixedMonth,
+  fixedDay,
+  fixedHour,
+  fixedMinute
+);
+
+setupDateSelector(
+  startYear,
+  startMonth,
+  startDay,
+  startHour,
+  startMinute
+);
+
+setupDateSelector(
+  endYear,
+  endMonth,
+  endDay,
+  endHour,
+  endMinute
+);
 
 changeDateType();
 
