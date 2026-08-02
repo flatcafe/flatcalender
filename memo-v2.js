@@ -480,7 +480,11 @@ const now = new Date();
 fixedYear.value = now.getFullYear();
 fixedMonth.value = now.getMonth() + 1;
 
-updateDays();
+updateDays(
+  fixedYear,
+  fixedMonth,
+  fixedDay
+);
 
 fixedDay.value = now.getDate();
 fixedHour.value = 21;
