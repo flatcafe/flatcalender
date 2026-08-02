@@ -263,22 +263,18 @@ function createCandidate() {
 
 }
 
-function updateDays() {
+function updateDays(yearSelect, monthSelect, daySelect) {
 
-  const year = Number(fixedYear.value);
-  const month = Number(fixedMonth.value);
+  const year = Number(yearSelect.value);
+  const month = Number(monthSelect.value);
 
-  // その月の最終日を取得
   const lastDay = new Date(year, month, 0).getDate();
 
-  // 今選択中の日を覚える
-  const currentDay = Number(fixedDay.value);
+  const currentDay = Number(daySelect.value);
 
-  // 日のプルダウンを作り直す
-  fillSelect(fixedDay, 1, lastDay);
+  fillSelect(daySelect, 1, lastDay);
 
-  // 前の日付があれば戻す
-  fixedDay.value = Math.min(currentDay, lastDay);
+  daySelect.value = Math.min(currentDay, lastDay);
 
 }
 
