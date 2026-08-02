@@ -336,7 +336,10 @@ async function savePlan() {
   const title = editTitle.value || "無題の予定";
   const category = editCategory.value || "";
   const memo = editMemo.value || "";
-  const date = "未定";
+  const type = dateType.value;
+
+  let date = "未定";
+  let range = null;
 
  
 
@@ -355,10 +358,34 @@ document
 
   });
 
-    await addDoc(collection(db, "plans"), {
+    if (type === "fixed") {
+
+  date =
+    `${fixedYear.value}/${String(fixedMonth.value).padStart(2, "0")}/${String(fixedDay.value).padStart(2, "0")} ` +
+    `${String(fixedHour.value).padStart(2, "0")}:${String(fixedMinute.value).padStart(2, "0")}`;
+
+}
+
+if (type === "range") {
+
+  range = {
+    start:
+      `${startYear.value}/${String(startMonth.value).padStart(2, "0")}/${String(startDay.value).padStart(2, "0")} ` +
+      `${String(startHour.value).padStart(2, "0")}:${String(startMinute.value).padStart(2, "0")}`,
+
+    end:
+      `${endYear.value}/${String(endMonth.value).padStart(2, "0")}/${String(endDay.value).padStart(2, "0")} ` +
+      `${String(endHour.value).padStart(2, "0")}:${String(endMinute.value).padStart(2, "0")}`
+  };
+
+}
+    
+
+  await addDoc(collection(db, "plans"), {
   title,
   date,
   candidates,
+  range,
   category,
   status: detailModal.dataset.status || "planned",
   memo,
