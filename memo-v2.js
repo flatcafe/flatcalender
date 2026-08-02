@@ -278,6 +278,25 @@ function updateDays(yearSelect, monthSelect, daySelect) {
 
 }
 
+function setupDateSelector(year, month, day, hour, minute) {
+
+  fillSelect(year, 2026, 2035);
+  fillSelect(month, 1, 12);
+  fillSelect(hour, 0, 23);
+  fillSelect(minute, 0, 50, 10);
+
+  updateDays(year, month, day);
+
+  year.addEventListener("change", () => {
+    updateDays(year, month, day);
+  });
+
+  month.addEventListener("change", () => {
+    updateDays(year, month, day);
+  });
+
+}
+
 // ================================
 // Modal
 // ================================
