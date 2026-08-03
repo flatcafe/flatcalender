@@ -52,11 +52,8 @@ const addCandidateBtn =
 
 const dateType = document.getElementById("dateType");
 
-const fixedYear = document.getElementById("fixedYear");
-const fixedMonth = document.getElementById("fixedMonth");
-const fixedDay = document.getElementById("fixedDay");
-const fixedHour = document.getElementById("fixedHour");
-const fixedMinute = document.getElementById("fixedMinute");
+const fixedDate = document.getElementById("fixedDate");
+const fixedTime = document.getElementById("fixedTime");
 
 const fixedArea = document.getElementById("fixedArea");
 const candidateArea = document.getElementById("candidateArea");
@@ -223,6 +220,31 @@ function fillMinuteSelect(select) {
   }
 
 }
+
+function fillTimeSelect(select) {
+
+  select.innerHTML = "";
+
+  for (let h = 0; h < 24; h++) {
+
+    for (let m = 0; m < 60; m += 10) {
+
+      const hh = String(h).padStart(2, "0");
+      const mm = String(m).padStart(2, "0");
+
+      const option = document.createElement("option");
+
+      option.value = `${hh}:${mm}`;
+      option.textContent = `${hh}:${mm}`;
+
+      select.appendChild(option);
+
+    }
+
+  }
+
+}
+
 
 function createCandidate() {
 
@@ -732,7 +754,7 @@ changeDateType();
 //===============================
 // Init
 // ================================
-
+// 固定日時（←削除）
 setupDateSelector(
   fixedYear,
   fixedMonth,
@@ -741,6 +763,7 @@ setupDateSelector(
   fixedMinute
 );
 
+// 期間（←そのまま残す）
 setupDateSelector(
   startYear,
   startMonth,
@@ -756,6 +779,9 @@ setupDateSelector(
   endHour,
   endMinute
 );
+
+// 固定日時の時間だけ初期化
+fillTimeSelect(fixedTime);
 
 changeDateType();
 
