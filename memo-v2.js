@@ -419,13 +419,8 @@ if (type === "fixed") {
 if (type === "range") {
 
   range = {
-    start:
-      `${startYear.value}/${String(startMonth.value).padStart(2, "0")}/${String(startDay.value).padStart(2, "0")} ` +
-      `${String(startHour.value).padStart(2, "0")}:${String(startMinute.value).padStart(2, "0")}`,
-
-    end:
-      `${endYear.value}/${String(endMonth.value).padStart(2, "0")}/${String(endDay.value).padStart(2, "0")} ` +
-      `${String(endHour.value).padStart(2, "0")}:${String(endMinute.value).padStart(2, "0")}`
+    start: `${startDate.value.replace(/-/g, "/")} ${startTime.value}`,
+    end: `${endDate.value.replace(/-/g, "/")} ${endTime.value}`
   };
 
 }
