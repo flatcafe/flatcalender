@@ -196,15 +196,19 @@ body {
       開始
     </div>
 
-    <div class="grid grid-cols-5 gap-2">
+<div class="space-y-2">
 
-      <select id="startYear"></select>
-      <select id="startMonth"></select>
-      <select id="startDay"></select>
-      <select id="startHour"></select>
-      <select id="startMinute"></select>
+  <input
+    id="startDate"
+    type="date"
+    class="w-full border rounded-xl p-2">
 
-    </div>
+  <select
+    id="startTime"
+    class="w-full border rounded-xl p-2">
+  </select>
+
+</div>
 
   </div>
 
@@ -213,16 +217,20 @@ body {
     <div class="font-bold mb-2">
       終了
     </div>
+    
+<div class="space-y-2">
 
-    <div class="grid grid-cols-5 gap-2">
+  <input
+    id="endDate"
+    type="date"
+    class="w-full border rounded-xl p-2">
 
-      <select id="endYear"></select>
-      <select id="endMonth"></select>
-      <select id="endDay"></select>
-      <select id="endHour"></select>
-      <select id="endMinute"></select>
+  <select
+    id="endTime"
+    class="w-full border rounded-xl p-2">
+  </select>
 
-    </div>
+</div>
 
   </div>
 
