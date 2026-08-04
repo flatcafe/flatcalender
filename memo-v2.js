@@ -509,63 +509,17 @@ const now = new Date();
 
 fixedDate.value = now.toISOString().split("T")[0];
 fixedTime.value = "21:00";
-  
-
 
 // 開始日時
 startDate.value = now.toISOString().split("T")[0];
 startTime.value = "21:00";
 
-
-endDate.value = tomorrow.toISOString().split("T")[0];
-endTime.value = "21:00";
-  
-startYear.value = now.getFullYear();
-startMonth.value = now.getMonth() + 1;
-
-updateDays(
-  startYear,
-  startMonth,
-  startDay
-);
-
-startDay.value = now.getDate();
-startHour.value = 21;
-startMinute.value = 0;
-
 // 終了日時（翌日）
 const tomorrow = new Date(now);
 tomorrow.setDate(now.getDate() + 1);
 
-endYear.value = tomorrow.getFullYear();
-endMonth.value = tomorrow.getMonth() + 1;
-
-updateDays(
-  endYear,
-  endMonth,
-  endDay
-);
-
-endDay.value = tomorrow.getDate();
-endHour.value = 21;
-endMinute.value = 0;
-
-dateType.value = "fixed";
-changeDateType();
-
-confirmPlanBtn.textContent = "作成する";
-
-detailModal.classList.remove("hidden");
-}
-
-async function editPlan() {
-
-  if (!currentPlanId) return;
-
-  const title = editTitle.value;
-  const category = editCategory.value;
-  const memo = editMemo.value;
-
+endDate.value = tomorrow.toISOString().split("T")[0];
+endTime.value = "21:00";
 
   // TODO: 新しい日時UI対応後に編集処理を実装
   const isUndecided =
