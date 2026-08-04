@@ -253,37 +253,44 @@ function createCandidate() {
   div.className =
     "border rounded-xl p-3 mb-2";
 
-  div.innerHTML = `
-    <input
-      type="datetime-local"
-      class="candidateInput border rounded-lg p-2 w-full">
+div.innerHTML = `
+  <input
+    type="date"
+    class="candidateDate border rounded-lg p-2 w-full">
 
-    <button
-      class="deleteCandidate mt-2 text-red-500">
-      削除
-    </button>
-  `;
+  <select
+    class="candidateTime border rounded-lg p-2 w-full mt-2">
+  </select>
 
-  // 今日21:00を初期値にする
-  const input = div.querySelector(".candidateInput");
+  <button
+    class="deleteCandidate mt-2 text-red-500">
+    削除
+  </button>
+`;
 
-  const now = new Date();
-  now.setHours(21, 0, 0, 0);
+const dateInput = div.querySelector(".candidateDate");
+const timeSelect = div.querySelector(".candidateTime");
 
-  const yyyy = now.getFullYear();
-  const mm = String(now.getMonth() + 1).padStart(2, "0");
-  const dd = String(now.getDate()).padStart(2, "0");
+fillTimeSelect(timeSelect);
+  
+// 今日21:00を初期値にする
+const dateInput = div.querySelector(".candidateDate");
+const timeSelect = div.querySelector(".candidateTime");
 
-  input.value = `${yyyy}-${mm}-${dd}T21:00`;
+fillTimeSelect(timeSelect);
 
-  div.querySelector(".deleteCandidate")
-    .addEventListener("click", () => {
-      div.remove();
-    });
+const now = new Date();
+now.setHours(21, 0, 0, 0);
 
-  candidateList.appendChild(div);
+dateInput.value = now.toISOString().split("T")[0];
+timeSelect.value = "21:00";
 
-}
+div.querySelector(".deleteCandidate")
+  .addEventListener("click", () => {
+    div.remove();
+  });
+
+candidateList.appendChild(div);
 
 function updateDays(yearSelect, monthSelect, daySelect) {
 
