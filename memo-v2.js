@@ -521,6 +521,22 @@ tomorrow.setDate(now.getDate() + 1);
 endDate.value = tomorrow.toISOString().split("T")[0];
 endTime.value = "21:00";
 
+dateType.value = "fixed";
+changeDateType();
+
+confirmPlanBtn.textContent = "作成する";
+
+detailModal.classList.remove("hidden");
+}
+
+async function editPlan() {
+
+  if (!currentPlanId) return;
+
+  const title = editTitle.value;
+  const category = editCategory.value;
+  const memo = editMemo.value;
+
   // TODO: 新しい日時UI対応後に編集処理を実装
   const isUndecided =
     document.getElementById("editDateUndecided").checked;
