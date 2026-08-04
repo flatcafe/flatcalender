@@ -59,6 +59,12 @@ const fixedArea = document.getElementById("fixedArea");
 const candidateArea = document.getElementById("candidateArea");
 const rangeArea = document.getElementById("rangeArea");
 
+const startDate = document.getElementById("startDate");
+const startTime = document.getElementById("startTime");
+
+const endDate = document.getElementById("endDate");
+const endTime = document.getElementById("endTime");
+
 // ================================
 // Detail DOM
 // ================================
@@ -512,6 +518,15 @@ fixedTime.value = "21:00";
 
 
 // 開始日時
+startDate.value = now.toISOString().split("T")[0];
+startTime.value = "21:00";
+
+const tomorrow = new Date(now);
+tomorrow.setDate(now.getDate() + 1);
+
+endDate.value = tomorrow.toISOString().split("T")[0];
+endTime.value = "21:00";
+  
 startYear.value = now.getFullYear();
 startMonth.value = now.getMonth() + 1;
 
@@ -775,6 +790,8 @@ setupDateSelector(
 
 // 固定日時の時間だけ初期化
 fillTimeSelect(fixedTime);
+fillTimeSelect(startTime);
+fillTimeSelect(endTime);
 
 changeDateType();
 
