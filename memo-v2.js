@@ -387,18 +387,22 @@ async function savePlan() {
   // 新規作成
   if (!currentPlanId) {
 
-    const candidates = [];
+  const candidates = [];
 
-document
-  .querySelectorAll(".candidateInput")
-  .forEach(input => {
+document.querySelectorAll("#candidateList > div").forEach(div => {
 
-    if (input.value) {
-      candidates.push(input.value);
-    }
+  const date = div.querySelector(".candidateDate").value;
+  const time = div.querySelector(".candidateTime").value;
 
-  });
+  if (date) {
+    candidates.push({
+      date,
+      time
+    });
+  }
 
+});
+    
 if (type === "fixed") {
 
   date =
