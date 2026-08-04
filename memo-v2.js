@@ -275,6 +275,9 @@ const timeSelect = div.querySelector(".candidateTime");
 
 fillTimeSelect(timeSelect);
 
+const now = new Date(); 
+now.setHours(21, 0, 0, 0);
+
 dateInput.value = now.toISOString().split("T")[0];
 timeSelect.value = "21:00";
 
@@ -284,7 +287,8 @@ div.querySelector(".deleteCandidate")
   });
 
 candidateList.appendChild(div);
-
+}
+  
 function updateDays(yearSelect, monthSelect, daySelect) {
 
   const year = Number(yearSelect.value);
