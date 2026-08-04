@@ -516,8 +516,6 @@ fixedTime.value = "21:00";
 startDate.value = now.toISOString().split("T")[0];
 startTime.value = "21:00";
 
-const tomorrow = new Date(now);
-tomorrow.setDate(now.getDate() + 1);
 
 endDate.value = tomorrow.toISOString().split("T")[0];
 endTime.value = "21:00";
