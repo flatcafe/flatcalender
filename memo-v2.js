@@ -764,23 +764,6 @@ changeDateType();
 // Init
 // ================================
 
-// 期間（←そのまま残す）
-setupDateSelector(
-  startYear,
-  startMonth,
-  startDay,
-  startHour,
-  startMinute
-);
-
-setupDateSelector(
-  endYear,
-  endMonth,
-  endDay,
-  endHour,
-  endMinute
-);
-
 // 固定日時の時間だけ初期化
 fillTimeSelect(fixedTime);
 fillTimeSelect(startTime);
