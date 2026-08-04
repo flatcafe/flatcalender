@@ -268,19 +268,12 @@ div.innerHTML = `
   </button>
 `;
 
-const dateInput = div.querySelector(".candidateDate");
-const timeSelect = div.querySelector(".candidateTime");
-
-fillTimeSelect(timeSelect);
   
 // 今日21:00を初期値にする
 const dateInput = div.querySelector(".candidateDate");
 const timeSelect = div.querySelector(".candidateTime");
 
 fillTimeSelect(timeSelect);
-
-const now = new Date();
-now.setHours(21, 0, 0, 0);
 
 dateInput.value = now.toISOString().split("T")[0];
 timeSelect.value = "21:00";
