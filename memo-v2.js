@@ -395,11 +395,10 @@ document
 
   });
 
-    if (type === "fixed") {
+if (type === "fixed") {
 
   date =
-    `${fixedYear.value}/${String(fixedMonth.value).padStart(2, "0")}/${String(fixedDay.value).padStart(2, "0")} ` +
-    `${String(fixedHour.value).padStart(2, "0")}:${String(fixedMinute.value).padStart(2, "0")}`;
+    `${fixedDate.value.replace(/-/g, "/")} ${fixedTime.value}`;
 
 }
 
@@ -499,18 +498,10 @@ editMemo.value = "";
 
 const now = new Date();
 
-fixedYear.value = now.getFullYear();
-fixedMonth.value = now.getMonth() + 1;
+fixedDate.value = now.toISOString().split("T")[0];
+fixedTime.value = "21:00";
+  
 
-updateDays(
-  fixedYear,
-  fixedMonth,
-  fixedDay
-);
-
-fixedDay.value = now.getDate();
-fixedHour.value = 21;
-fixedMinute.value = 0;
 
 // 開始日時
 startYear.value = now.getFullYear();
