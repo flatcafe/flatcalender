@@ -87,7 +87,13 @@
     </div>
   </div>
 
-  <cafe-nav></cafe-nav>
+<!-- 画面下部に固定して、カレンダーなどの裏側にいかないように設定 -->
+  <div class="fixed bottom-0 w-full z-50 pointer-events-none">
+    <div class="pointer-events-auto">
+      <cafe-nav></cafe-nav>
+    </div>
+  </div>
+
   <script type="module" src="calendar.js"></script>
 </body>
 </html>
