@@ -550,6 +550,8 @@ async function editPlan() {
   const category = editCategory.value;
   const memo = editMemo.value;
 
+
+  // TODO: 新しい日時UI対応後に編集処理を実装
   const isUndecided =
     document.getElementById("editDateUndecided").checked;
 
@@ -745,14 +747,6 @@ changeDateType();
 //===============================
 // Init
 // ================================
-// 固定日時（←削除）
-setupDateSelector(
-  fixedYear,
-  fixedMonth,
-  fixedDay,
-  fixedHour,
-  fixedMinute
-);
 
 // 期間（←そのまま残す）
 setupDateSelector(
