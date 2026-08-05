@@ -626,6 +626,7 @@ function loadPlanned() {
       div.className =
         "bg-white rounded-xl p-3 shadow cursor-pointer";
 
+      div.innerHTML = `
 ${(() => {
 
   let dateText = "未定";
@@ -687,6 +688,7 @@ function loadConfirmed() {
       div.className =
         "bg-white rounded-xl p-3 shadow cursor-pointer";
 
+      div.innerHTML = `
 ${(() => {
 
   let dateText = "未定";
@@ -745,9 +747,11 @@ function loadDone() {
 
       const div = document.createElement("div");
 
+     
       div.className =
         "bg-white rounded-xl p-3 shadow cursor-pointer opacity-70";
 
+      div.innerHTML = `
 ${(() => {
 
   let dateText = "未定";
