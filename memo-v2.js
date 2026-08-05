@@ -626,10 +626,25 @@ function loadPlanned() {
       div.className =
         "bg-white rounded-xl p-3 shadow cursor-pointer";
 
-      div.innerHTML = `
-        <div class="text-xs text-gray-500">
-          📅 ${plan.date || "未定"}
-        </div>
+${(() => {
+
+  let dateText = "未定";
+
+  if (plan.range) {
+    dateText = `${plan.range.start} ～ ${plan.range.end}`;
+  } else if (plan.candidates?.length) {
+    dateText = `候補日 ${plan.candidates.length}件`;
+  } else if (plan.date) {
+    dateText = plan.date;
+  }
+
+  return `
+    <div class="text-xs text-gray-500">
+      📅 ${dateText}
+    </div>
+  `;
+
+})()}
 
         <div class="font-bold text-[#5a4a42] mt-1">
           ${plan.title}
@@ -672,10 +687,25 @@ function loadConfirmed() {
       div.className =
         "bg-white rounded-xl p-3 shadow cursor-pointer";
 
-      div.innerHTML = `
-        <div class="text-xs text-gray-500">
-          📅 ${plan.date || "未定"}
-        </div>
+${(() => {
+
+  let dateText = "未定";
+
+  if (plan.range) {
+    dateText = `${plan.range.start} ～ ${plan.range.end}`;
+  } else if (plan.candidates?.length) {
+    dateText = `候補日 ${plan.candidates.length}件`;
+  } else if (plan.date) {
+    dateText = plan.date;
+  }
+
+  return `
+    <div class="text-xs text-gray-500">
+      📅 ${dateText}
+    </div>
+  `;
+
+})()}
 
         <div class="font-bold text-[#5a4a42] mt-1">
           ${plan.title}
@@ -718,10 +748,25 @@ function loadDone() {
       div.className =
         "bg-white rounded-xl p-3 shadow cursor-pointer opacity-70";
 
-      div.innerHTML = `
-        <div class="text-xs text-gray-500">
-          📅 ${plan.date || "未定"}
-        </div>
+${(() => {
+
+  let dateText = "未定";
+
+  if (plan.range) {
+    dateText = `${plan.range.start} ～ ${plan.range.end}`;
+  } else if (plan.candidates?.length) {
+    dateText = `候補日 ${plan.candidates.length}件`;
+  } else if (plan.date) {
+    dateText = plan.date;
+  }
+
+  return `
+    <div class="text-xs text-gray-500">
+      📅 ${dateText}
+    </div>
+  `;
+
+})()}
 
         <div class="font-bold text-[#5a4a42] mt-1 line-through">
           ${plan.title}
