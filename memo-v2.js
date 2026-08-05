@@ -191,41 +191,9 @@ function setupAccordion(toggle, title, content, text) {
   });
 
 }
-function fillSelect(select, start, end, pad = false) {
 
-  select.innerHTML = "";
 
-  for (let i = start; i <= end; i++) {
 
-    const option = document.createElement("option");
-
-    option.value = i;
-    option.textContent = pad
-      ? String(i).padStart(2, "0")
-      : i;
-
-    select.appendChild(option);
-
-  }
-
-}
-
-function fillMinuteSelect(select) {
-
-  select.innerHTML = "";
-
-  for (let i = 0; i < 60; i += 10) {
-
-    const option = document.createElement("option");
-
-    option.value = i;
-    option.textContent = String(i).padStart(2, "0");
-
-    select.appendChild(option);
-
-  }
-
-}
 
 function fillTimeSelect(select) {
 
@@ -295,39 +263,9 @@ div.querySelector(".deleteCandidate")
 candidateList.appendChild(div);
 }
   
-function updateDays(yearSelect, monthSelect, daySelect) {
 
-  const year = Number(yearSelect.value);
-  const month = Number(monthSelect.value);
 
-  const lastDay = new Date(year, month, 0).getDate();
 
-  const currentDay = Number(daySelect.value);
-
-  fillSelect(daySelect, 1, lastDay);
-
-  daySelect.value = Math.min(currentDay, lastDay);
-
-}
-
-function setupDateSelector(year, month, day, hour, minute) {
-
-  fillSelect(year, 2026, 2035);
-  fillSelect(month, 1, 12);
-  fillSelect(hour, 0, 23);
-  fillSelect(minute, 0, 50, 10);
-
-  updateDays(year, month, day);
-
-  year.addEventListener("change", () => {
-    updateDays(year, month, day);
-  });
-
-  month.addEventListener("change", () => {
-    updateDays(year, month, day);
-  });
-
-}
 
 // ================================
 // Modal
