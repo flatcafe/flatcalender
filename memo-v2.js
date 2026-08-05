@@ -471,27 +471,10 @@ async function editPlan() {
 
   if (!currentPlanId) return;
 
-  const title = editTitle.value;
-  const category = editCategory.value;
-  const memo = editMemo.value;
-
-  // TODO: 新しい日時UI対応後に編集処理を実装
-  const isUndecided =
-    document.getElementById("editDateUndecided").checked;
-
-  let date = "未定";
-
-  if (!isUndecided && editDate.value) {
-    date = editDate.value
-      .replace("T", " ")
-      .replace(/-/g, "/");
-  }
-
   await updateDoc(doc(db, "plans", currentPlanId), {
-    title,
-    date,
-    category,
-    memo
+    title: editTitle.value,
+    category: editCategory.value,
+    memo: editMemo.value
   });
 
   closeDetail();
