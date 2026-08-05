@@ -282,9 +282,60 @@ deletePlanBtn.classList.remove("hidden");
   editCategory.value = plan.category || "";
   editMemo.value = plan.memo || "";
 
-  // 後で新しい日時システムに置き換える
+  // 追加
+candidateList.innerHTML = "";
 
+  // 日時
+  if (plan.date) {
 
+  const [date, time] = plan.date.split(" ");
+
+  fixedDate.value = date.replace(/\//g, "-");
+  fixedTime.value = time;
+
+  dateType.value = "fixed";
+
+}
+
+else if (plan.range) {
+
+  const [startDateValue, startTimeValue] =
+    plan.range.start.split(" ");
+
+  const [endDateValue, endTimeValue] =
+    plan.range.end.split(" ");
+
+  startDate.value = startDateValue.replace(/\//g, "-");
+  startTime.value = startTimeValue;
+
+  endDate.value = endDateValue.replace(/\//g, "-");
+  endTime.value = endTimeValue;
+
+  dateType.value = "range";
+
+}
+
+  else if (plan.candidates?.length) {
+
+  dateType.value = "candidate";
+
+  candidateList.innerHTML = "";
+
+  plan.candidates.forEach(candidate => {
+
+    createCandidate();
+
+    const div = candidateList.lastElementChild;
+
+    div.querySelector(".candidateDate").value = candidate.date;
+    div.querySelector(".candidateTime").value = candidate.time;
+
+  });
+
+}
+
+  changeDateType();
+  
   switch (mode) {
 
     case "planned":
