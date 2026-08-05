@@ -522,17 +522,57 @@ async function editPlan() {
 
   if (!currentPlanId) return;
 
-  await updateDoc(doc(db, "plans", currentPlanId), {
+  const data = {
     title: editTitle.value,
     category: editCategory.value,
     memo: editMemo.value
-  });
+  };
+
+  // 一度日時データをリセット
+  data.date = null;
+  data.range = null;
+  data.candidates = [];
+
+  switch (dateType.value) {
+
+    case "fixed":
+      data.date =
+        `${fixedDate.value.replace(/-/g, "/")} ${fixedTime.value}`;
+      break;
+
+    case "candidate":
+      data.candidates = [];
+
+      document.querySelectorAll("#candidateList > div").forEach(div => {
+
+        const date = div.querySelector(".candidateDate").value;
+        const time = div.querySelector(".candidateTime").value;
+
+        if (date) {
+          data.candidates.push({
+            date,
+            time
+          });
+        }
+
+      });
+
+      break;
+
+    case "range":
+      data.range = {
+        start: `${startDate.value.replace(/-/g, "/")} ${startTime.value}`,
+        end: `${endDate.value.replace(/-/g, "/")} ${endTime.value}`
+      };
+      break;
+
+  }
+
+  await updateDoc(doc(db, "plans", currentPlanId), data);
 
   closeDetail();
 
 }
-
-
 
 
 // ================================
